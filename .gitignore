@@ -22,6 +22,9 @@ build/
 .idea/
 *.swp
 
+# Configuración interna de agentes de IA
+.claude/
+
 # Sistema operativo
 .DS_Store
 Thumbs.db
