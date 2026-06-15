@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>La Mona - CDI</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: Arial, sans-serif; background: #f0f2f5; color: #222; }
+
+    header {
+      background: #003366;
+      color: white;
+      padding: 16px 24px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    header h1 { font-size: 1.4rem; }
+    header span { font-size: 0.9rem; opacity: 0.8; }
+
+    nav {
+      background: #004080;
+      display: flex;
+      gap: 4px;
+      padding: 8px 24px;
+    }
+    nav button {
+      background: transparent;
+      color: #cce0ff;
+      border: 1px solid #336699;
+      padding: 6px 16px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 0.9rem;
+    }
+    nav button.active, nav button:hover {
+      background: #0066cc;
+      color: white;
+    }
+
+    main { max-width: 960px; margin: 24px auto; padding: 0 16px; }
+
+    .section { display: none; }
+    .section.active { display: block; }
+
+    .card {
+      background: white;
+      border-radius: 8px;
+      padding: 20px;
+      margin-bottom: 16px;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+    }
+    .card h2 { font-size: 1.1rem; margin-bottom: 14px; color: #003366; border-bottom: 2px solid #e0e8f0; padding-bottom: 8px; }
+
+    .form-row { display: flex; gap: 10px; flex-wrap: wrap; align-items: flex-end; margin-bottom: 10px; }
+    .form-row label { display: flex; flex-direction: column; gap: 4px; font-size: 0.85rem; font-weight: bold; }
+    .form-row input, .form-row select {
+      padding: 7px 10px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      font-size: 0.9rem;
+      min-width: 160px;
+    }
+    button.btn {
+      background: #0066cc;
+      color: white;
+      border: none;
+      padding: 8px 18px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 0.9rem;
+    }
+    button.btn:hover { background: #005bb5; }
+    button.btn-danger { background: #cc3300; }
+    button.btn-success { background: #007744; }
+
+    .error { color: #cc2200; background: #fff0ee; border: 1px solid #ffccbb; padding: 8px 12px; border-radius: 4px; margin: 8px 0; font-size: 0.88rem; }
+    .success { color: #005500; background: #eeffee; border: 1px solid #99dd99; padding: 8px 12px; border-radius: 4px; margin: 8px 0; font-size: 0.88rem; }
+
+    table { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
+    th { background: #003366; color: white; padding: 8px 12px; text-align: left; }
+    td { padding: 8px 12px; border-bottom: 1px solid #e8e8e8; }
+    tr:hover td { background: #f5f9ff; }
+
+    .badge {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 12px;
+      font-size: 0.8rem;
+      font-weight: bold;
+    }
+    .badge-pendiente { background: #fff3cd; color: #856404; }
+    .badge-jugado { background: #d4edda; color: #155724; }
+    .badge-wo { background: #f8d7da; color: #721c24; }
+
+    .stars { color: #f5a623; }
+  </style>
+</head>
+<body>
+
+<header>
+  <div>
+    <h1>🏆 La Mona — CDI</h1>
+    <span>Sistema de Gestión de Olimpiadas Interdepartamentales</span>
+  </div>
+</header>
+
+<nav>
+  <button class="active" onclick="mostrarSeccion('partidos', this)">Partidos</button>
+  <button onclick="mostrarSeccion('equipos', this)">Equipos</button>
+  <button onclick="mostrarSeccion('jugadores', this)">Jugadores</button>
+  <button onclick="mostrarSeccion('departamentos', this)">Departamentos</button>
+</nav>
+
+<main>
+
+  <!-- PARTIDOS -->
+  <section id="partidos" class="section active">
+    <div class="card">
+      <h2>Crear Partido</h2>
+      <div class="form-row">
+        <label>Equipo Local
+          <select id="p-local"></select>
+        </label>
+        <label>Equipo Visitante
+          <select id="p-visitante"></select>
+        </label>
+        <label>Fecha (opcional)
+          <input type="text" id="p-fecha" placeholder="ej: 2025-07-10" />
+        </label>
+        <button class="btn" onclick="crearPartido()">Crear Partido</button>
+      </div>
+      <div id="msg-partido"></div>
+    </div>
+
+    <div class="card">
+      <h2>Lista de Partidos</h2>
+      <div id="msg-resultado"></div>
+      <table>
+        <thead>
+          <tr><th>ID</th><th>Local</th><th>Visitante</th><th>Resultado</th><th>Estado</th><th>Fecha</th><th>Acción</th></tr>
+        </thead>
+        <tbody id="tabla-partidos"></tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- EQUIPOS -->
+  <section id="equipos" class="section">
+    <div class="card">
+      <h2>Crear Equipo</h2>
+      <div class="form-row">
+        <label>Nombre del Equipo
+          <input type="text" id="e-nombre" placeholder="ej: Los Ingenieros" />
+        </label>
+        <label>Departamento
+          <select id="e-dept"></select>
+        </label>
+        <button class="btn" onclick="crearEquipo()">Crear Equipo</button>
+      </div>
+      <div id="msg-equipo"></div>
+    </div>
+
+    <div class="card">
+      <h2>Agregar Jugador a Equipo</h2>
+      <div class="form-row">
+        <label>Equipo
+          <select id="ae-equipo"></select>
+        </label>
+        <label>Jugador
+          <select id="ae-jugador"></select>
+        </label>
+        <button class="btn btn-success" onclick="agregarJugadorEquipo()">Agregar al Equipo</button>
+      </div>
+      <div id="msg-ae"></div>
+    </div>
+
+    <div class="card">
+      <h2>Lista de Equipos</h2>
+      <table>
+        <thead>
+          <tr><th>ID</th><th>Equipo</th><th>Departamento</th><th>Jugadores</th><th>Estrellas totales</th></tr>
+        </thead>
+        <tbody id="tabla-equipos"></tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- JUGADORES -->
+  <section id="jugadores" class="section">
+    <div class="card">
+      <h2>Registrar Jugador</h2>
+      <div class="form-row">
+        <label>Nombre
+          <input type="text" id="j-nombre" placeholder="Nombre completo" />
+        </label>
+        <label>Género
+          <select id="j-genero">
+            <option value="M">Masculino</option>
+            <option value="F">Femenino</option>
+          </select>
+        </label>
+        <label>Estrellas
+          <select id="j-estrellas">
+            <option value="0">0 - Amateur</option>
+            <option value="1">1 - Rama interna</option>
+            <option value="2">2 - Federado / Selección U</option>
+            <option value="3">3 - Selección Nacional</option>
+          </select>
+        </label>
+        <label>Departamento
+          <select id="j-dept"></select>
+        </label>
+        <button class="btn" onclick="crearJugador()">Registrar</button>
+      </div>
+      <div id="msg-jugador"></div>
+    </div>
+
+    <div class="card">
+      <h2>Lista de Jugadores</h2>
+      <table>
+        <thead>
+          <tr><th>ID</th><th>Nombre</th><th>Género</th><th>Estrellas</th><th>Departamento ID</th></tr>
+        </thead>
+        <tbody id="tabla-jugadores"></tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- DEPARTAMENTOS -->
+  <section id="departamentos" class="section">
+    <div class="card">
+      <h2>Agregar Departamento</h2>
+      <div class="form-row">
+        <label>Nombre
+          <input type="text" id="d-nombre" placeholder="ej: Ingeniería Civil" />
+        </label>
+        <button class="btn" onclick="crearDepartamento()">Agregar</button>
+      </div>
+      <div id="msg-dept"></div>
+    </div>
+
+    <div class="card">
+      <h2>Departamentos Registrados</h2>
+      <table>
+        <thead>
+          <tr><th>ID</th><th>Nombre</th></tr>
+        </thead>
+        <tbody id="tabla-departamentos"></tbody>
+      </table>
+    </div>
+  </section>
+
+</main>
+
+<script>
+  const API = "http://localhost:8000";
+
+  // ─── Navegación ─────────────────────────────────────────────────────────────
+
+  function mostrarSeccion(id, btn) {
+    document.querySelectorAll(".section").forEach(s => s.classList.remove("active"));
+    document.querySelectorAll("nav button").forEach(b => b.classList.remove("active"));
+    document.getElementById(id).classList.add("active");
+    btn.classList.add("active");
+    cargarDatos();
+  }
+
+  // ─── Helpers ─────────────────────────────────────────────────────────────────
+
+  function mostrarMsg(id, texto, tipo = "error") {
+    const el = document.getElementById(id);
+    el.innerHTML = `<div class="${tipo}">${texto}</div>`;
+    setTimeout(() => el.innerHTML = "", 4000);
+  }
+
+  function estrellasHtml(n) {
+    return `<span class="stars">${"★".repeat(n)}${"☆".repeat(3 - n)}</span> (${n})`;
+  }
+
+  async function apiGet(path) {
+    const r = await fetch(API + path);
+    if (!r.ok) throw new Error(await r.text());
+    return r.json();
+  }
+
+  async function apiPost(path, body) {
+    const r = await fetch(API + path, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(body),
+    });
+    const data = await r.json();
+    if (!r.ok) throw new Error(data.detail || JSON.stringify(data));
+    return data;
+  }
+
+  async function apiPatch(path, body) {
+    const r = await fetch(API + path, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(body),
+    });
+    const data = await r.json();
+    if (!r.ok) throw new Error(data.detail || JSON.stringify(data));
+    return data;
+  }
+
+  // ─── Cargar datos en selectores y tablas ─────────────────────────────────────
+
+  async function cargarDatos() {
+    await Promise.all([
+      cargarDepartamentos(),
+      cargarJugadores(),
+      cargarEquipos(),
+      cargarPartidos(),
+    ]);
+  }
+
+  async function cargarDepartamentos() {
+    const depts = await apiGet("/departamentos/");
+    const opciones = depts.map(d => `<option value="${d.id}">${d.nombre}</option>`).join("");
+    ["e-dept", "j-dept"].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.innerHTML = opciones;
+    });
+    const tabla = document.getElementById("tabla-departamentos");
+    if (tabla) tabla.innerHTML = depts.map(d =>
+      `<tr><td>${d.id}</td><td>${d.nombre}</td></tr>`
+    ).join("");
+  }
+
+  async function cargarJugadores() {
+    const jugadores = await apiGet("/jugadores/");
+    const opciones = jugadores.map(j => `<option value="${j.id}">${j.nombre} (${j.genero}, ${j.estrellas}★)</option>`).join("");
+    const sel = document.getElementById("ae-jugador");
+    if (sel) sel.innerHTML = opciones;
+    const tabla = document.getElementById("tabla-jugadores");
+    if (tabla) tabla.innerHTML = jugadores.map(j =>
+      `<tr>
+        <td>${j.id}</td>
+        <td>${j.nombre}</td>
+        <td>${j.genero === "M" ? "Masculino" : "Femenino"}</td>
+        <td>${estrellasHtml(j.estrellas)}</td>
+        <td>${j.departamento_id}</td>
+      </tr>`
+    ).join("");
+  }
+
+  async function cargarEquipos() {
+    const equipos = await apiGet("/equipos/");
+    const opciones = equipos.map(e => `<option value="${e.id}">${e.nombre}</option>`).join("");
+    ["p-local", "p-visitante", "ae-equipo"].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.innerHTML = opciones;
+    });
+    const tabla = document.getElementById("tabla-equipos");
+    if (tabla) tabla.innerHTML = equipos.map(e => {
+      const totalEstrellas = e.jugadores.reduce((s, j) => s + j.estrellas, 0);
+      return `<tr>
+        <td>${e.id}</td>
+        <td><strong>${e.nombre}</strong></td>
+        <td>${e.departamento_id}</td>
+        <td>${e.jugadores.map(j => j.nombre).join(", ") || "—"}</td>
+        <td>${estrellasHtml(totalEstrellas)}</td>
+      </tr>`;
+    }).join("");
+  }
+
+  async function cargarPartidos() {
+    const partidos = await apiGet("/partidos/");
+    const tabla = document.getElementById("tabla-partidos");
+    if (!tabla) return;
+    tabla.innerHTML = partidos.map(p => {
+      const resultado = p.estado === "jugado"
+        ? `${p.puntos_local} - ${p.puntos_visitante}`
+        : `<button class="btn btn-success" style="font-size:0.8rem;padding:4px 10px"
+              onclick="registrarResultado(${p.id})">Registrar resultado</button>`;
+      return `<tr>
+        <td>${p.id}</td>
+        <td>${p.nombre_local}</td>
+        <td>${p.nombre_visitante}</td>
+        <td>${resultado}</td>
+        <td><span class="badge badge-${p.estado}">${p.estado}</span></td>
+        <td>${p.fecha || "—"}</td>
+        <td></td>
+      </tr>`;
+    }).join("");
+  }
+
+  // ─── Acciones ─────────────────────────────────────────────────────────────────
+
+  async function crearDepartamento() {
+    const nombre = document.getElementById("d-nombre").value.trim();
+    if (!nombre) return mostrarMsg("msg-dept", "Ingresa un nombre");
+    try {
+      await apiPost("/departamentos/", { nombre });
+      document.getElementById("d-nombre").value = "";
+      mostrarMsg("msg-dept", `Departamento '${nombre}' creado`, "success");
+      await cargarDatos();
+    } catch (e) {
+      mostrarMsg("msg-dept", e.message);
+    }
+  }
+
+  async function crearJugador() {
+    const nombre = document.getElementById("j-nombre").value.trim();
+    const genero = document.getElementById("j-genero").value;
+    const estrellas = parseInt(document.getElementById("j-estrellas").value);
+    const departamento_id = parseInt(document.getElementById("j-dept").value);
+    if (!nombre) return mostrarMsg("msg-jugador", "Ingresa el nombre del jugador");
+    try {
+      await apiPost("/jugadores/", { nombre, genero, estrellas, departamento_id });
+      document.getElementById("j-nombre").value = "";
+      mostrarMsg("msg-jugador", `Jugador '${nombre}' registrado`, "success");
+      await cargarDatos();
+    } catch (e) {
+      mostrarMsg("msg-jugador", e.message);
+    }
+  }
+
+  async function crearEquipo() {
+    const nombre = document.getElementById("e-nombre").value.trim();
+    const departamento_id = parseInt(document.getElementById("e-dept").value);
+    if (!nombre) return mostrarMsg("msg-equipo", "Ingresa el nombre del equipo");
+    try {
+      await apiPost("/equipos/", { nombre, departamento_id });
+      document.getElementById("e-nombre").value = "";
+      mostrarMsg("msg-equipo", `Equipo '${nombre}' creado`, "success");
+      await cargarDatos();
+    } catch (e) {
+      mostrarMsg("msg-equipo", e.message);
+    }
+  }
+
+  async function agregarJugadorEquipo() {
+    const equipo_id = parseInt(document.getElementById("ae-equipo").value);
+    const jugador_id = parseInt(document.getElementById("ae-jugador").value);
+    try {
+      await apiPost(`/equipos/${equipo_id}/jugadores`, { jugador_id });
+      mostrarMsg("msg-ae", "Jugador agregado al equipo", "success");
+      await cargarDatos();
+    } catch (e) {
+      mostrarMsg("msg-ae", e.message);
+    }
+  }
+
+  async function crearPartido() {
+    const equipo_local_id = parseInt(document.getElementById("p-local").value);
+    const equipo_visitante_id = parseInt(document.getElementById("p-visitante").value);
+    const fecha = document.getElementById("p-fecha").value.trim() || null;
+    try {
+      await apiPost("/partidos/", { equipo_local_id, equipo_visitante_id, fecha });
+      mostrarMsg("msg-partido", "Partido creado correctamente", "success");
+      await cargarDatos();
+    } catch (e) {
+      mostrarMsg("msg-partido", e.message);
+    }
+  }
+
+  async function registrarResultado(partido_id) {
+    const local = prompt("Puntos del equipo LOCAL:");
+    const visitante = prompt("Puntos del equipo VISITANTE:");
+    if (local === null || visitante === null) return;
+    try {
+      await apiPatch(`/partidos/${partido_id}/resultado`, {
+        puntos_local: parseInt(local),
+        puntos_visitante: parseInt(visitante),
+      });
+      mostrarMsg("msg-resultado", "Resultado registrado", "success");
+      await cargarDatos();
+    } catch (e) {
+      mostrarMsg("msg-resultado", e.message);
+    }
+  }
+
+  // ─── Inicializar ─────────────────────────────────────────────────────────────
+  cargarDatos();
+</script>
+</body>
+</html>
