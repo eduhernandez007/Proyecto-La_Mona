@@ -1,10 +1,10 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from app.database import engine, Base
-from app.routers import departamentos, jugadores, equipos, partidos, inscripciones, calistenia, puntajes
+from app.routers import departamentos, jugadores, equipos, partidos, inscripciones, calistenia, puntajes, usuarios
 
 # Importamos todos los modelos para que SQLAlchemy los registre antes de crear las tablas
-from app.models import departamento, jugador, equipo, partido, inscripcion, calistenia as _m_calistenia  # noqa: F401
+from app.models import departamento, jugador, equipo, partido, inscripcion, usuario, calistenia as _m_calistenia  # noqa: F401
 
 Base.metadata.create_all(bind=engine)
 
@@ -28,6 +28,7 @@ app.include_router(partidos.router)
 app.include_router(inscripciones.router)
 app.include_router(calistenia.router)
 app.include_router(puntajes.router)
+app.include_router(usuarios.router)
 
 
 @app.get("/")

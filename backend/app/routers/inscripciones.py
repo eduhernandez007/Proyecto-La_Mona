@@ -4,9 +4,23 @@ from app.database import get_db
 from app.models.inscripcion import Inscripcion, EstadoInscripcion
 from app.models.jugador import Jugador
 from app.models.equipo import Equipo
-from app.schemas.inscripcion import InscripcionCreate, InscripcionRead
+from app.models.usuario import Usuario, RolUsuario
+from app.schemas.inscripcion import InscripcionCreate, InscripcionRead, AccionInscripcion
 
 router = APIRouter(prefix="/inscripciones", tags=["Inscripciones"])
+
+
+def _validar_usuario_con_rol(usuario_id: int, rol_requerido: RolUsuario, db: Session) -> Usuario:
+    """Obtiene el usuario y verifica que tenga el rol requerido."""
+    usuario = db.get(Usuario, usuario_id)
+    if not usuario:
+        raise HTTPException(status_code=404, detail="Usuario no encontrado")
+    if not usuario.tiene_rol(rol_requerido):
+        raise HTTPException(
+            status_code=403,
+            detail=f"El usuario debe tener rol '{rol_requerido.value}' para esta acción",
+        )
+    return usuario
 
 
 @router.get("/", response_model=list[InscripcionRead])
@@ -17,6 +31,9 @@ def listar_inscripciones(db: Session = Depends(get_db)):
 @router.post("/", response_model=InscripcionRead, status_code=201)
 def solicitar_inscripcion(data: InscripcionCreate, db: Session = Depends(get_db)):
     """Un jugador solicita inscribirse en un equipo. Estado inicial: pendiente."""
+    # Solo un usuario con rol 'jugador' puede solicitar inscripción
+    _validar_usuario_con_rol(data.usuario_id, RolUsuario.jugador, db)
+
     jugador = db.get(Jugador, data.jugador_id)
     if not jugador:
         raise HTTPException(status_code=404, detail="Jugador no encontrado")
@@ -71,12 +88,18 @@ def _cambiar_estado(
 
 
 @router.patch("/{inscripcion_id}/aprobar", response_model=InscripcionRead)
-def aprobar_inscripcion(inscripcion_id: int, db: Session = Depends(get_db)):
+def aprobar_inscripcion(
+    inscripcion_id: int, data: AccionInscripcion, db: Session = Depends(get_db)
+):
     """El centro de estudiantes aprueba la solicitud."""
+    _validar_usuario_con_rol(data.usuario_id, RolUsuario.centro_estudiantes, db)
     return _cambiar_estado(inscripcion_id, EstadoInscripcion.aprobada, db)
 
 
 @router.patch("/{inscripcion_id}/rechazar", response_model=InscripcionRead)
-def rechazar_inscripcion(inscripcion_id: int, db: Session = Depends(get_db)):
+def rechazar_inscripcion(
+    inscripcion_id: int, data: AccionInscripcion, db: Session = Depends(get_db)
+):
     """El centro de estudiantes rechaza la solicitud."""
+    _validar_usuario_con_rol(data.usuario_id, RolUsuario.centro_estudiantes, db)
     return _cambiar_estado(inscripcion_id, EstadoInscripcion.rechazada, db)
