@@ -1,0 +1,48 @@
+================================================================================
+HISTORIAL DE PROMPTS Y CAMBIOS — PROYECTO LA MONA CDI (2026)
+================================================================================
+
+--------------------------------------------------------------------------------
+Sesión: 16 de Junio, 2026
+Agente: Antigravity CLI (Gemini 3.5 Flash)
+--------------------------------------------------------------------------------
+
+[PROMPT 1]
+"hola"
+--> Acción:
+    Presentación del agente y solicitud de la ruta del proyecto.
+
+[PROMPT 2]
+"me puedes a ayudar a completar un proyecto de desarrollo de una webpage?, que ya tengo avanzado por lo que tendras que leer los documentos ya existentes"
+--> Acción:
+    - Análisis de los archivos de requerimientos ("Proyecto_La_Mona.md", "README.md", "AGENTS.md", "Gu_a_de_uso_de_agentes_de_programaci_n.md").
+    - Inspección del código del backend (FastAPI + SQLAlchemy) y los dos frontends.
+    - Planteamiento de preguntas aclaratorias al usuario sobre los componentes faltantes y la unificación del frontend.
+
+[PROMPT 3]
+"usa la interfaz frontend/index.html, las otras si interfieren con el desarrollo de proyecto y estan en la misma carpeta, eliminalas. Para obtener el contexto completo mira el archivo pdf ubicado en C:\Users\hp\OneDrive\Escritorio\ramos universidad\otoño 2026\progra avanzada\Proyecto_la_mona"
+--> Cambios Realizados:
+    1. Eliminación de archivos redundantes en la raíz:
+       - index.html, script.js y styles.css eliminados del directorio raíz.
+    2. Modificación en backend/app/main.py:
+       - Se añadió una función "seed_data()" que se ejecuta al arrancar el servidor.
+       - Siembra en la base de datos 6 departamentos, 9 usuarios con diferentes roles de sistema y 18 jugadores (3 hombres y 3 mujeres por departamento) para que la página sea inmediatamente operable y testeable.
+    3. Modificación en backend/app/routers/inscripciones.py:
+       - Se integró la lógica de aprobación en "aprobar_inscripcion".
+       - Al aprobar una inscripción por parte de un Centro de Estudiantes, se valida el límite de 5 estrellas en cancha y, de ser válido, se asocia automáticamente al jugador con la lista del equipo correspondiente en la base de datos.
+    4. Rediseño completo de frontend/index.html:
+       - Implementación de un diseño moderno y premium (Dark Theme, Glassmorphism, Outfit e Inter de Google Fonts).
+       - Widget superior para cambiar el rol del usuario simulado (Organizador, Juez de Básquetbol, Juez de Calistenia, Centro de Estudiantes, Jugador) con botones de acceso rápido.
+       - Habilitación dinámica de botones y formularios de acuerdo a los permisos del usuario seleccionado.
+       - Sección 🏆 Tabla General que consume el endpoint /puntajes/ para mostrar las posiciones agregadas.
+       - Sección 🏀 Básquetbol con la lista de partidos programados, registro de marcador interactivo para jueces y visor de estrellas/jugadores en los equipos.
+       - Sección 💪 Calistenia para registrar competidores individuales, almacenar marcas y filtrar pruebas válidas según la categoría (femenina/masculina).
+       - Sección 📝 Inscripciones con formulario para enviar solicitudes de ingreso (Jugadores) y el panel de decisiones filtrado por departamento (Centros de Estudiantes).
+    5. Pruebas y validación:
+       - Instalación de dependencias (fastapi, uvicorn, etc.) en el entorno de Python de Anaconda.
+       - Ejecución exitosa de la suite de pruebas unitarias (pytest backend/tests), asegurando que todas las reglas de negocio base siguen cumpliéndose al 100%.
+
+[PROMPT 4]
+"añade el resumen de los cambios realizados por ti al historial de prompts.txt de la forma que estimes conveniente para que quede claro el historial de avance"
+--> Acción:
+    - Creación y escritura de este archivo con el historial de prompts, objetivos y cambios aplicados durante la sesión de desarrollo.

@@ -1,0 +1,2007 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>🏆 Olimpiadas La Mona — CDI</title>
+  <!-- Google Fonts: Outfit (headings) and Inter (body) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    /* ─── Variables de Diseño ─── */
+    :root {
+      --bg-main: #0b0f19;
+      --bg-card: rgba(22, 30, 49, 0.7);
+      --bg-card-hover: rgba(30, 41, 67, 0.85);
+      --border-card: rgba(255, 255, 255, 0.08);
+      --border-focus: #3b82f6;
+      --text-primary: #f8fafc;
+      --text-secondary: #94a3b8;
+      --text-muted: #64748b;
+      --color-primary: #2563eb;
+      --color-primary-hover: #1d4ed8;
+      --color-success: #10b981;
+      --color-warning: #f59e0b;
+      --color-danger: #ef4444;
+      --font-headings: 'Outfit', sans-serif;
+      --font-body: 'Inter', sans-serif;
+      --shadow-premium: 0 10px 30px -10px rgba(0, 0, 0, 0.5);
+      --transition-fast: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    /* ─── Resets y Estilos Generales ─── */
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: var(--bg-main);
+      background-image: radial-gradient(circle at top right, rgba(37, 99, 235, 0.1), transparent 450px),
+                        radial-gradient(circle at bottom left, rgba(16, 185, 129, 0.05), transparent 400px);
+      color: var(--text-primary);
+      font-family: var(--font-body);
+      min-height: 100vh;
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    h1, h2, h3, h4 {
+      font-family: var(--font-headings);
+      font-weight: 700;
+      letter-spacing: -0.02em;
+    }
+
+    /* ─── Header Premium ─── */
+    header {
+      background: rgba(15, 23, 42, 0.6);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border-card);
+      padding: 20px 40px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 20px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .brand-container {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .brand-logo {
+      font-size: 2.2rem;
+      animation: pulse 3s infinite alternate;
+    }
+
+    .brand-title h1 {
+      font-size: 1.6rem;
+      background: linear-gradient(135deg, #60a5fa 0%, #3b82f6 50%, #1d4ed8 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .brand-title p {
+      font-size: 0.85rem;
+      color: var(--text-secondary);
+      font-weight: 500;
+    }
+
+    /* ─── Simulador de Roles Widget ─── */
+    .user-simulation-card {
+      background: rgba(30, 41, 59, 0.5);
+      border: 1px solid var(--border-card);
+      border-radius: 12px;
+      padding: 12px 18px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      max-width: 580px;
+      box-shadow: var(--shadow-premium);
+    }
+
+    .user-select-group {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .user-select-group label {
+      font-size: 0.75rem;
+      color: var(--text-secondary);
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .user-select-group select {
+      background: #0f172a;
+      color: var(--text-primary);
+      border: 1px solid var(--border-card);
+      padding: 6px 12px;
+      border-radius: 6px;
+      font-size: 0.85rem;
+      font-weight: 500;
+      outline: none;
+      cursor: pointer;
+      min-width: 200px;
+      transition: var(--transition-fast);
+    }
+
+    .user-select-group select:focus {
+      border-color: var(--border-focus);
+    }
+
+    .user-badge-info {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .user-role-badge {
+      font-size: 0.75rem;
+      font-weight: 700;
+      padding: 3px 10px;
+      border-radius: 20px;
+      text-transform: uppercase;
+      text-align: center;
+      display: inline-block;
+      width: fit-content;
+    }
+
+    /* Colores por Rol */
+    .role-organizador { background: rgba(37, 99, 235, 0.2); color: #93c5fd; border: 1px solid rgba(37, 99, 235, 0.4); }
+    .role-juez { background: rgba(245, 158, 11, 0.2); color: #fde047; border: 1px solid rgba(245, 158, 11, 0.4); }
+    .role-centro_estudiantes { background: rgba(16, 185, 129, 0.2); color: #6ee7b7; border: 1px solid rgba(16, 185, 129, 0.4); }
+    .role-jugador { background: rgba(139, 92, 246, 0.2); color: #c4b5fd; border: 1px solid rgba(139, 92, 246, 0.4); }
+    .role-guest { background: rgba(148, 163, 184, 0.15); color: #e2e8f0; border: 1px solid rgba(148, 163, 184, 0.3); }
+
+    .user-dept-text {
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+      font-weight: 500;
+    }
+
+    /* ─── Navegación de Pestañas ─── */
+    nav {
+      max-width: 1200px;
+      margin: 25px auto 10px auto;
+      padding: 0 24px;
+      display: flex;
+      gap: 8px;
+      overflow-x: auto;
+      scrollbar-width: none;
+    }
+
+    nav::-webkit-scrollbar {
+      display: none;
+    }
+
+    nav button {
+      background: rgba(30, 41, 59, 0.4);
+      color: var(--text-secondary);
+      border: 1px solid var(--border-card);
+      padding: 10px 22px;
+      border-radius: 30px;
+      cursor: pointer;
+      font-size: 0.95rem;
+      font-weight: 600;
+      white-space: nowrap;
+      transition: var(--transition-fast);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    nav button:hover {
+      background: rgba(30, 41, 59, 0.8);
+      color: var(--text-primary);
+      border-color: rgba(255, 255, 255, 0.2);
+    }
+
+    nav button.active {
+      background: var(--color-primary);
+      color: white;
+      border-color: var(--color-primary);
+      box-shadow: 0 4px 14px rgba(37, 99, 235, 0.4);
+    }
+
+    /* ─── Contenedor Principal ─── */
+    main {
+      max-width: 1200px;
+      margin: 0 auto 50px auto;
+      padding: 15px 24px;
+    }
+
+    .section {
+      display: none;
+      animation: fadeIn 0.4s ease-out;
+    }
+
+    .section.active {
+      display: block;
+    }
+
+    /* ─── Tarjetas y Layouts ─── */
+    .grid-2 {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(380px, 1fr));
+      gap: 24px;
+      margin-bottom: 24px;
+    }
+
+    .card {
+      background: var(--bg-card);
+      border-radius: 16px;
+      padding: 24px;
+      border: 1px solid var(--border-card);
+      box-shadow: var(--shadow-premium);
+      transition: var(--transition-fast);
+    }
+
+    .card:hover {
+      background: var(--bg-card-hover);
+      border-color: rgba(255, 255, 255, 0.12);
+    }
+
+    .card h2 {
+      font-size: 1.25rem;
+      color: var(--text-primary);
+      margin-bottom: 18px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      padding-bottom: 12px;
+    }
+
+    /* ─── Formularios ─── */
+    .form-group {
+      margin-bottom: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .form-group label {
+      font-size: 0.85rem;
+      color: var(--text-secondary);
+      font-weight: 600;
+    }
+
+    .form-group input, .form-group select {
+      background: #090d16;
+      color: var(--text-primary);
+      border: 1px solid var(--border-card);
+      padding: 10px 14px;
+      border-radius: 8px;
+      font-size: 0.9rem;
+      outline: none;
+      width: 100%;
+      font-family: var(--font-body);
+      transition: var(--transition-fast);
+    }
+
+    .form-group input:focus, .form-group select:focus {
+      border-color: var(--border-focus);
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+    }
+
+    /* Botones */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      background: var(--color-primary);
+      color: white;
+      border: none;
+      padding: 11px 22px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 0.92rem;
+      font-family: var(--font-body);
+      transition: var(--transition-fast);
+      width: 100%;
+      text-align: center;
+    }
+
+    .btn:hover {
+      background: var(--color-primary-hover);
+      transform: translateY(-1px);
+    }
+
+    .btn:active {
+      transform: translateY(0);
+    }
+
+    .btn-secondary {
+      background: rgba(148, 163, 184, 0.15);
+      color: var(--text-primary);
+      border: 1px solid var(--border-card);
+    }
+
+    .btn-secondary:hover {
+      background: rgba(148, 163, 184, 0.25);
+    }
+
+    .btn-success {
+      background: var(--color-success);
+    }
+
+    .btn-success:hover {
+      background: #059669;
+    }
+
+    .btn-danger {
+      background: var(--color-danger);
+    }
+
+    .btn-danger:hover {
+      background: #dc2626;
+    }
+
+    /* ─── Alertas y Respuestas ─── */
+    .msg-box {
+      margin-top: 12px;
+      padding: 10px 14px;
+      border-radius: 8px;
+      font-size: 0.85rem;
+      font-weight: 500;
+      animation: slideDown 0.3s ease;
+      display: none;
+    }
+
+    .msg-success {
+      background: rgba(16, 185, 129, 0.15);
+      color: #6ee7b7;
+      border: 1px solid rgba(16, 185, 129, 0.3);
+      display: block;
+    }
+
+    .msg-error {
+      background: rgba(239, 68, 68, 0.15);
+      color: #fca5a5;
+      border: 1px solid rgba(239, 68, 68, 0.3);
+      display: block;
+    }
+
+    /* ─── Tablas Premium ─── */
+    .table-container {
+      overflow-x: auto;
+      border-radius: 12px;
+      border: 1px solid var(--border-card);
+      background: rgba(15, 23, 42, 0.4);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.92rem;
+      text-align: left;
+    }
+
+    th {
+      background: rgba(15, 23, 42, 0.8);
+      color: var(--text-primary);
+      font-weight: 600;
+      padding: 14px 18px;
+      border-bottom: 1px solid var(--border-card);
+      font-family: var(--font-headings);
+    }
+
+    td {
+      padding: 14px 18px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+      color: var(--text-secondary);
+      vertical-align: middle;
+    }
+
+    tr:last-child td {
+      border-bottom: none;
+    }
+
+    tr:hover td {
+      background: rgba(255, 255, 255, 0.02);
+      color: var(--text-primary);
+    }
+
+    /* ─── Badges e Indicadores ─── */
+    .badge {
+      display: inline-block;
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-size: 0.78rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      text-align: center;
+    }
+
+    .badge-pendiente {
+      background: rgba(245, 158, 11, 0.15);
+      color: #fcd34d;
+      border: 1px solid rgba(245, 158, 11, 0.3);
+    }
+
+    .badge-aprobada, .badge-jugado {
+      background: rgba(16, 185, 129, 0.15);
+      color: #6ee7b7;
+      border: 1px solid rgba(16, 185, 129, 0.3);
+    }
+
+    .badge-rechazada, .badge-wo {
+      background: rgba(239, 68, 68, 0.15);
+      color: #fca5a5;
+      border: 1px solid rgba(239, 68, 68, 0.3);
+    }
+
+    .stars-indicator {
+      color: #f5a623;
+      font-weight: 600;
+      display: inline-flex;
+      align-items: center;
+      gap: 3px;
+    }
+
+    /* ─── Leaderboard Especial ─── */
+    .rank-cell {
+      font-weight: 700;
+      font-size: 1.1rem;
+      text-align: center;
+      width: 60px;
+    }
+    .rank-1 { color: #f5a623; }
+    .rank-2 { color: #cbd5e1; }
+    .rank-3 { color: #b45309; }
+
+    .depto-name {
+      font-weight: 600;
+      color: var(--text-primary);
+      font-size: 1.05rem;
+    }
+
+    /* ─── Animaciones ─── */
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes slideDown {
+      from { opacity: 0; transform: translateY(-8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes pulse {
+      0% { transform: scale(1); }
+      100% { transform: scale(1.05); }
+    }
+
+    /* Restricciones UI basadas en Permisos */
+    .admin-only, .judge-only, .student-center-only, .player-only {
+      display: none !important;
+    }
+
+    /* ─── Mock User Hint ─── */
+    .mock-hints {
+      font-size: 0.72rem;
+      color: var(--text-muted);
+      margin-top: 6px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+    .quick-user-btn {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--border-card);
+      color: var(--text-secondary);
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-size: 0.7rem;
+      cursor: pointer;
+      font-weight: 500;
+    }
+    .quick-user-btn:hover {
+      background: rgba(255, 255, 255, 0.12);
+      color: var(--text-primary);
+    }
+
+    @media (max-width: 950px) {
+      #sec-leaderboard .grid-2 {
+        grid-template-columns: 1fr !important;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="brand-container">
+    <span class="brand-logo">🏆</span>
+    <div class="brand-title">
+      <h1>Olimpiadas La Mona 2026</h1>
+      <p>Centro Deportivo de Ingeniería — FCFM</p>
+    </div>
+  </div>
+
+  <div class="user-simulation-card">
+    <div class="user-select-group">
+      <label for="active-user-select">Simular Usuario</label>
+      <select id="active-user-select" onchange="changeActiveUser(this.value)">
+        <option value="guest">Desconectado (Invitado)</option>
+      </select>
+      <div class="mock-hints" id="quick-users-hint"></div>
+    </div>
+    <div class="user-badge-info">
+      <div id="active-role-badge" class="user-role-badge role-guest">Invitado</div>
+      <div id="active-dept-badge" class="user-dept-text">Sin Departamento</div>
+    </div>
+  </div>
+</header>
+
+<nav>
+  <button id="tab-btn-leaderboard" class="active" onclick="switchTab('leaderboard')">🏆 Tabla General</button>
+  <button id="tab-btn-basquetbol" onclick="switchTab('basquetbol')">🏀 Básquetbol</button>
+  <button id="tab-btn-calistenia" onclick="switchTab('calistenia')">💪 Calistenia</button>
+  <button id="tab-btn-inscripciones" onclick="switchTab('inscripciones')">📝 Inscripciones</button>
+  <button id="tab-btn-admin" onclick="switchTab('admin')">⚙️ Configuración</button>
+</nav>
+
+<main>
+
+  <!-- SECCIÓN 1: TABLA GENERAL (LEADERBOARD) -->
+  <section id="sec-leaderboard" class="section active">
+    <div class="grid-2" style="grid-template-columns: 2fr 1fr; gap: 24px;">
+      
+      <!-- Tabla General -->
+      <div class="card" style="margin-bottom: 0;">
+        <h2>🏆 Tabla General del Torneo</h2>
+        <p style="color: var(--text-secondary); margin-bottom: 20px; font-size: 0.92rem;">
+          Puntaje consolidado acumulando Básquetbol (Cat. A, máx. 4000 pts) y Calistenia (Cat. B, máx. 2000 pts) por departamento.
+        </p>
+        <div class="table-container">
+          <table>
+            <thead>
+              <tr>
+                <th style="width: 80px; text-align: center;">Posición</th>
+                <th>Departamento</th>
+                <th style="text-align: right;">Básquetbol</th>
+                <th style="text-align: right;">Calistenia</th>
+                <th style="text-align: right; font-weight: 700; color: white;">Total</th>
+              </tr>
+            </thead>
+            <tbody id="leaderboard-tbody">
+              <tr><td colspan="5" style="text-align: center;">Cargando standings...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Próximos Partidos (Básquetbol) -->
+      <div class="card" style="margin-bottom: 0; display: flex; flex-direction: column;">
+        <h2>📅 Próximos Partidos</h2>
+        <p style="color: var(--text-secondary); margin-bottom: 16px; font-size: 0.85rem;">
+          Próximos encuentros de Básquetbol programados, con su respectivo día, hora y lugar asignados.
+        </p>
+        <div id="upcoming-matches-container" style="flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 12px; max-height: 500px;">
+          <!-- Se cargan dinámicamente -->
+        </div>
+      </div>
+      
+    </div>
+  </section>
+
+  <!-- SECCIÓN 2: BÁSQUETBOL -->
+  <section id="sec-basquetbol" class="section">
+    <!-- Formularios de creación (Organizador únicamente) -->
+    <div class="grid-2 admin-only" id="basquet-admin-forms">
+      <div class="card">
+        <h2>🏀 Crear Equipo de Básquetbol</h2>
+        <div class="form-group">
+          <label for="eq-nombre">Nombre del Equipo</label>
+          <input type="text" id="eq-nombre" placeholder="ej: Dream Team Eléctrica" />
+        </div>
+        <div class="form-group">
+          <label for="eq-depto">Departamento</label>
+          <select id="eq-depto"></select>
+        </div>
+        <button class="btn" onclick="crearEquipo()"><span class="btn-icon">＋</span> Crear Equipo</button>
+        <div id="msg-crear-equipo" class="msg-box"></div>
+      </div>
+
+      <div class="card">
+        <h2>👤 Agregar Jugadores a Equipo</h2>
+        <p style="font-size: 0.78rem; color: var(--text-muted); margin-bottom: 10px;">
+          *Nota: Los organizadores pueden registrar jugadores directamente. Los jugadores deben inscribirse mediante el flujo de inscripciones.
+        </p>
+        <div class="form-group">
+          <label for="add-equipo-select">Seleccionar Equipo</label>
+          <select id="add-equipo-select"></select>
+        </div>
+        <div class="form-group">
+          <label for="add-jugador-select">Seleccionar Jugadores (Usa Ctrl/Cmd + Clic para elegir varios)</label>
+          <select id="add-jugador-select" multiple style="height: 120px;"></select>
+        </div>
+        <button class="btn btn-success" onclick="agregarJugadoresAEquipo()"><span class="btn-icon">⚡</span> Agregar al Equipo</button>
+        <div id="msg-add-jugador" class="msg-box"></div>
+      </div>
+    </div>
+
+    <!-- Crear Partido (Organizador únicamente) -->
+    <div class="card admin-only" id="basquet-match-form" style="margin-bottom: 24px;">
+      <h2>📅 Programar Partido de Básquetbol</h2>
+      <div class="grid-2" style="grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px; margin-bottom: 16px;">
+        <div class="form-group">
+          <label for="partido-local">Equipo Local</label>
+          <select id="partido-local" onchange="actualizarTitularesSelect('local')"></select>
+        </div>
+        <div class="form-group">
+          <label for="partido-visitante">Equipo Visitante</label>
+          <select id="partido-visitante" onchange="actualizarTitularesSelect('visitante')"></select>
+        </div>
+        <div class="form-group">
+          <label for="partido-fecha">Fecha del Encuentro</label>
+          <input type="datetime-local" id="partido-fecha" />
+        </div>
+      </div>
+      <!-- Selección de titulares (OBLIGATORIO) -->
+      <div class="grid-2" style="grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px;">
+        <div class="form-group">
+          <label for="titulares-local-select">
+            👕 Titulares Local <span style="color: var(--color-danger); font-weight: 700;">*</span>
+            <span style="color: var(--text-muted); font-size: 0.78rem;">(Ctrl+Clic · mín. 5, máx. 12 · ≤5 ⭐)</span>
+          </label>
+          <select id="titulares-local-select" multiple style="height: 150px;"></select>
+        </div>
+        <div class="form-group">
+          <label for="titulares-visitante-select">
+            👕 Titulares Visitante <span style="color: var(--color-danger); font-weight: 700;">*</span>
+            <span style="color: var(--text-muted); font-size: 0.78rem;">(Ctrl+Clic · mín. 5, máx. 12 · ≤5 ⭐)</span>
+          </label>
+          <select id="titulares-visitante-select" multiple style="height: 150px;"></select>
+        </div>
+      </div>
+      <div style="display: flex; gap: 12px; align-items: center; flex-wrap: wrap;">
+        <button class="btn" onclick="crearPartido()" style="height: 42px;"><span class="btn-icon">＋</span> Programar Partido</button>
+        <p style="font-size: 0.8rem; color: var(--text-muted);">⚠️ Ambos equipos deben tener capitán asignado y al menos 5 titulares seleccionados.</p>
+      </div>
+      <div id="msg-crear-partido" class="msg-box"></div>
+    </div>
+
+    <!-- Lista de Partidos Programados -->
+    <div class="card" style="margin-bottom: 24px;">
+      <h2>📅 Partidos Programados</h2>
+      <div class="table-container">
+        <table>
+          <thead>
+            <tr>
+              <th style="width: 60px;">ID</th>
+              <th>Equipo Local</th>
+              <th>Equipo Visitante</th>
+              <th>Fecha</th>
+              <th class="judge-or-admin-visible" style="width: 260px; text-align: center;">Acción</th>
+            </tr>
+          </thead>
+          <tbody id="partidos-pendientes-tbody">
+            <tr><td colspan="5" style="text-align: center;">Cargando partidos...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Resultados de Partidos Jugados -->
+    <div class="card" style="margin-bottom: 24px; background: linear-gradient(145deg, rgba(30, 41, 67, 0.7) 0%, rgba(15, 23, 42, 0.9) 100%);">
+      <h2 style="color: #6ee7b7;">✅ Resultados (Partidos Jugados)</h2>
+      <p style="color: var(--text-secondary); margin-bottom: 16px; font-size: 0.85rem;">Historial de encuentros finalizados y sus marcadores definitivos.</p>
+      <div class="table-container">
+        <table>
+          <thead>
+            <tr>
+              <th style="width: 60px;">ID</th>
+              <th>Equipo Local</th>
+              <th>Equipo Visitante</th>
+              <th style="text-align: center;">Marcador</th>
+              <th>Ganador</th>
+            </tr>
+          </thead>
+          <tbody id="partidos-jugados-tbody">
+            <tr><td colspan="5" style="text-align: center;">Cargando resultados...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Lista de Equipos -->
+    <div class="card">
+      <h2>👥 Equipos Registrados</h2>
+      <div class="table-container">
+        <table>
+          <thead>
+            <tr>
+              <th style="width: 60px;">ID</th>
+              <th>Nombre del Equipo</th>
+              <th>Departamento</th>
+              <th>Jugadores Inscritos</th>
+              <th style="text-align: right;">Estrellas en Cancha</th>
+              <th class="admin-only" style="text-align: center; width: 60px;">🗑️</th>
+            </tr>
+          </thead>
+          <tbody id="equipos-tbody">
+            <tr><td colspan="6" style="text-align: center;">Cargando equipos...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 3: CALISTENIA -->
+  <section id="sec-calistenia" class="section">
+    <!-- Formularios de Calistenia -->
+    <div class="grid-2">
+      <!-- Registro de Participante (Organizador únicamente) -->
+      <div class="card admin-only" id="calist-register-card">
+        <h2>💪 Inscribir en Calistenia (Categoría B)</h2>
+        <p style="font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 12px;">
+          Los participantes compiten individualmente por departamento. Los mejores 4 resultados (2 M y 2 F) suman para su departamento.
+        </p>
+        <div class="form-group">
+          <label for="calis-jugador">Seleccionar Jugador</label>
+          <select id="calis-jugador" onchange="autoFillCalisteniaCategory()"></select>
+        </div>
+        <div class="grid-2" style="gap: 12px; margin-bottom: 0;">
+          <div class="form-group">
+            <label for="calis-categoria">Categoría</label>
+            <input type="text" id="calis-categoria" disabled placeholder="Autodetectada" />
+          </div>
+          <div class="form-group">
+            <label for="calis-depto">Departamento</label>
+            <input type="text" id="calis-depto" disabled placeholder="Autodetectado" />
+          </div>
+        </div>
+        <button class="btn" onclick="inscribirCalistenia()"><span class="btn-icon">＋</span> Inscribir Competidor</button>
+        <div id="msg-calis-inscribir" class="msg-box"></div>
+      </div>
+
+      <!-- Registrar Resultados (Organizador y Juez únicamente) -->
+      <div class="card judge-or-admin-visible" id="calist-results-card">
+        <h2>📝 Registrar Marca de Calistenia</h2>
+        <div class="form-group">
+          <label for="calis-res-participante">Competidor Inscripto</label>
+          <select id="calis-res-participante" onchange="updateCalisteniaPruebasSelect()"></select>
+        </div>
+        <div class="form-group">
+          <label for="calis-res-prueba">Prueba Específica</label>
+          <select id="calis-res-prueba"></select>
+        </div>
+        <div class="form-group">
+          <label for="calis-res-valor">Valor de la Marca</label>
+          <input type="number" id="calis-res-valor" step="0.1" placeholder="ej: 15 (repeticiones) o 45.5 (segundos hold)" />
+        </div>
+        <button class="btn btn-success" onclick="registrarResultadoCalistenia()"><span class="btn-icon">💾</span> Guardar Marca</button>
+        <div id="msg-calis-resultado" class="msg-box"></div>
+      </div>
+    </div>
+
+    <!-- Lista de Participantes y Marcas -->
+    <div class="card" style="margin-top: 24px;">
+      <h2>💪 Clasificaciones y Marcas de Calistenia</h2>
+      <div class="table-container">
+        <table>
+          <thead>
+            <tr>
+              <th style="width: 60px;">ID</th>
+              <th>Nombre del Competidor</th>
+              <th>Departamento</th>
+              <th style="text-align: center;">Categoría</th>
+              <th style="text-align: center;">Pruebas Completadas</th>
+              <th style="text-align: right;">Rendimiento Total (Suma)</th>
+            </tr>
+          </thead>
+          <tbody id="calistenia-tbody">
+            <tr><td colspan="6" style="text-align: center;">Cargando participantes...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 4: INSCRIPCIONES -->
+  <section id="sec-inscripciones" class="section">
+    <!-- Formulario para Jugador (Simulador de Jugador) -->
+    <div class="card player-only" id="inscripcion-solicitar-card" style="margin-bottom: 24px;">
+      <h2>📝 Solicitar Inscripción en Equipo</h2>
+      <p style="color: var(--text-secondary); margin-bottom: 14px; font-size: 0.9rem;">
+        Solicita unirte a un equipo de Básquetbol. Tu solicitud será enviada al Centro de Estudiantes de tu departamento para su aprobación.
+      </p>
+      <div class="grid-2" style="grid-template-columns: 2fr 1fr; gap: 16px; margin-bottom: 0;">
+        <div class="form-group">
+          <label for="solicitud-equipo">Seleccionar Equipo de Básquetbol</label>
+          <select id="solicitud-equipo"></select>
+        </div>
+        <div class="form-group" style="justify-content: flex-end;">
+          <button class="btn" onclick="solicitarInscripcion()" style="height: 42px;"><span class="btn-icon">✉️</span> Enviar Solicitud</button>
+        </div>
+      </div>
+      <div id="msg-solicitar-inscripcion" class="msg-box"></div>
+    </div>
+
+    <!-- Panel de Aprobaciones del Centro de Estudiantes -->
+    <div class="card student-center-only" id="inscripcion-centro-card" style="margin-bottom: 24px;">
+      <h2>📥 Panel de Aprobaciones (Centro de Estudiantes)</h2>
+      <p style="color: var(--text-secondary); margin-bottom: 14px; font-size: 0.9rem;">
+        Solicitudes de inscripción pendientes de los alumnos de tu departamento para ingresar a equipos.
+      </p>
+      <div class="table-container">
+        <table>
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Jugador</th>
+              <th>Género / Estrellas</th>
+              <th>Equipo Solicitado</th>
+              <th style="text-align: center; width: 200px;">Acciones</th>
+            </tr>
+          </thead>
+          <tbody id="inscripciones-centro-tbody">
+            <tr><td colspan="5" style="text-align: center;">No hay solicitudes pendientes para tu departamento.</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div id="msg-accion-inscripcion" class="msg-box"></div>
+    </div>
+
+    <!-- Registro General de Inscripciones -->
+    <div class="card">
+      <h2>📋 Registro Histórico de Inscripciones</h2>
+      <div class="table-container">
+        <table>
+          <thead>
+            <tr>
+              <th style="width: 60px;">ID</th>
+              <th>Jugador</th>
+              <th>Departamento</th>
+              <th>Equipo</th>
+              <th>Estado</th>
+              <th>Fecha de Solicitud</th>
+            </tr>
+          </thead>
+          <tbody id="inscripciones-general-tbody">
+            <tr><td colspan="6" style="text-align: center;">Cargando inscripciones...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 5: CONFIGURACIÓN (DEPARTAMENTOS Y JUGADORES) -->
+  <section id="sec-admin" class="section">
+    <div class="grid-2 admin-only" id="config-forms">
+      <div class="card">
+        <h2>🏢 Agregar Departamento</h2>
+        <div class="form-group">
+          <label for="dept-nombre">Nombre del Departamento</label>
+          <input type="text" id="dept-nombre" placeholder="ej: Ingeniería Civil Matemática" />
+        </div>
+        <button class="btn" onclick="crearDepartamento()"><span class="btn-icon">＋</span> Agregar Departamento</button>
+        <div id="msg-crear-dept" class="msg-box"></div>
+      </div>
+
+      <div class="card">
+        <h2>👤 Registrar Jugador en el Sistema</h2>
+        <div class="form-group">
+          <label for="jug-nombre">Nombre Completo</label>
+          <input type="text" id="jug-nombre" placeholder="ej: Valentina Perez" />
+        </div>
+        <div class="grid-2" style="gap: 12px; margin-bottom: 0;">
+          <div class="form-group">
+            <label for="jug-genero">Género</label>
+            <select id="jug-genero">
+              <option value="M">Masculino</option>
+              <option value="F">Femenino</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="jug-estrellas">Nivel (Estrellas)</label>
+            <select id="jug-estrellas">
+              <option value="0">0 ★ (Amateur)</option>
+              <option value="1">1 ★ (Rama Interna)</option>
+              <option value="2">2 ★ (Selección U / Federado)</option>
+              <option value="3">3 ★ (Selección Nacional)</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="jug-depto">Departamento</label>
+          <select id="jug-depto"></select>
+        </div>
+        <button class="btn btn-success" onclick="crearJugador()"><span class="btn-icon">👤</span> Registrar Jugador</button>
+        <div id="msg-crear-jugador" class="msg-box"></div>
+      </div>
+    </div>
+
+    <div class="grid-2" style="margin-top: 24px;">
+      <!-- Listado de Departamentos -->
+      <div class="card">
+        <h2>🏢 Departamentos Registrados</h2>
+        <div class="table-container">
+          <table>
+            <thead>
+              <tr>
+                <th style="width: 80px;">ID</th>
+                <th>Nombre del Departamento</th>
+                <th class="admin-only" style="text-align: center; width: 60px;">🗑️</th>
+              </tr>
+            </thead>
+            <tbody id="departamentos-tbody">
+              <tr><td colspan="3" style="text-align: center;">Cargando departamentos...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Listado de Jugadores -->
+      <div class="card">
+        <h2>👥 Jugadores en Base de Datos</h2>
+        <div class="table-container">
+          <table>
+            <thead>
+              <tr>
+                <th style="width: 60px;">ID</th>
+                <th>Nombre</th>
+                <th>Género</th>
+                <th>Rango</th>
+                <th>Departamento</th>
+                <th class="admin-only" style="text-align: center; width: 60px;">🗑️</th>
+              </tr>
+            </thead>
+            <tbody id="jugadores-tbody">
+              <tr><td colspan="6" style="text-align: center;">Cargando jugadores...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<script>
+  // Dirección base del Backend FastAPI
+  const API_URL = "http://localhost:8000";
+
+  // ─── Estado de la Aplicación ───
+  let state = {
+    usuarios: [],
+    departamentos: [],
+    jugadores: [],
+    equipos: [],
+    partidos: [],
+    calisteniaParticipantes: [],
+    calisteniaResultados: [],
+    inscripciones: [],
+    puntajes: [],
+    activeUser: { id: "guest", nombre: "Invitado", rol: "guest", departamento_id: null }
+  };
+
+  // ─── Inicialización de la SPA ───
+  window.addEventListener("DOMContentLoaded", async () => {
+    await loadAllData();
+    // Default active tab
+    switchTab("leaderboard");
+  });
+
+  // ─── Consumo de la API Backend ───
+  async function apiGet(path) {
+    const res = await fetch(API_URL + path);
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({ detail: "Error desconocido de red." }));
+      throw new Error(err.detail || `Error HTTP ${res.status}`);
+    }
+    return res.json();
+  }
+
+  async function apiPost(path, body) {
+    const res = await fetch(API_URL + path, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(body)
+    });
+    const data = await res.json().catch(() => null);
+    if (!res.ok) {
+      throw new Error(data?.detail || `Error HTTP ${res.status}`);
+    }
+    return data;
+  }
+
+  async function apiPatch(path, body) {
+    const res = await fetch(API_URL + path, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(body)
+    });
+    const data = await res.json().catch(() => null);
+    if (!res.ok) {
+      throw new Error(data?.detail || `Error HTTP ${res.status}`);
+    }
+    return data;
+  }
+
+  // ─── Cargar todos los Datos de la BD ───
+  async function loadAllData() {
+    try {
+      // Cargamos recursos básicos paralelos
+      const [depts, jugs, eqs, parts, calisParts, calisRes, inscs, rankings, users] = await Promise.all([
+        apiGet("/departamentos/"),
+        apiGet("/jugadores/"),
+        apiGet("/equipos/"),
+        apiGet("/partidos/"),
+        apiGet("/calistenia/participantes"),
+        apiGet("/calistenia/resultados"),
+        apiGet("/inscripciones/"),
+        apiGet("/puntajes/"),
+        apiGet("/usuarios/")
+      ]);
+
+      state.departamentos = depts;
+      state.jugadores = jugs;
+      state.equipos = eqs;
+      state.partidos = parts;
+      state.calisteniaParticipantes = calisParts;
+      state.calisteniaResultados = calisRes;
+      state.inscripciones = inscs;
+      state.puntajes = rankings;
+      state.usuarios = users;
+
+      // Actualizar selectores y vistas
+      populateSelectors();
+      renderAllViews();
+      renderUserSelector();
+    } catch (e) {
+      console.error("Error cargando los datos del backend:", e);
+    }
+  }
+
+  // ─── Poblar Selectores de Formularios ───
+  function populateSelectors() {
+    // 1. Departamentos
+    const deptoOptions = state.departamentos.map(d => `<option value="${d.id}">${d.nombre}</option>`).join("");
+    document.getElementById("eq-depto").innerHTML = deptoOptions;
+    document.getElementById("jug-depto").innerHTML = deptoOptions;
+
+    // 2. Jugadores
+    const jugadorOptions = state.jugadores.map(j => {
+      const depto = state.departamentos.find(d => d.id === j.departamento_id);
+      const deptoName = depto ? depto.nombre : "Sin Depto";
+      return `<option value="${j.id}">${j.nombre} (${j.genero}, ${j.estrellas}★) — ${deptoName}</option>`;
+    }).join("");
+    document.getElementById("add-jugador-select").innerHTML = jugadorOptions;
+    document.getElementById("calis-jugador").innerHTML = jugadorOptions;
+
+    // 3. Equipos
+    const equipoOptions = state.equipos.map(e => `<option value="${e.id}">${e.nombre}</option>`).join("");
+    document.getElementById("add-equipo-select").innerHTML = equipoOptions;
+    document.getElementById("partido-local").innerHTML = equipoOptions;
+    document.getElementById("partido-visitante").innerHTML = equipoOptions;
+    document.getElementById("solicitud-equipo").innerHTML = equipoOptions;
+
+    // 4. Participantes Calistenia
+    const calisPartOptions = state.calisteniaParticipantes.map(cp => {
+      const jugador = state.jugadores.find(j => j.id === cp.jugador_id);
+      const depto = state.departamentos.find(d => d.id === cp.departamento_id);
+      const name = jugador ? jugador.nombre : `ID ${cp.jugador_id}`;
+      const deptoName = depto ? depto.nombre : `ID ${cp.departamento_id}`;
+      return `<option value="${cp.id}">${name} (${cp.categoria}) — ${deptoName}</option>`;
+    }).join("");
+    document.getElementById("calis-res-participante").innerHTML = calisPartOptions;
+    
+    // Auto rellenar el formulario de Calistenia
+    autoFillCalisteniaCategory();
+    updateCalisteniaPruebasSelect();
+  }
+
+  // ─── Rellenado Automático de Categoría en Calistenia ───
+  function autoFillCalisteniaCategory() {
+    const jugadorId = parseInt(document.getElementById("calis-jugador").value);
+    if (!jugadorId) return;
+    const jugador = state.jugadores.find(j => j.id === jugadorId);
+    if (jugador) {
+      document.getElementById("calis-categoria").value = jugador.genero === "M" ? "Masculina (M)" : "Femenina (F)";
+      const depto = state.departamentos.find(d => d.id === jugador.departamento_id);
+      document.getElementById("calis-depto").value = depto ? depto.nombre : "Sin Depto";
+    }
+  }
+
+  // ─── Filtrar Pruebas válidas en Calistenia según el género ───
+  function updateCalisteniaPruebasSelect() {
+    const participanteId = parseInt(document.getElementById("calis-res-participante").value);
+    const select = document.getElementById("calis-res-prueba");
+    if (!participanteId) {
+      select.innerHTML = "<option>Ningún participante seleccionado</option>";
+      return;
+    }
+    const participante = state.calisteniaParticipantes.find(p => p.id === participanteId);
+    if (!participante) return;
+
+    if (participante.categoria === "M") {
+      select.innerHTML = `
+        <option value="muscle_ups">Muscle Ups (Repeticiones)</option>
+        <option value="pull_ups">Pull Ups (Repeticiones)</option>
+        <option value="push_ups">Push Ups (Repeticiones)</option>
+        <option value="handstand_hold">Handstand Hold (Segundos)</option>
+      `;
+    } else {
+      select.innerHTML = `
+        <option value="pull_ups">Pull Ups (Repeticiones)</option>
+        <option value="push_ups">Push Ups (Repeticiones)</option>
+        <option value="handstand_hold">Handstand Hold (Segundos)</option>
+        <option value="hang_hold">Hang Hold (Segundos)</option>
+      `;
+    }
+  }
+
+  // ─── Simulador de Roles y Usuarios ───
+  function renderUserSelector() {
+    const select = document.getElementById("active-user-select");
+    // Conservamos Guest
+    select.innerHTML = '<option value="guest">Desconectado (Invitado)</option>';
+    
+    state.usuarios.forEach(u => {
+      let label = `${u.nombre} [${u.rol.toUpperCase()}]`;
+      if (u.departamento_id) {
+        const depto = state.departamentos.find(d => d.id === u.departamento_id);
+        if (depto) label += ` (${depto.nombre})`;
+      }
+      const option = document.createElement("option");
+      option.value = u.id;
+      option.textContent = label;
+      if (state.activeUser && state.activeUser.id === u.id) {
+        option.selected = true;
+      }
+      select.appendChild(option);
+    });
+
+    // Hints rápidos para debug
+    const hints = document.getElementById("quick-users-hint");
+    hints.innerHTML = "";
+    // Agregar botones para usuarios más representativos
+    const shortcuts = [
+      { name: "Jorge (Org)", id: state.usuarios.find(u => u.rol === "organizador")?.id },
+      { name: "Pablo (Juez Básq)", id: state.usuarios.find(u => u.rol === "juez" && u.nombre.includes("Pablo"))?.id },
+      { name: "Ana (Juez Calis)", id: state.usuarios.find(u => u.rol === "juez" && u.nombre.includes("Ana"))?.id },
+      { name: "Centro Civil", id: state.usuarios.find(u => u.rol === "centro_estudiantes" && u.nombre.includes("Civil"))?.id },
+      { name: "Jugador Tomas", id: state.usuarios.find(u => u.rol === "jugador" && u.nombre.includes("Tomas"))?.id }
+    ];
+
+    shortcuts.forEach(sc => {
+      if (sc.id) {
+        const btn = document.createElement("button");
+        btn.className = "quick-user-btn";
+        btn.textContent = sc.name;
+        btn.onclick = () => {
+          select.value = sc.id;
+          changeActiveUser(sc.id);
+        };
+        hints.appendChild(btn);
+      }
+    });
+  }
+
+  function changeActiveUser(userId) {
+    if (userId === "guest") {
+      state.activeUser = { id: "guest", nombre: "Invitado", rol: "guest", departamento_id: null };
+    } else {
+      const user = state.usuarios.find(u => u.id == userId);
+      if (user) {
+        state.activeUser = {
+          id: user.id,
+          nombre: user.nombre,
+          rol: user.rol,
+          departamento_id: user.departamento_id
+        };
+      }
+    }
+
+    // Actualizar Header
+    const badge = document.getElementById("active-role-badge");
+    badge.className = `user-role-badge role-${state.activeUser.rol}`;
+    badge.textContent = state.activeUser.rol.replace("_", " ");
+
+    const deptoText = document.getElementById("active-dept-badge");
+    if (state.activeUser.departamento_id) {
+      const depto = state.departamentos.find(d => d.id === state.activeUser.departamento_id);
+      deptoText.textContent = depto ? depto.nombre : "Depto ID " + state.activeUser.departamento_id;
+    } else {
+      deptoText.textContent = "Sin Departamento";
+    }
+
+    // Actualizar visibilidad de elementos según roles
+    updatePermissionsUI();
+    
+    // Recargar tablas dinámicas que dependen del rol activo
+    renderInscripciones();
+    renderPartidos();
+    renderEquipos(); // necesario para mostrar/ocultar el botón ✖ dentro de los chips
+  }
+
+  function updatePermissionsUI() {
+    const rol = state.activeUser.rol;
+
+    // 1. Mostrar elementos de Organizador
+    const adminElements = document.querySelectorAll(".admin-only");
+    adminElements.forEach(el => {
+      if (rol === "organizador") {
+        el.style.setProperty("display", "block", "important");
+      } else {
+        el.style.setProperty("display", "none", "important");
+      }
+    });
+
+    // 2. Mostrar elementos de Juez u Organizador
+    const judgeElements = document.querySelectorAll(".judge-or-admin-visible");
+    judgeElements.forEach(el => {
+      if (rol === "juez" || rol === "organizador") {
+        el.style.setProperty("display", "block", "important");
+      } else {
+        el.style.setProperty("display", "none", "important");
+      }
+    });
+
+    // 3. Mostrar elementos para Centro de Estudiantes
+    const centerElements = document.querySelectorAll(".student-center-only");
+    centerElements.forEach(el => {
+      if (rol === "centro_estudiantes") {
+        el.style.setProperty("display", "block", "important");
+      } else {
+        el.style.setProperty("display", "none", "important");
+      }
+    });
+
+    // 4. Mostrar elementos para Jugadores
+    const playerElements = document.querySelectorAll(".player-only");
+    playerElements.forEach(el => {
+      if (rol === "jugador") {
+        el.style.setProperty("display", "block", "important");
+      } else {
+        el.style.setProperty("display", "none", "important");
+      }
+    });
+
+    // 5. Ajustar clases de visualización especiales en columnas de tablas
+    const actionCols = document.querySelectorAll(".judge-or-admin-visible-col");
+    actionCols.forEach(col => {
+      if (rol === "juez" || rol === "organizador") {
+        col.style.display = "table-cell";
+      } else {
+        col.style.display = "none";
+      }
+    });
+  }
+
+  // ─── Navegación por Pestañas (SPA) ───
+  function switchTab(tabId) {
+    document.querySelectorAll(".section").forEach(sec => sec.classList.remove("active"));
+    document.querySelectorAll("nav button").forEach(btn => btn.classList.remove("active"));
+
+    document.getElementById(`sec-${tabId}`).classList.add("active");
+    document.getElementById(`tab-btn-${tabId}`).classList.add("active");
+  }
+
+  // ─── Renderizado de Vistas ───
+  function renderAllViews() {
+    renderLeaderboard();
+    renderUpcomingMatches();
+    renderPartidos();
+    renderEquipos();
+    renderCalistenia();
+    renderInscripciones();
+    renderDepartamentos();
+    renderJugadores();
+    updatePermissionsUI();
+  }
+
+  // 1. Leaderboard
+  function renderLeaderboard() {
+    const tbody = document.getElementById("leaderboard-tbody");
+    if (state.puntajes.length === 0) {
+      tbody.innerHTML = `<tr><td colspan="5" style="text-align: center;">No hay puntajes registrados. Sube resultados de básquetbol y marcas en calistenia.</td></tr>`;
+      return;
+    }
+    
+    tbody.innerHTML = state.puntajes.map((p, idx) => {
+      const rank = idx + 1;
+      let medal = rank;
+      if (rank === 1) medal = "🥇";
+      else if (rank === 2) medal = "🥈";
+      else if (rank === 3) medal = "🥉";
+
+      return `
+        <tr>
+          <td class="rank-cell rank-${rank}">${medal}</td>
+          <td class="depto-name">${p.departamento}</td>
+          <td style="text-align: right; font-weight: 600;">${p.puntaje_basquetbol} pts</td>
+          <td style="text-align: right; font-weight: 600;">${p.puntaje_calistenia} pts</td>
+          <td style="text-align: right; font-weight: 700; color: white; font-size: 1.05rem;">${p.puntaje_total} pts</td>
+        </tr>
+      `;
+    }).join("");
+  }
+
+  // 1.5 Próximos Partidos
+  function renderUpcomingMatches() {
+    const container = document.getElementById("upcoming-matches-container");
+    if (!container) return;
+
+    const pendientes = state.partidos.filter(p => p.estado === "pendiente");
+
+    if (pendientes.length === 0) {
+      container.innerHTML = `
+        <div style="text-align: center; padding: 24px; border: 1px dashed var(--border-card); border-radius: 12px; color: var(--text-muted); font-size: 0.88rem;">
+          🎈 No hay partidos pendientes programados.
+        </div>
+      `;
+      return;
+    }
+
+    container.innerHTML = pendientes.map(p => `
+      <div style="background: rgba(15, 23, 42, 0.4); border: 1px solid var(--border-card); border-radius: 10px; padding: 14px; display: flex; flex-direction: column; gap: 8px;">
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+          <span style="font-size: 0.72rem; font-weight: 700; color: var(--color-primary); background: rgba(37,99,235,0.1); padding: 2px 6px; border-radius: 4px; text-transform: uppercase;">🏀 Básquetbol</span>
+          <span style="font-size: 0.75rem; color: var(--text-muted);">ID: ${p.id}</span>
+        </div>
+        <div style="display: flex; align-items: center; justify-content: space-between; margin: 4px 0;">
+          <strong style="font-size: 0.95rem; color: white; flex: 1; text-align: left; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${p.nombre_local}</strong>
+          <span style="font-size: 0.8rem; color: var(--text-muted); padding: 0 8px; font-weight: 600;">VS</span>
+          <strong style="font-size: 0.95rem; color: white; flex: 1; text-align: right; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${p.nombre_visitante}</strong>
+        </div>
+        <div style="border-top: 1px solid rgba(255,255,255,0.04); padding-top: 8px; margin-top: 4px; display: flex; flex-direction: column; gap: 2px;">
+          <span style="font-size: 0.75rem; color: var(--text-secondary); font-weight: 500;">📅 Programación:</span>
+          <span style="font-size: 0.82rem; color: #fff; font-weight: 500;">${p.fecha || "Día, hora y lugar pendiente"}</span>
+        </div>
+      </div>
+    `).join("");
+  }
+
+  // 2. Partidos Básquetbol (Programados y Jugados)
+  function renderPartidos() {
+    const tbodyPendientes = document.getElementById("partidos-pendientes-tbody");
+    const tbodyJugados = document.getElementById("partidos-jugados-tbody");
+    const rol = state.activeUser.rol;
+
+    const pendientes = state.partidos.filter(p => p.estado === "pendiente");
+    const jugados = state.partidos.filter(p => p.estado === "jugado" || p.estado === "wo");
+
+    // Render Pendientes
+    if (pendientes.length === 0) {
+      tbodyPendientes.innerHTML = `<tr><td colspan="5" style="text-align: center;">No hay partidos pendientes.</td></tr>`;
+    } else {
+      tbodyPendientes.innerHTML = pendientes.map(p => {
+        let accionHtml = "—";
+        if (rol === "juez" || rol === "organizador") {
+          accionHtml = `
+            <div style="display: flex; gap: 6px; justify-content: center; flex-wrap: wrap;">
+              <button class="btn btn-success" style="font-size: 0.75rem; padding: 5px 10px; width: auto;"
+                onclick="registrarResultadoPartido(${p.id})">
+                ✍️ Marcador
+              </button>
+              <button class="btn btn-danger" style="font-size: 0.75rem; padding: 5px 10px; width: auto; background: rgba(245,158,11,0.2); border-color: #f59e0b; color: #f59e0b;"
+                onclick="declararWO(${p.id}, '${p.nombre_local}', '${p.nombre_visitante}')">
+                ⚠️ W.O.
+              </button>
+            </div>
+          `;
+        }
+        return `
+          <tr>
+            <td>${p.id}</td>
+            <td><strong>${p.nombre_local}</strong></td>
+            <td><strong>${p.nombre_visitante}</strong></td>
+            <td>${p.fecha || "No definida"}</td>
+            <td class="judge-or-admin-visible" style="text-align: center; display: ${ (rol === 'juez' || rol === 'organizador') ? 'table-cell' : 'none' };">${accionHtml}</td>
+          </tr>
+        `;
+      }).join("");
+    }
+
+    // Render Jugados
+    if (jugados.length === 0) {
+      tbodyJugados.innerHTML = `<tr><td colspan="5" style="text-align: center;">No hay partidos finalizados aún.</td></tr>`;
+    } else {
+      tbodyJugados.innerHTML = jugados.map(p => {
+        let ganador = "Empate";
+        let colorLocal = "white";
+        let colorVisitante = "white";
+
+        if (p.puntos_local > p.puntos_visitante) {
+          ganador = p.nombre_local;
+          colorLocal = "#10b981"; // success
+        } else if (p.puntos_visitante > p.puntos_local) {
+          ganador = p.nombre_visitante;
+          colorVisitante = "#10b981";
+        }
+
+        const marcadorHtml = `
+          <div style="background: rgba(0,0,0,0.3); padding: 6px 12px; border-radius: 8px; display: inline-block;">
+            <strong style="color: ${colorLocal}; font-size: 1.2rem;">${p.puntos_local}</strong>
+            <span style="color: var(--text-muted); margin: 0 8px;">-</span>
+            <strong style="color: ${colorVisitante}; font-size: 1.2rem;">${p.puntos_visitante}</strong>
+          </div>
+        `;
+
+        return `
+          <tr style="background: rgba(16, 185, 129, 0.03);">
+            <td>${p.id}</td>
+            <td><strong style="color: ${p.puntos_local > p.puntos_visitante ? '#10b981' : 'white'};">${p.nombre_local}</strong></td>
+            <td><strong style="color: ${p.puntos_visitante > p.puntos_local ? '#10b981' : 'white'};">${p.nombre_visitante}</strong></td>
+            <td style="text-align: center;">${marcadorHtml}</td>
+            <td>
+              ${p.estado === 'wo'
+                ? `<span class="badge" style="background: rgba(245,158,11,0.15); color: #f59e0b; border: 1px solid #f59e0b;">⚠️ W.O. — ${ganador}</span>`
+                : `<span class="badge badge-aprobada">🏆 ${ganador}</span>`
+              }
+            </td>
+          </tr>
+        `;
+      }).join("");
+    }
+  }
+
+  // 3. Equipos Básquetbol
+  function renderEquipos() {
+    const tbody = document.getElementById("equipos-tbody");
+    if (state.equipos.length === 0) {
+      tbody.innerHTML = `<tr><td colspan="5" style="text-align: center;">No hay equipos creados.</td></tr>`;
+      return;
+    }
+
+    tbody.innerHTML = state.equipos.map(e => {
+      const depto = state.departamentos.find(d => d.id === e.departamento_id);
+      const deptoName = depto ? depto.nombre : `ID ${e.departamento_id}`;
+      const totalEstrellas = e.jugadores.reduce((sum, j) => sum + j.estrellas, 0);
+
+      const jugadoresHtml = e.jugadores.map(j => {
+        const esCapitan = e.capitan_id === j.id;
+        const adminBtn = (state.activeUser.rol === 'organizador')
+          ? `<span style="cursor: pointer; color: #fca5a5; margin-left: 6px; font-weight: bold;" onclick="quitarJugadorDeEquipo(${e.id}, ${j.id})" title="Quitar jugador">✖</span>
+             <span style="cursor: pointer; color: ${esCapitan ? '#fbbf24' : 'var(--text-muted)'}; margin-left: 4px; font-size: 1rem;" onclick="asignarCapitan(${e.id}, ${j.id})" title="${esCapitan ? 'Es el Capitán' : 'Asignar como Capitán'}">${esCapitan ? '©' : '◎'}</span>`
+          : (esCapitan ? ' <span title="Capitán" style="color: #fbbf24;">©</span>' : '');
+        return `
+          <div style="display: inline-block; background: rgba(255,255,255,0.1); padding: 4px 10px; border-radius: 12px; margin: 2px; font-size: 0.85rem; border: 1px solid ${esCapitan ? 'rgba(251,191,36,0.4)' : 'rgba(255,255,255,0.15)'}; ${esCapitan ? 'background: rgba(251,191,36,0.07);' : ''}">
+            ${j.nombre} <span style="color:var(--text-muted); font-size:0.75rem;">(${j.genero}, ${j.estrellas}★)</span>${adminBtn}
+          </div>
+        `;
+      }).join('') || `<span style="color: var(--text-muted);">Sin jugadores</span>`;
+
+      const capitanInfo = e.capitan_id
+        ? (e.jugadores.find(j => j.id === e.capitan_id)?.nombre || 'ID ' + e.capitan_id)
+        : '<span style="color: var(--text-muted);">Sin asignar</span>';
+
+      return `
+        <tr>
+          <td>${e.id}</td>
+          <td><strong style="color: white;">${e.nombre}</strong><br><span style="font-size:0.78rem; color: #fbbf24;">© ${capitanInfo}</span></td>
+          <td>${deptoName}</td>
+          <td style="white-space: normal;">${jugadoresHtml}</td>
+          <td style="text-align: right;" class="stars-indicator">${"★".repeat(totalEstrellas)}${"☆".repeat(Math.max(0, 5 - totalEstrellas))} (${totalEstrellas}/5)</td>
+          <td class="admin-only" style="text-align: center;">
+            <button class="btn btn-danger" style="padding: 4px 8px; font-size: 0.8rem;" onclick="eliminarEquipo(${e.id})" title="Eliminar Equipo">✖</button>
+          </td>
+        </tr>
+      `;
+    }).join("");
+  }
+
+  // 4. Calistenia (Participantes y Marcas)
+  function renderCalistenia() {
+    const tbody = document.getElementById("calistenia-tbody");
+    if (state.calisteniaParticipantes.length === 0) {
+      tbody.innerHTML = `<tr><td colspan="6" style="text-align: center;">No hay competidores de calistenia registrados.</td></tr>`;
+      return;
+    }
+
+    tbody.innerHTML = state.calisteniaParticipantes.map(cp => {
+      const jugador = state.jugadores.find(j => j.id === cp.jugador_id);
+      const depto = state.departamentos.find(d => d.id === cp.departamento_id);
+      const nombre = jugador ? jugador.nombre : `ID ${cp.jugador_id}`;
+      const deptoName = depto ? depto.nombre : `ID ${cp.departamento_id}`;
+      
+      // Filtrar resultados del participante
+      const marcas = state.calisteniaResultados.filter(r => r.participante_id === cp.id);
+      const marcasTexto = marcas.map(m => {
+        let label = m.prueba.replace("_", " ");
+        let unidad = m.prueba.includes("hold") ? "s" : " rep";
+        return `${label}: <strong>${m.valor}${unidad}</strong>`;
+      }).join(" | ") || `<span style="color: var(--text-muted);">Sin marcas registradas</span>`;
+
+      const rendimientoTotal = marcas.reduce((sum, m) => sum + m.valor, 0);
+
+      return `
+        <tr>
+          <td>${cp.id}</td>
+          <td><strong style="color: white;">${nombre}</strong></td>
+          <td>${deptoName}</td>
+          <td style="text-align: center;"><span class="badge" style="background: rgba(255,255,255,0.05); color: #fff;">${cp.categoria === 'M' ? '👔 M' : '👗 F'}</span></td>
+          <td>${marcasTexto}</td>
+          <td style="text-align: right; font-weight: 700; color: #10b981;">${rendimientoTotal.toFixed(1)}</td>
+        </tr>
+      `;
+    }).join("");
+  }
+
+  // 5. Inscripciones
+  function renderInscripciones() {
+    // RENDER 1: Inscripciones en el Panel del Centro de Estudiantes
+    const centerTbody = document.getElementById("inscripciones-centro-tbody");
+    const user = state.activeUser;
+    
+    if (user.rol === "centro_estudiantes") {
+      const deptoId = user.departamento_id;
+      // Filtrar las inscripciones pendientes de jugadores cuyo departamento sea el del centro
+      const pendientes = state.inscripciones.filter(ins => {
+        const jugador = state.jugadores.find(j => j.id === ins.jugador_id);
+        return ins.estado === "pendiente" && jugador && jugador.departamento_id === deptoId;
+      });
+
+      if (pendientes.length === 0) {
+        centerTbody.innerHTML = `<tr><td colspan="5" style="text-align: center;">No tienes solicitudes pendientes de aprobación.</td></tr>`;
+      } else {
+        centerTbody.innerHTML = pendientes.map(ins => {
+          const jugador = state.jugadores.find(j => j.id === ins.jugador_id);
+          const equipo = state.equipos.find(e => e.id === ins.equipo_id);
+          const jugadorName = jugador ? jugador.nombre : `ID ${ins.jugador_id}`;
+          const equipoName = equipo ? equipo.nombre : `ID ${ins.equipo_id}`;
+          const estrellas = jugador ? jugador.estrellas : 0;
+          const genero = jugador ? (jugador.genero === "M" ? "Masculino" : "Femenino") : "N/A";
+
+          return `
+            <tr>
+              <td>${ins.id}</td>
+              <td><strong>${jugadorName}</strong></td>
+              <td>${genero} (${estrellas}★)</td>
+              <td>${equipoName}</td>
+              <td style="text-align: center;">
+                <button class="btn btn-success" style="padding: 5px 10px; font-size:0.8rem; width: auto; display: inline-flex;"
+                  onclick="aprobarInscripcion(${ins.id})">Aprobar</button>
+                <button class="btn btn-danger" style="padding: 5px 10px; font-size:0.8rem; width: auto; display: inline-flex; margin-left: 6px;"
+                  onclick="rechazarInscripcion(${ins.id})">Rechazar</button>
+              </td>
+            </tr>
+          `;
+        }).join("");
+      }
+    }
+
+    // RENDER 2: Tabla Histórica/General de Inscripciones
+    const generalTbody = document.getElementById("inscripciones-general-tbody");
+    if (state.inscripciones.length === 0) {
+      generalTbody.innerHTML = `<tr><td colspan="6" style="text-align: center;">No se registran solicitudes históricas.</td></tr>`;
+      return;
+    }
+
+    // Ordenar de más nuevo a más viejo
+    const sortedInscs = [...state.inscripciones].reverse();
+
+    generalTbody.innerHTML = sortedInscs.map(ins => {
+      const jugador = state.jugadores.find(j => j.id === ins.jugador_id);
+      const depto = jugador ? state.departamentos.find(d => d.id === jugador.departamento_id) : null;
+      const equipo = state.equipos.find(e => e.id === ins.equipo_id);
+
+      const jugadorName = jugador ? jugador.nombre : `ID ${ins.jugador_id}`;
+      const deptoName = depto ? depto.nombre : "—";
+      const equipoName = equipo ? equipo.nombre : `ID ${ins.equipo_id}`;
+
+      return `
+        <tr>
+          <td>${ins.id}</td>
+          <td><strong>${jugadorName}</strong></td>
+          <td>${deptoName}</td>
+          <td>${equipoName}</td>
+          <td><span class="badge badge-${ins.estado}">${ins.estado}</span></td>
+          <td>${ins.creado_en ? ins.creado_en.split(".")[0].replace("T", " ") : "—"}</td>
+        </tr>
+      `;
+    }).join("");
+  }
+
+  // 6. Departamentos
+  function renderDepartamentos() {
+    const tbody = document.getElementById("departamentos-tbody");
+    if (state.departamentos.length === 0) {
+      tbody.innerHTML = `<tr><td colspan="2" style="text-align: center;">No hay departamentos.</td></tr>`;
+      return;
+    }
+    tbody.innerHTML = state.departamentos.map(d => `
+      <tr>
+        <td>${d.id}</td>
+        <td><strong>${d.nombre}</strong></td>
+        <td class="admin-only" style="text-align: center;">
+          <button class="btn btn-danger" style="padding: 4px 8px; font-size: 0.8rem;" onclick="eliminarDepartamento(${d.id})" title="Eliminar Departamento">✖</button>
+        </td>
+      </tr>
+    `).join("");
+  }
+
+  // 7. Jugadores en DB
+  function renderJugadores() {
+    const tbody = document.getElementById("jugadores-tbody");
+    if (state.jugadores.length === 0) {
+      tbody.innerHTML = `<tr><td colspan="5" style="text-align: center;">No hay jugadores registrados.</td></tr>`;
+      return;
+    }
+
+    tbody.innerHTML = state.jugadores.map(j => {
+      const depto = state.departamentos.find(d => d.id === j.departamento_id);
+      const deptoName = depto ? depto.nombre : `ID ${j.departamento_id}`;
+      
+      return `
+        <tr>
+          <td>${j.id}</td>
+          <td><strong style="color: white;">${j.nombre}</strong></td>
+          <td>${j.genero === "M" ? "Masculino" : "Femenino"}</td>
+          <td class="stars-indicator">${"★".repeat(j.estrellas)}${"☆".repeat(3 - j.estrellas)} (${j.estrellas}★)</td>
+          <td>${deptoName}</td>
+          <td class="admin-only" style="text-align: center;">
+            <button class="btn btn-danger" style="padding: 4px 8px; font-size: 0.8rem;" onclick="eliminarJugador(${j.id})" title="Eliminar Jugador">✖</button>
+          </td>
+        </tr>
+      `;
+    }).join("");
+  }
+
+
+  // ─── Controladores de Eventos (Formularios) ───
+
+  function showMsg(id, text, type) {
+    const el = document.getElementById(id);
+    el.textContent = text;
+    el.className = `msg-box msg-${type}`;
+    el.style.display = "block";
+    setTimeout(() => {
+      el.style.display = "none";
+    }, 5000);
+  }
+
+  // 1. Crear Departamento
+  async function crearDepartamento() {
+    const nombre = document.getElementById("dept-nombre").value.trim();
+    if (!nombre) return showMsg("msg-crear-dept", "Debes ingresar un nombre.", "error");
+
+    try {
+      await apiPost("/departamentos/", { nombre });
+      document.getElementById("dept-nombre").value = "";
+      showMsg("msg-crear-dept", `Departamento "${nombre}" creado correctamente.`, "success");
+      await loadAllData();
+    } catch (e) {
+      showMsg("msg-crear-dept", e.message, "error");
+    }
+  }
+
+  // 2. Registrar Jugador en el Sistema
+  async function crearJugador() {
+    const nombre = document.getElementById("jug-nombre").value.trim();
+    const genero = document.getElementById("jug-genero").value;
+    const estrellas = parseInt(document.getElementById("jug-estrellas").value);
+    const departamento_id = parseInt(document.getElementById("jug-depto").value);
+
+    if (!nombre) return showMsg("msg-crear-jugador", "Debes ingresar el nombre completo.", "error");
+    if (!departamento_id) return showMsg("msg-crear-jugador", "Debes seleccionar un departamento.", "error");
+
+    try {
+      await apiPost("/jugadores/", { nombre, genero, estrellas, departamento_id });
+      document.getElementById("jug-nombre").value = "";
+      showMsg("msg-crear-jugador", `Jugador "${nombre}" registrado con éxito.`, "success");
+      await loadAllData();
+    } catch (e) {
+      showMsg("msg-crear-jugador", e.message, "error");
+    }
+  }
+
+  // 3. Crear Equipo
+  async function crearEquipo() {
+    const nombre = document.getElementById("eq-nombre").value.trim();
+    const departamento_id = parseInt(document.getElementById("eq-depto").value);
+
+    if (!nombre) return showMsg("msg-crear-equipo", "Ingresa el nombre del equipo.", "error");
+    if (!departamento_id) return showMsg("msg-crear-equipo", "Selecciona un departamento.", "error");
+
+    try {
+      await apiPost("/equipos/", { nombre, departamento_id });
+      document.getElementById("eq-nombre").value = "";
+      showMsg("msg-crear-equipo", `Equipo "${nombre}" creado con éxito.`, "success");
+      await loadAllData();
+    } catch (e) {
+      showMsg("msg-crear-equipo", e.message, "error");
+    }
+  }
+
+  // 4. Agregar Jugadores a Equipo (Lote/Directo)
+  async function agregarJugadoresAEquipo() {
+    const equipo_id = parseInt(document.getElementById("add-equipo-select").value);
+    const selectElem = document.getElementById("add-jugador-select");
+    const selectedOptions = Array.from(selectElem.selectedOptions);
+    const jugadores_ids = selectedOptions.map(opt => parseInt(opt.value));
+
+    if (jugadores_ids.length === 0) {
+      return showMsg("msg-add-jugador", "Selecciona al menos un jugador.", "error");
+    }
+
+    try {
+      await apiPost(`/equipos/${equipo_id}/jugadores_lote`, { jugadores_ids });
+      showMsg("msg-add-jugador", "Jugadores agregados al equipo de Básquetbol exitosamente.", "success");
+      await loadAllData();
+    } catch (e) {
+      showMsg("msg-add-jugador", e.message, "error");
+    }
+  }
+
+  // 4b. Asignar Capitán
+  async function asignarCapitan(equipoId, jugadorId) {
+    try {
+      await apiPatch(`/equipos/${equipoId}/capitan`, { jugador_id: jugadorId });
+      await loadAllData();
+    } catch (e) {
+      alert("Error al asignar capitán: " + e.message);
+    }
+  }
+
+  // 4c. Actualizar los selects de titulares al cambiar el equipo
+  function actualizarTitularesSelect(lado) {
+    const equipoId = parseInt(document.getElementById(`partido-${lado}`).value);
+    const selectElem = document.getElementById(`titulares-${lado}-select`);
+    if (!selectElem) return;
+    const equipo = state.equipos.find(e => e.id === equipoId);
+    if (!equipo) { selectElem.innerHTML = ''; return; }
+    selectElem.innerHTML = equipo.jugadores.map(j =>
+      `<option value="${j.id}">${j.nombre} (${j.genero}, ${j.estrellas}★)</option>`
+    ).join("");
+  }
+
+  // Funciones para Eliminar (DELETE)
+  async function apiDelete(path) {
+    const res = await fetch(API_URL + path, { method: "DELETE" });
+    if (!res.ok) {
+      const data = await res.json().catch(() => null);
+      throw new Error(data?.detail || `Error HTTP ${res.status}`);
+    }
+  }
+
+  async function eliminarDepartamento(id) {
+    if(!confirm("¿Estás seguro de eliminar este departamento? Esto puede causar errores si tiene dependencias.")) return;
+    try {
+      await apiDelete(`/departamentos/${id}`);
+      await loadAllData();
+    } catch(e) { alert(e.message); }
+  }
+
+  async function eliminarJugador(id) {
+    if(!confirm("¿Eliminar este jugador de la base de datos?")) return;
+    try {
+      await apiDelete(`/jugadores/${id}`);
+      await loadAllData();
+    } catch(e) { alert(e.message); }
+  }
+
+  async function eliminarEquipo(id) {
+    if(!confirm("¿Eliminar este equipo y sus asignaciones?")) return;
+    try {
+      await apiDelete(`/equipos/${id}`);
+      await loadAllData();
+    } catch(e) { alert(e.message); }
+  }
+
+  async function quitarJugadorDeEquipo(equipoId, jugadorId) {
+    if(!confirm("¿Quitar este jugador del equipo?")) return;
+    try {
+      await apiDelete(`/equipos/${equipoId}/jugadores/${jugadorId}`);
+      await loadAllData();
+    } catch(e) { alert(e.message); }
+  }
+
+  // 5. Crear Partido
+  async function crearPartido() {
+    const equipo_local_id = parseInt(document.getElementById("partido-local").value);
+    const equipo_visitante_id = parseInt(document.getElementById("partido-visitante").value);
+    let fecha = document.getElementById("partido-fecha").value;
+    
+    if (fecha) {
+      fecha = fecha.replace("T", " ");
+    } else {
+      fecha = null;
+    }
+
+    if (equipo_local_id === equipo_visitante_id) {
+      return showMsg("msg-crear-partido", "Un equipo no puede jugar contra sí mismo.", "error");
+    }
+
+    // Recoger titulares seleccionados
+    const titLocalSelect = document.getElementById("titulares-local-select");
+    const titVisitanteSelect = document.getElementById("titulares-visitante-select");
+    const titulares_local_ids = titLocalSelect
+      ? Array.from(titLocalSelect.selectedOptions).map(o => parseInt(o.value))
+      : [];
+    const titulares_visitante_ids = titVisitanteSelect
+      ? Array.from(titVisitanteSelect.selectedOptions).map(o => parseInt(o.value))
+      : [];
+
+    try {
+      await apiPost("/partidos/", {
+        equipo_local_id,
+        equipo_visitante_id,
+        fecha,
+        titulares_local_ids,
+        titulares_visitante_ids
+      });
+      document.getElementById("partido-fecha").value = "";
+      if (titLocalSelect) titLocalSelect.selectedIndex = -1;
+      if (titVisitanteSelect) titVisitanteSelect.selectedIndex = -1;
+      showMsg("msg-crear-partido", "Partido programado correctamente.", "success");
+      await loadAllData();
+    } catch (e) {
+      showMsg("msg-crear-partido", e.message, "error");
+    }
+  }
+
+  // 6. Registrar Marcador Partido (Juez u Organizador)
+  async function registrarResultadoPartido(partidoId) {
+    const local = prompt("Puntos anotados por el equipo LOCAL:");
+    if (local === null) return;
+    const visitante = prompt("Puntos anotados por el equipo VISITANTE:");
+    if (visitante === null) return;
+
+    try {
+      await apiPatch(`/partidos/${partidoId}/resultado`, {
+        puntos_local: parseInt(local),
+        puntos_visitante: parseInt(visitante)
+      });
+      await loadAllData();
+    } catch (e) {
+      alert("Error al registrar marcador:\n" + e.message);
+    }
+  }
+
+  // 6b. Declarar W.O. (Juez u Organizador)
+  async function declararWO(partidoId, nombreLocal, nombreVisitante) {
+    const opciones = [
+      `1 - ${nombreLocal} (equipo LOCAL comete W.O.)`,
+      `2 - ${nombreVisitante} (equipo VISITANTE comete W.O.)`,
+      `3 - Ambos equipos cometen W.O.`
+    ].join("\n");
+
+    const eleccion = prompt(
+      `⚠️ Declarar W.O. para Partido #${partidoId}\n\n` +
+      `¿Qué equipo no se presentó o no cumple el mínimo de jugadores?\n\n` +
+      opciones +
+      `\n\nIngresa 1, 2 o 3:`
+    );
+
+    if (eleccion === null) return;
+
+    const mapaWO = { "1": "local", "2": "visitante", "3": "ambos" };
+    const equipo_wo = mapaWO[eleccion.trim()];
+
+    if (!equipo_wo) {
+      return alert("Opción inválida. Ingresa 1, 2 o 3.");
+    }
+
+    try {
+      await apiPatch(`/partidos/${partidoId}/wo`, { equipo_wo });
+      await loadAllData();
+    } catch (e) {
+      alert("Error al registrar W.O.:\n" + e.message);
+    }
+  }
+
+  // 7. Inscribir en Calistenia
+  async function inscribirCalistenia() {
+    const jugador_id = parseInt(document.getElementById("calis-jugador").value);
+    if (!jugador_id) return showMsg("msg-calis-inscribir", "Selecciona un jugador.", "error");
+
+    const jugador = state.jugadores.find(j => j.id === jugador_id);
+    if (!jugador) return;
+
+    try {
+      await apiPost("/calistenia/participantes", {
+        jugador_id: jugador.id,
+        categoria: jugador.genero, // se corresponde con M o F
+        departamento_id: jugador.departamento_id
+      });
+      showMsg("msg-calis-inscribir", `Participante "${jugador.nombre}" inscrito en Calistenia.`, "success");
+      await loadAllData();
+    } catch (e) {
+      showMsg("msg-calis-inscribir", e.message, "error");
+    }
+  }
+
+  // 8. Registrar Marca de Calistenia
+  async function registrarResultadoCalistenia() {
+    const participante_id = parseInt(document.getElementById("calis-res-participante").value);
+    const prueba = document.getElementById("calis-res-prueba").value;
+    const valor = parseFloat(document.getElementById("calis-res-valor").value);
+
+    if (!participante_id) return showMsg("msg-calis-resultado", "Selecciona un competidor.", "error");
+    if (!prueba) return showMsg("msg-calis-resultado", "Selecciona una prueba.", "error");
+    if (isNaN(valor) || valor < 0) return showMsg("msg-calis-resultado", "Ingresa una marca numérica válida.", "error");
+
+    try {
+      await apiPost("/calistenia/resultados", { participante_id, prueba, valor });
+      document.getElementById("calis-res-valor").value = "";
+      showMsg("msg-calis-resultado", "Marca de calistenia guardada correctamente.", "success");
+      await loadAllData();
+    } catch (e) {
+      showMsg("msg-calis-resultado", e.message, "error");
+    }
+  }
+
+  // 9. Enviar Solicitud de Inscripción (Flujo Jugador)
+  async function solicitarInscripcion() {
+    const equipo_id = parseInt(document.getElementById("solicitud-equipo").value);
+    const user = state.activeUser;
+
+    if (user.rol !== "jugador") {
+      return showMsg("msg-solicitar-inscripcion", "Solo un usuario simulando rol JUGADOR puede enviar solicitudes.", "error");
+    }
+
+    // Buscamos un jugador que coincida con el nombre del usuario, o el primer jugador de su departamento
+    let jugador = state.jugadores.find(j => j.nombre.toLowerCase().includes(user.nombre.toLowerCase().split(" ")[0].toLowerCase()));
+    if (!jugador && user.departamento_id) {
+      jugador = state.jugadores.find(j => j.departamento_id === user.departamento_id);
+    }
+    
+    if (!jugador) {
+      return showMsg("msg-solicitar-inscripcion", "No se encontró un competidor vinculado a este usuario en la base de datos.", "error");
+    }
+
+    try {
+      await apiPost("/inscripciones/", {
+        jugador_id: jugador.id,
+        equipo_id: equipo_id,
+        usuario_id: user.id
+      });
+      showMsg("msg-solicitar-inscripcion", "Solicitud de inscripción enviada correctamente.", "success");
+      await loadAllData();
+    } catch (e) {
+      showMsg("msg-solicitar-inscripcion", e.message, "error");
+    }
+  }
+
+  // 10. Aprobar Inscripción (Centro de Estudiantes)
+  async function aprobarInscripcion(inscripcionId) {
+    const user = state.activeUser;
+    if (user.rol !== "centro_estudiantes") return;
+
+    try {
+      await apiPatch(`/inscripciones/${inscripcionId}/aprobar`, {
+        usuario_id: user.id
+      });
+      showMsg("msg-accion-inscripcion", "Inscripción aprobada. Jugador incorporado al equipo.", "success");
+      await loadAllData();
+    } catch (e) {
+      showMsg("msg-accion-inscripcion", e.message, "error");
+    }
+  }
+
+  // 11. Rechazar Inscripción (Centro de Estudiantes)
+  async function rechazarInscripcion(inscripcionId) {
+    const user = state.activeUser;
+    if (user.rol !== "centro_estudiantes") return;
+
+    try {
+      await apiPatch(`/inscripciones/${inscripcionId}/rechazar`, {
+        usuario_id: user.id
+      });
+      showMsg("msg-accion-inscripcion", "Inscripción rechazada.", "success");
+      await loadAllData();
+    } catch (e) {
+      showMsg("msg-accion-inscripcion", e.message, "error");
+    }
+  }
+</script>
+</body>
+</html>
