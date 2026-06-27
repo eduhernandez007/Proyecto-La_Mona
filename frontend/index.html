@@ -95,49 +95,17 @@
       font-weight: 500;
     }
 
-    /* ─── Simulador de Roles Widget ─── */
-    .user-simulation-card {
+    /* ─── Widget de Login/Sesión en Header ─── */
+    .user-session-card {
       background: rgba(30, 41, 59, 0.5);
       border: 1px solid var(--border-card);
       border-radius: 12px;
       padding: 12px 18px;
       display: flex;
       align-items: center;
-      gap: 16px;
+      gap: 14px;
       max-width: 580px;
       box-shadow: var(--shadow-premium);
-    }
-
-    .user-select-group {
-      display: flex;
-      flex-direction: column;
-      gap: 4px;
-    }
-
-    .user-select-group label {
-      font-size: 0.75rem;
-      color: var(--text-secondary);
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-    }
-
-    .user-select-group select {
-      background: #0f172a;
-      color: var(--text-primary);
-      border: 1px solid var(--border-card);
-      padding: 6px 12px;
-      border-radius: 6px;
-      font-size: 0.85rem;
-      font-weight: 500;
-      outline: none;
-      cursor: pointer;
-      min-width: 200px;
-      transition: var(--transition-fast);
-    }
-
-    .user-select-group select:focus {
-      border-color: var(--border-focus);
     }
 
     .user-badge-info {
@@ -157,6 +125,55 @@
       width: fit-content;
     }
 
+    .user-name-display {
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: var(--text-primary);
+      max-width: 220px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .btn-login-header {
+      background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+      color: white;
+      border: none;
+      padding: 10px 22px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 700;
+      font-size: 0.9rem;
+      font-family: var(--font-body);
+      transition: var(--transition-fast);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .btn-login-header:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 6px 20px rgba(37, 99, 235, 0.4);
+    }
+
+    .btn-logout {
+      background: rgba(239, 68, 68, 0.15);
+      color: #fca5a5;
+      border: 1px solid rgba(239, 68, 68, 0.3);
+      padding: 6px 14px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 0.78rem;
+      font-weight: 600;
+      font-family: var(--font-body);
+      transition: var(--transition-fast);
+    }
+
+    .btn-logout:hover {
+      background: rgba(239, 68, 68, 0.3);
+      color: #fff;
+    }
+
     /* Colores por Rol */
     .role-organizador { background: rgba(37, 99, 235, 0.2); color: #93c5fd; border: 1px solid rgba(37, 99, 235, 0.4); }
     .role-juez { background: rgba(245, 158, 11, 0.2); color: #fde047; border: 1px solid rgba(245, 158, 11, 0.4); }
@@ -168,6 +185,149 @@
       font-size: 0.8rem;
       color: var(--text-secondary);
       font-weight: 500;
+    }
+
+    /* ─── Modal de Login ─── */
+    .login-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.7);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      animation: fadeIn 0.3s ease;
+    }
+
+    .login-overlay.hidden {
+      display: none;
+    }
+
+    .login-modal {
+      background: linear-gradient(145deg, rgba(22, 30, 49, 0.95) 0%, rgba(15, 23, 42, 0.98) 100%);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 20px;
+      padding: 40px 36px;
+      width: 100%;
+      max-width: 420px;
+      box-shadow: 0 24px 60px rgba(0, 0, 0, 0.6), 0 0 80px rgba(37, 99, 235, 0.08);
+      animation: slideDown 0.4s ease;
+    }
+
+    .login-modal h2 {
+      font-family: var(--font-headings);
+      font-size: 1.5rem;
+      text-align: center;
+      margin-bottom: 8px;
+      background: linear-gradient(135deg, #60a5fa 0%, #3b82f6 50%, #1d4ed8 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .login-modal .login-subtitle {
+      text-align: center;
+      color: var(--text-secondary);
+      font-size: 0.85rem;
+      margin-bottom: 28px;
+    }
+
+    .login-modal .form-group {
+      margin-bottom: 18px;
+    }
+
+    .login-modal .form-group label {
+      font-size: 0.82rem;
+      color: var(--text-secondary);
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    .login-modal .form-group input {
+      background: rgba(9, 13, 22, 0.8);
+      color: var(--text-primary);
+      border: 1px solid var(--border-card);
+      padding: 12px 16px;
+      border-radius: 10px;
+      font-size: 0.95rem;
+      outline: none;
+      width: 100%;
+      font-family: var(--font-body);
+      transition: var(--transition-fast);
+    }
+
+    .login-modal .form-group input:focus {
+      border-color: var(--border-focus);
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.2);
+    }
+
+    .login-modal .btn-login {
+      background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+      color: white;
+      border: none;
+      padding: 13px 24px;
+      border-radius: 10px;
+      cursor: pointer;
+      font-weight: 700;
+      font-size: 1rem;
+      font-family: var(--font-body);
+      width: 100%;
+      margin-top: 6px;
+      transition: var(--transition-fast);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .login-modal .btn-login:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(37, 99, 235, 0.4);
+    }
+
+    .login-modal .btn-login:active {
+      transform: translateY(0);
+    }
+
+    .login-modal .login-error {
+      background: rgba(239, 68, 68, 0.12);
+      color: #fca5a5;
+      border: 1px solid rgba(239, 68, 68, 0.3);
+      border-radius: 8px;
+      padding: 10px 14px;
+      font-size: 0.84rem;
+      font-weight: 500;
+      margin-bottom: 14px;
+      display: none;
+      animation: slideDown 0.3s ease;
+    }
+
+    .login-modal .btn-cancel-login {
+      background: transparent;
+      color: var(--text-secondary);
+      border: none;
+      padding: 10px;
+      cursor: pointer;
+      font-size: 0.85rem;
+      font-family: var(--font-body);
+      width: 100%;
+      text-align: center;
+      margin-top: 8px;
+      transition: var(--transition-fast);
+    }
+
+    .login-modal .btn-cancel-login:hover {
+      color: var(--text-primary);
+    }
+
+    .login-modal .login-hint {
+      text-align: center;
+      font-size: 0.72rem;
+      color: var(--text-muted);
+      margin-top: 16px;
+      line-height: 1.6;
     }
 
     /* ─── Navegación de Pestañas ─── */
@@ -486,32 +646,8 @@
     }
 
     /* Restricciones UI basadas en Permisos */
-    .admin-only, .judge-only, .student-center-only, .player-only {
+    .admin-only, .judge-only, .student-center-only, .player-only, .admin-or-student-center-visible, .admin-or-student-center-visible-col {
       display: none !important;
-    }
-
-    /* ─── Mock User Hint ─── */
-    .mock-hints {
-      font-size: 0.72rem;
-      color: var(--text-muted);
-      margin-top: 6px;
-      display: flex;
-      flex-wrap: wrap;
-      gap: 6px;
-    }
-    .quick-user-btn {
-      background: rgba(255, 255, 255, 0.05);
-      border: 1px solid var(--border-card);
-      color: var(--text-secondary);
-      padding: 2px 6px;
-      border-radius: 4px;
-      font-size: 0.7rem;
-      cursor: pointer;
-      font-weight: 500;
-    }
-    .quick-user-btn:hover {
-      background: rgba(255, 255, 255, 0.12);
-      color: var(--text-primary);
     }
 
     @media (max-width: 950px) {
@@ -532,17 +668,21 @@
     </div>
   </div>
 
-  <div class="user-simulation-card">
-    <div class="user-select-group">
-      <label for="active-user-select">Simular Usuario</label>
-      <select id="active-user-select" onchange="changeActiveUser(this.value)">
-        <option value="guest">Desconectado (Invitado)</option>
-      </select>
-      <div class="mock-hints" id="quick-users-hint"></div>
+  <div class="user-session-card" id="session-card">
+    <!-- Estado: No logueado -->
+    <div id="guest-view">
+      <button class="btn-login-header" onclick="openLoginModal()">
+        🔑 Iniciar Sesión
+      </button>
     </div>
-    <div class="user-badge-info">
-      <div id="active-role-badge" class="user-role-badge role-guest">Invitado</div>
-      <div id="active-dept-badge" class="user-dept-text">Sin Departamento</div>
+    <!-- Estado: Logueado -->
+    <div id="logged-view" style="display: none; align-items: center; gap: 14px;">
+      <div class="user-badge-info">
+        <div id="user-name-display" class="user-name-display"></div>
+        <div id="active-role-badge" class="user-role-badge role-guest">Invitado</div>
+        <div id="active-dept-badge" class="user-dept-text">Sin Departamento</div>
+      </div>
+      <button class="btn-logout" onclick="logout()">Cerrar Sesión</button>
     </div>
   </div>
 </header>
@@ -554,6 +694,29 @@
   <button id="tab-btn-inscripciones" onclick="switchTab('inscripciones')">📝 Inscripciones</button>
   <button id="tab-btn-admin" onclick="switchTab('admin')">⚙️ Configuración</button>
 </nav>
+
+<!-- ─── MODAL DE LOGIN ─── -->
+<div id="login-overlay" class="login-overlay hidden">
+  <div class="login-modal">
+    <h2>🔑 Iniciar Sesión</h2>
+    <p class="login-subtitle">Ingresa tu nombre completo y tu clave para acceder al sistema</p>
+    <div id="login-error" class="login-error"></div>
+    <div class="form-group">
+      <label for="login-nombre">Nombre de Usuario</label>
+      <input type="text" id="login-nombre" placeholder="ej: Jorge Zambrano (Organizador CDI)" autocomplete="off" />
+    </div>
+    <div class="form-group">
+      <label for="login-clave">Clave</label>
+      <input type="password" id="login-clave" placeholder="Ingresa tu clave" value="1234" />
+    </div>
+    <button class="btn-login" onclick="doLogin()">🚀 Ingresar</button>
+    <button class="btn-cancel-login" onclick="closeLoginModal()">Continuar como invitado</button>
+    <div class="login-hint">
+      💡 Clave por defecto: <strong>1234</strong><br>
+      Según tu usuario tendrás permisos de <strong>Organizador</strong>, <strong>Juez</strong>, <strong>Centro de Estudiantes</strong> o <strong>Jugador</strong>.
+    </div>
+  </div>
+</div>
 
 <main>
 
@@ -602,7 +765,7 @@
   <!-- SECCIÓN 2: BÁSQUETBOL -->
   <section id="sec-basquetbol" class="section">
     <!-- Formularios de creación (Organizador únicamente) -->
-    <div class="grid-2 admin-only" id="basquet-admin-forms">
+    <div class="grid-2 admin-or-student-center-visible" id="basquet-admin-forms">
       <div class="card">
         <h2>🏀 Crear Equipo de Básquetbol</h2>
         <div class="form-group">
@@ -651,6 +814,15 @@
           <label for="partido-fecha">Fecha del Encuentro</label>
           <input type="datetime-local" id="partido-fecha" />
         </div>
+        <div class="form-group">
+          <label for="partido-fase">Fase del Torneo</label>
+          <select id="partido-fase">
+            <option value="Fase de Grupos">Fase de Grupos</option>
+            <option value="Clasificación">Clasificación</option>
+            <option value="Semifinales">Semifinales</option>
+            <option value="Final">Final</option>
+          </select>
+        </div>
       </div>
       <!-- Selección de titulares (OBLIGATORIO) -->
       <div class="grid-2" style="grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px;">
@@ -684,6 +856,7 @@
           <thead>
             <tr>
               <th style="width: 60px;">ID</th>
+              <th>Fase</th>
               <th>Equipo Local</th>
               <th>Equipo Visitante</th>
               <th>Fecha</th>
@@ -691,7 +864,7 @@
             </tr>
           </thead>
           <tbody id="partidos-pendientes-tbody">
-            <tr><td colspan="5" style="text-align: center;">Cargando partidos...</td></tr>
+            <tr><td colspan="6" style="text-align: center;">Cargando partidos...</td></tr>
           </tbody>
         </table>
       </div>
@@ -706,6 +879,7 @@
           <thead>
             <tr>
               <th style="width: 60px;">ID</th>
+              <th>Fase</th>
               <th>Equipo Local</th>
               <th>Equipo Visitante</th>
               <th style="text-align: center;">Marcador</th>
@@ -714,6 +888,35 @@
           </thead>
           <tbody id="partidos-jugados-tbody">
             <tr><td colspan="5" style="text-align: center;">Cargando resultados...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Tabla de Posiciones de la Fase de Grupos -->
+    <div class="card" style="margin-bottom: 24px;">
+      <h2>🏆 Tabla de Posiciones — Fase de Grupos</h2>
+      <p style="color: var(--text-secondary); margin-bottom: 16px; font-size: 0.85rem;">
+        Tabla acumulada únicamente de la Fase de Grupos. Victoria = 2 pts, Derrota = 1 pt, W.O. = 0 pts. Desempates: (1) Diferencia de puntos, (2) Resultado directo.
+      </p>
+      <div class="table-container">
+        <table>
+          <thead>
+            <tr>
+              <th style="width: 80px; text-align: center;">Posición</th>
+              <th>Equipo</th>
+              <th>Departamento</th>
+              <th style="text-align: center;">PJ</th>
+              <th style="text-align: center;">PG</th>
+              <th style="text-align: center;">PP</th>
+              <th style="text-align: center;">PF</th>
+              <th style="text-align: center;">PC</th>
+              <th style="text-align: right;">DIF</th>
+              <th style="text-align: right; font-weight: 700; color: white;">Puntos</th>
+            </tr>
+          </thead>
+          <tbody id="basquet-standings-tbody">
+            <tr><td colspan="10" style="text-align: center;">Cargando tabla de posiciones...</td></tr>
           </tbody>
         </table>
       </div>
@@ -731,7 +934,7 @@
               <th>Departamento</th>
               <th>Jugadores Inscritos</th>
               <th style="text-align: right;">Estrellas en Cancha</th>
-              <th class="admin-only" style="text-align: center; width: 60px;">🗑️</th>
+              <th class="admin-or-student-center-visible-col" style="text-align: center; width: 60px;">🗑️</th>
             </tr>
           </thead>
           <tbody id="equipos-tbody">
@@ -883,8 +1086,8 @@
 
   <!-- SECCIÓN 5: CONFIGURACIÓN (DEPARTAMENTOS Y JUGADORES) -->
   <section id="sec-admin" class="section">
-    <div class="grid-2 admin-only" id="config-forms">
-      <div class="card">
+    <div class="grid-2 admin-or-student-center-visible" id="config-forms">
+      <div class="card admin-only">
         <h2>🏢 Agregar Departamento</h2>
         <div class="form-group">
           <label for="dept-nombre">Nombre del Departamento</label>
@@ -959,7 +1162,7 @@
                 <th>Género</th>
                 <th>Rango</th>
                 <th>Departamento</th>
-                <th class="admin-only" style="text-align: center; width: 60px;">🗑️</th>
+                <th class="admin-or-student-center-visible-col" style="text-align: center; width: 60px;">🗑️</th>
               </tr>
             </thead>
             <tbody id="jugadores-tbody">
@@ -1063,7 +1266,7 @@
       // Actualizar selectores y vistas
       populateSelectors();
       renderAllViews();
-      renderUserSelector();
+      updateSessionUI();
     } catch (e) {
       console.error("Error cargando los datos del backend:", e);
     }
@@ -1071,6 +1274,16 @@
 
   // ─── Poblar Selectores de Formularios ───
   function populateSelectors() {
+    // Guardar valores seleccionados previamente
+    const prevEqDepto = document.getElementById("eq-depto").value;
+    const prevJugDepto = document.getElementById("jug-depto").value;
+    const prevCalisJugador = document.getElementById("calis-jugador").value;
+    const prevAddEquipo = document.getElementById("add-equipo-select").value;
+    const prevPartidoLocal = document.getElementById("partido-local").value;
+    const prevPartidoVisitante = document.getElementById("partido-visitante").value;
+    const prevSolicitudEquipo = document.getElementById("solicitud-equipo").value;
+    const prevCalisResParticipante = document.getElementById("calis-res-participante").value;
+
     // 1. Departamentos
     const deptoOptions = state.departamentos.map(d => `<option value="${d.id}">${d.nombre}</option>`).join("");
     document.getElementById("eq-depto").innerHTML = deptoOptions;
@@ -1101,6 +1314,32 @@
       return `<option value="${cp.id}">${name} (${cp.categoria}) — ${deptoName}</option>`;
     }).join("");
     document.getElementById("calis-res-participante").innerHTML = calisPartOptions;
+
+    // Restaurar valores previamente seleccionados si siguen siendo válidos en los nuevos datos
+    if (prevEqDepto && state.departamentos.some(d => d.id == prevEqDepto)) {
+      document.getElementById("eq-depto").value = prevEqDepto;
+    }
+    if (prevJugDepto && state.departamentos.some(d => d.id == prevJugDepto)) {
+      document.getElementById("jug-depto").value = prevJugDepto;
+    }
+    if (prevCalisJugador && state.jugadores.some(j => j.id == prevCalisJugador)) {
+      document.getElementById("calis-jugador").value = prevCalisJugador;
+    }
+    if (prevAddEquipo && state.equipos.some(e => e.id == prevAddEquipo)) {
+      document.getElementById("add-equipo-select").value = prevAddEquipo;
+    }
+    if (prevPartidoLocal && state.equipos.some(e => e.id == prevPartidoLocal)) {
+      document.getElementById("partido-local").value = prevPartidoLocal;
+    }
+    if (prevPartidoVisitante && state.equipos.some(e => e.id == prevPartidoVisitante)) {
+      document.getElementById("partido-visitante").value = prevPartidoVisitante;
+    }
+    if (prevSolicitudEquipo && state.equipos.some(e => e.id == prevSolicitudEquipo)) {
+      document.getElementById("solicitud-equipo").value = prevSolicitudEquipo;
+    }
+    if (prevCalisResParticipante && state.calisteniaParticipantes.some(cp => cp.id == prevCalisResParticipante)) {
+      document.getElementById("calis-res-participante").value = prevCalisResParticipante;
+    }
     
     // Auto rellenar el formulario de Calistenia
     autoFillCalisteniaCategory();
@@ -1147,89 +1386,109 @@
     }
   }
 
-  // ─── Simulador de Roles y Usuarios ───
-  function renderUserSelector() {
-    const select = document.getElementById("active-user-select");
-    // Conservamos Guest
-    select.innerHTML = '<option value="guest">Desconectado (Invitado)</option>';
-    
-    state.usuarios.forEach(u => {
-      let label = `${u.nombre} [${u.rol.toUpperCase()}]`;
-      if (u.departamento_id) {
-        const depto = state.departamentos.find(d => d.id === u.departamento_id);
-        if (depto) label += ` (${depto.nombre})`;
-      }
-      const option = document.createElement("option");
-      option.value = u.id;
-      option.textContent = label;
-      if (state.activeUser && state.activeUser.id === u.id) {
-        option.selected = true;
-      }
-      select.appendChild(option);
-    });
+  // ─── Sistema de Login / Logout ───
 
-    // Hints rápidos para debug
-    const hints = document.getElementById("quick-users-hint");
-    hints.innerHTML = "";
-    // Agregar botones para usuarios más representativos
-    const shortcuts = [
-      { name: "Jorge (Org)", id: state.usuarios.find(u => u.rol === "organizador")?.id },
-      { name: "Pablo (Juez Básq)", id: state.usuarios.find(u => u.rol === "juez" && u.nombre.includes("Pablo"))?.id },
-      { name: "Ana (Juez Calis)", id: state.usuarios.find(u => u.rol === "juez" && u.nombre.includes("Ana"))?.id },
-      { name: "Centro Civil", id: state.usuarios.find(u => u.rol === "centro_estudiantes" && u.nombre.includes("Civil"))?.id },
-      { name: "Jugador Tomas", id: state.usuarios.find(u => u.rol === "jugador" && u.nombre.includes("Tomas"))?.id }
-    ];
-
-    shortcuts.forEach(sc => {
-      if (sc.id) {
-        const btn = document.createElement("button");
-        btn.className = "quick-user-btn";
-        btn.textContent = sc.name;
-        btn.onclick = () => {
-          select.value = sc.id;
-          changeActiveUser(sc.id);
-        };
-        hints.appendChild(btn);
-      }
-    });
+  function openLoginModal() {
+    document.getElementById("login-overlay").classList.remove("hidden");
+    document.getElementById("login-nombre").value = "";
+    document.getElementById("login-clave").value = "1234";
+    document.getElementById("login-error").style.display = "none";
+    document.getElementById("login-nombre").focus();
   }
 
-  function changeActiveUser(userId) {
-    if (userId === "guest") {
-      state.activeUser = { id: "guest", nombre: "Invitado", rol: "guest", departamento_id: null };
-    } else {
-      const user = state.usuarios.find(u => u.id == userId);
-      if (user) {
-        state.activeUser = {
-          id: user.id,
-          nombre: user.nombre,
-          rol: user.rol,
-          departamento_id: user.departamento_id
-        };
-      }
+  function closeLoginModal() {
+    document.getElementById("login-overlay").classList.add("hidden");
+  }
+
+  async function doLogin() {
+    const nombre = document.getElementById("login-nombre").value.trim();
+    const clave = document.getElementById("login-clave").value;
+    const errorEl = document.getElementById("login-error");
+
+    if (!nombre) {
+      errorEl.textContent = "Debes ingresar tu nombre de usuario.";
+      errorEl.style.display = "block";
+      return;
+    }
+    if (!clave) {
+      errorEl.textContent = "Debes ingresar tu clave.";
+      errorEl.style.display = "block";
+      return;
     }
 
-    // Actualizar Header
-    const badge = document.getElementById("active-role-badge");
-    badge.className = `user-role-badge role-${state.activeUser.rol}`;
-    badge.textContent = state.activeUser.rol.replace("_", " ");
+    try {
+      const userData = await apiPost("/usuarios/login", { nombre, clave });
+      // Login exitoso: guardar en estado
+      state.activeUser = {
+        id: userData.id,
+        nombre: userData.nombre,
+        rol: userData.rol,
+        departamento_id: userData.departamento_id
+      };
 
-    const deptoText = document.getElementById("active-dept-badge");
-    if (state.activeUser.departamento_id) {
-      const depto = state.departamentos.find(d => d.id === state.activeUser.departamento_id);
-      deptoText.textContent = depto ? depto.nombre : "Depto ID " + state.activeUser.departamento_id;
-    } else {
-      deptoText.textContent = "Sin Departamento";
+      closeLoginModal();
+      updateSessionUI();
+      updatePermissionsUI();
+      renderInscripciones();
+      renderPartidos();
+      renderEquipos();
+    } catch (e) {
+      errorEl.textContent = e.message;
+      errorEl.style.display = "block";
     }
+  }
 
-    // Actualizar visibilidad de elementos según roles
+  function logout() {
+    state.activeUser = { id: "guest", nombre: "Invitado", rol: "guest", departamento_id: null };
+    updateSessionUI();
     updatePermissionsUI();
-    
-    // Recargar tablas dinámicas que dependen del rol activo
     renderInscripciones();
     renderPartidos();
-    renderEquipos(); // necesario para mostrar/ocultar el botón ✖ dentro de los chips
+    renderEquipos();
   }
+
+  function updateSessionUI() {
+    const isGuest = state.activeUser.rol === "guest";
+
+    // Mostrar/Ocultar vistas de guest y logueado
+    document.getElementById("guest-view").style.display = isGuest ? "block" : "none";
+    document.getElementById("logged-view").style.display = isGuest ? "none" : "flex";
+
+    if (!isGuest) {
+      // Nombre del usuario
+      document.getElementById("user-name-display").textContent = state.activeUser.nombre;
+
+      // Badge de rol
+      const badge = document.getElementById("active-role-badge");
+      badge.className = `user-role-badge role-${state.activeUser.rol}`;
+      const rolLabels = {
+        organizador: "Organizador",
+        juez: "Juez",
+        centro_estudiantes: "Centro Estudiantes",
+        jugador: "Jugador"
+      };
+      badge.textContent = rolLabels[state.activeUser.rol] || state.activeUser.rol;
+
+      // Departamento
+      const deptoText = document.getElementById("active-dept-badge");
+      if (state.activeUser.departamento_id) {
+        const depto = state.departamentos.find(d => d.id === state.activeUser.departamento_id);
+        deptoText.textContent = depto ? depto.nombre : "Depto ID " + state.activeUser.departamento_id;
+      } else {
+        deptoText.textContent = "Sin Departamento";
+      }
+    }
+  }
+
+  // Permitir login con Enter
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Enter" && !document.getElementById("login-overlay").classList.contains("hidden")) {
+      doLogin();
+    }
+    if (e.key === "Escape" && !document.getElementById("login-overlay").classList.contains("hidden")) {
+      closeLoginModal();
+    }
+  });
 
   function updatePermissionsUI() {
     const rol = state.activeUser.rol;
@@ -1283,6 +1542,26 @@
         col.style.display = "none";
       }
     });
+
+    // 6. Mostrar elementos para Organizador o Centro de Estudiantes
+    const adminOrCenterElements = document.querySelectorAll(".admin-or-student-center-visible");
+    adminOrCenterElements.forEach(el => {
+      if (rol === "organizador" || rol === "centro_estudiantes") {
+        el.style.setProperty("display", "block", "important");
+      } else {
+        el.style.setProperty("display", "none", "important");
+      }
+    });
+
+    // 7. Ajustar columnas de tablas para Organizador o Centro de Estudiantes
+    const adminOrCenterCols = document.querySelectorAll(".admin-or-student-center-visible-col");
+    adminOrCenterCols.forEach(col => {
+      if (rol === "organizador" || rol === "centro_estudiantes") {
+        col.style.display = "table-cell";
+      } else {
+        col.style.display = "none";
+      }
+    });
   }
 
   // ─── Navegación por Pestañas (SPA) ───
@@ -1300,6 +1579,7 @@
     renderUpcomingMatches();
     renderPartidos();
     renderEquipos();
+    renderBasquetStandings();
     renderCalistenia();
     renderInscripciones();
     renderDepartamentos();
@@ -1353,7 +1633,10 @@
     container.innerHTML = pendientes.map(p => `
       <div style="background: rgba(15, 23, 42, 0.4); border: 1px solid var(--border-card); border-radius: 10px; padding: 14px; display: flex; flex-direction: column; gap: 8px;">
         <div style="display: flex; justify-content: space-between; align-items: center;">
-          <span style="font-size: 0.72rem; font-weight: 700; color: var(--color-primary); background: rgba(37,99,235,0.1); padding: 2px 6px; border-radius: 4px; text-transform: uppercase;">🏀 Básquetbol</span>
+          <div style="display: flex; gap: 6px; align-items: center;">
+            <span style="font-size: 0.72rem; font-weight: 700; color: var(--color-primary); background: rgba(37,99,235,0.1); padding: 2px 6px; border-radius: 4px; text-transform: uppercase;">🏀 Básquetbol</span>
+            <span style="font-size: 0.72rem; font-weight: 700; color: #10b981; background: rgba(16,185,129,0.1); padding: 2px 6px; border-radius: 4px; text-transform: uppercase;">${p.fase || 'Fase de Grupos'}</span>
+          </div>
           <span style="font-size: 0.75rem; color: var(--text-muted);">ID: ${p.id}</span>
         </div>
         <div style="display: flex; align-items: center; justify-content: space-between; margin: 4px 0;">
@@ -1380,7 +1663,7 @@
 
     // Render Pendientes
     if (pendientes.length === 0) {
-      tbodyPendientes.innerHTML = `<tr><td colspan="5" style="text-align: center;">No hay partidos pendientes.</td></tr>`;
+      tbodyPendientes.innerHTML = `<tr><td colspan="6" style="text-align: center;">No hay partidos pendientes.</td></tr>`;
     } else {
       tbodyPendientes.innerHTML = pendientes.map(p => {
         let accionHtml = "—";
@@ -1401,6 +1684,7 @@
         return `
           <tr>
             <td>${p.id}</td>
+            <td><span class="badge" style="background: rgba(16,185,129,0.1); color: #10b981; border: 1px solid rgba(16,185,129,0.2);">${p.fase || 'Fase de Grupos'}</span></td>
             <td><strong>${p.nombre_local}</strong></td>
             <td><strong>${p.nombre_visitante}</strong></td>
             <td>${p.fecha || "No definida"}</td>
@@ -1412,7 +1696,7 @@
 
     // Render Jugados
     if (jugados.length === 0) {
-      tbodyJugados.innerHTML = `<tr><td colspan="5" style="text-align: center;">No hay partidos finalizados aún.</td></tr>`;
+      tbodyJugados.innerHTML = `<tr><td colspan="6" style="text-align: center;">No hay partidos finalizados aún.</td></tr>`;
     } else {
       tbodyJugados.innerHTML = jugados.map(p => {
         let ganador = "Empate";
@@ -1438,6 +1722,7 @@
         return `
           <tr style="background: rgba(16, 185, 129, 0.03);">
             <td>${p.id}</td>
+            <td><span class="badge" style="background: rgba(16,185,129,0.1); color: #10b981; border: 1px solid rgba(16,185,129,0.2);">${p.fase || 'Fase de Grupos'}</span></td>
             <td><strong style="color: ${p.puntos_local > p.puntos_visitante ? '#10b981' : 'white'};">${p.nombre_local}</strong></td>
             <td><strong style="color: ${p.puntos_visitante > p.puntos_local ? '#10b981' : 'white'};">${p.nombre_visitante}</strong></td>
             <td style="text-align: center;">${marcadorHtml}</td>
@@ -1468,7 +1753,7 @@
 
       const jugadoresHtml = e.jugadores.map(j => {
         const esCapitan = e.capitan_id === j.id;
-        const adminBtn = (state.activeUser.rol === 'organizador')
+        const adminBtn = (state.activeUser.rol === 'organizador' || state.activeUser.rol === 'centro_estudiantes')
           ? `<span style="cursor: pointer; color: #fca5a5; margin-left: 6px; font-weight: bold;" onclick="quitarJugadorDeEquipo(${e.id}, ${j.id})" title="Quitar jugador">✖</span>
              <span style="cursor: pointer; color: ${esCapitan ? '#fbbf24' : 'var(--text-muted)'}; margin-left: 4px; font-size: 1rem;" onclick="asignarCapitan(${e.id}, ${j.id})" title="${esCapitan ? 'Es el Capitán' : 'Asignar como Capitán'}">${esCapitan ? '©' : '◎'}</span>`
           : (esCapitan ? ' <span title="Capitán" style="color: #fbbf24;">©</span>' : '');
@@ -1490,9 +1775,132 @@
           <td>${deptoName}</td>
           <td style="white-space: normal;">${jugadoresHtml}</td>
           <td style="text-align: right;" class="stars-indicator">${"★".repeat(totalEstrellas)}${"☆".repeat(Math.max(0, 5 - totalEstrellas))} (${totalEstrellas}/5)</td>
-          <td class="admin-only" style="text-align: center;">
+          <td class="admin-or-student-center-visible-col" style="text-align: center;">
             <button class="btn btn-danger" style="padding: 4px 8px; font-size: 0.8rem;" onclick="eliminarEquipo(${e.id})" title="Eliminar Equipo">✖</button>
           </td>
+        </tr>
+      `;
+    }).join("");
+  }
+
+  // 3.5 Tabla de Posiciones Básquetbol (Fase de Grupos)
+  function renderBasquetStandings() {
+    const tbody = document.getElementById("basquet-standings-tbody");
+    if (!tbody) return;
+
+    if (state.equipos.length === 0) {
+      tbody.innerHTML = `<tr><td colspan="10" style="text-align: center;">No hay equipos registrados.</td></tr>`;
+      return;
+    }
+
+    // Calcular estadísticas para cada equipo
+    const stats = state.equipos.map(eq => {
+      const depto = state.departamentos.find(d => d.id === eq.departamento_id);
+      const deptoName = depto ? depto.nombre : "Sin Depto";
+      
+      let pj = 0;
+      let pg = 0;
+      let pp = 0;
+      let pf = 0;
+      let pc = 0;
+      let pts = 0;
+
+      // Filtrar partidos de Fase de Grupos jugados/wo
+      const partidosGrupo = state.partidos.filter(p => 
+        p.fase === "Fase de Grupos" && 
+        (p.estado === "jugado" || p.estado === "wo") &&
+        (p.equipo_local_id === eq.id || p.equipo_visitante_id === eq.id)
+      );
+
+      partidosGrupo.forEach(p => {
+        pj++;
+        const isLocal = p.equipo_local_id === eq.id;
+        const pSelf = isLocal ? p.puntos_local : p.puntos_visitante;
+        const pOther = isLocal ? p.puntos_visitante : p.puntos_local;
+
+        pf += pSelf || 0;
+        pc += pOther || 0;
+
+        if (p.estado === "wo") {
+          if (pSelf === 2 && pOther === 0) {
+            pg++;
+            pts += 2;
+          } else {
+            pp++;
+            pts += 0;
+          }
+        } else { // jugado
+          if (pSelf > pOther) {
+            pg++;
+            pts += 2;
+          } else {
+            pp++;
+            pts += 1;
+          }
+        }
+      });
+
+      return {
+        id: eq.id,
+        nombre: eq.nombre,
+        deptoName: deptoName,
+        pj,
+        pg,
+        pp,
+        pf,
+        pc,
+        dif: pf - pc,
+        pts
+      };
+    });
+
+    // Ordenar según reglas
+    stats.sort((a, b) => {
+      // 1. Puntos de torneo
+      if (b.pts !== a.pts) return b.pts - a.pts;
+
+      // 2. Diferencia de puntos
+      if (b.dif !== a.dif) return b.dif - a.dif;
+
+      // 3. Enfrentamiento directo entre ellos (H2H)
+      const h2h = state.partidos.find(p => 
+        p.fase === "Fase de Grupos" && p.estado !== "pendiente" &&
+        ((p.equipo_local_id === a.id && p.equipo_visitante_id === b.id) ||
+         (p.equipo_local_id === b.id && p.equipo_visitante_id === a.id))
+      );
+      if (h2h) {
+        const isALocal = h2h.equipo_local_id === a.id;
+        const scoreA = isALocal ? h2h.puntos_local : h2h.puntos_visitante;
+        const scoreB = isALocal ? h2h.puntos_visitante : h2h.puntos_local;
+        if (scoreA !== scoreB) {
+          return scoreB - scoreA;
+        }
+      }
+
+      // 4. Puntos a favor
+      return b.pf - a.pf;
+    });
+
+    // Renderizar filas
+    tbody.innerHTML = stats.map((s, index) => {
+      const position = index + 1;
+      let medal = position;
+      if (position === 1) medal = "🥇";
+      else if (position === 2) medal = "🥈";
+      else if (position === 3) medal = "🥉";
+
+      return `
+        <tr>
+          <td style="text-align: center; font-weight: 700;">${medal}</td>
+          <td><strong style="color: white;">${s.nombre}</strong></td>
+          <td>${s.deptoName}</td>
+          <td style="text-align: center;">${s.pj}</td>
+          <td style="text-align: center; color: #10b981;">${s.pg}</td>
+          <td style="text-align: center; color: #ef4444;">${s.pp}</td>
+          <td style="text-align: center;">${s.pf}</td>
+          <td style="text-align: center;">${s.pc}</td>
+          <td style="text-align: right; font-weight: 600; color: ${s.dif >= 0 ? '#10b981' : '#ef4444'};">${s.dif > 0 ? '+' : ''}${s.dif}</td>
+          <td style="text-align: right; font-weight: 700; color: white;">${s.pts} pts</td>
         </tr>
       `;
     }).join("");
@@ -1647,7 +2055,7 @@
           <td>${j.genero === "M" ? "Masculino" : "Femenino"}</td>
           <td class="stars-indicator">${"★".repeat(j.estrellas)}${"☆".repeat(3 - j.estrellas)} (${j.estrellas}★)</td>
           <td>${deptoName}</td>
-          <td class="admin-only" style="text-align: center;">
+          <td class="admin-or-student-center-visible-col" style="text-align: center;">
             <button class="btn btn-danger" style="padding: 4px 8px; font-size: 0.8rem;" onclick="eliminarJugador(${j.id})" title="Eliminar Jugador">✖</button>
           </td>
         </tr>
@@ -1835,6 +2243,7 @@
         equipo_local_id,
         equipo_visitante_id,
         fecha,
+        fase: document.getElementById("partido-fase").value,
         titulares_local_ids,
         titulares_visitante_ids
       });

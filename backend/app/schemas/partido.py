@@ -6,6 +6,7 @@ class PartidoCreate(BaseModel):
     equipo_local_id: int
     equipo_visitante_id: int
     fecha: str | None = None
+    fase: str = "Fase de Grupos"
     titulares_local_ids: list[int] = []
     titulares_visitante_ids: list[int] = []
 
@@ -27,6 +28,7 @@ class PartidoRead(BaseModel):
     puntos_visitante: int | None
     estado: EstadoPartido
     fecha: str | None
+    fase: str
     nombre_local: str = ""
     nombre_visitante: str = ""
     titulares_local_ids: list[int] = []

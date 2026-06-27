@@ -30,18 +30,18 @@ def seed_data():
         db.add_all([civil, computacion, electrica, fisica, industrias, matematica])
         db.commit()
         
-        # 2. Crear usuarios
-        u_org = Usuario(nombre="Jorge Zambrano (Organizador CDI)", rol=RolUsuario.organizador)
-        u_org_comp = Usuario(nombre="Christian Díaz (Org. Competencia)", rol=RolUsuario.organizador)
-        u_juez_basquet = Usuario(nombre="Pablo Vergara (Juez Básquetbol)", rol=RolUsuario.juez)
-        u_juez_calis = Usuario(nombre="Ana Maria (Juez Calistenia)", rol=RolUsuario.juez)
+        # 2. Crear usuarios (clave por defecto: "1234")
+        u_org = Usuario(nombre="Jorge Zambrano (Organizador CDI)", clave="1234", rol=RolUsuario.organizador)
+        u_org_comp = Usuario(nombre="Christian Díaz (Org. Competencia)", clave="1234", rol=RolUsuario.organizador)
+        u_juez_basquet = Usuario(nombre="Pablo Vergara (Juez Básquetbol)", clave="1234", rol=RolUsuario.juez)
+        u_juez_calis = Usuario(nombre="Ana Maria (Juez Calistenia)", clave="1234", rol=RolUsuario.juez)
         
-        u_centro_civil = Usuario(nombre="Centro Civil", rol=RolUsuario.centro_estudiantes, departamento_id=civil.id)
-        u_centro_comp = Usuario(nombre="Centro Computación", rol=RolUsuario.centro_estudiantes, departamento_id=computacion.id)
-        u_centro_elec = Usuario(nombre="Centro Eléctrica", rol=RolUsuario.centro_estudiantes, departamento_id=electrica.id)
+        u_centro_civil = Usuario(nombre="Centro Civil", clave="1234", rol=RolUsuario.centro_estudiantes, departamento_id=civil.id)
+        u_centro_comp = Usuario(nombre="Centro Computación", clave="1234", rol=RolUsuario.centro_estudiantes, departamento_id=computacion.id)
+        u_centro_elec = Usuario(nombre="Centro Eléctrica", clave="1234", rol=RolUsuario.centro_estudiantes, departamento_id=electrica.id)
         
-        u_jug_civil1 = Usuario(nombre="Tomas Gonzalez (Jugador Civil)", rol=RolUsuario.jugador, departamento_id=civil.id)
-        u_jug_comp1 = Usuario(nombre="Andres Bello (Jugador Computación)", rol=RolUsuario.jugador, departamento_id=computacion.id)
+        u_jug_civil1 = Usuario(nombre="Tomas Gonzalez (Jugador Civil)", clave="1234", rol=RolUsuario.jugador, departamento_id=civil.id)
+        u_jug_comp1 = Usuario(nombre="Andres Bello (Jugador Computación)", clave="1234", rol=RolUsuario.jugador, departamento_id=computacion.id)
         
         db.add_all([u_org, u_org_comp, u_juez_basquet, u_juez_calis, u_centro_civil, u_centro_comp, u_centro_elec, u_jug_civil1, u_jug_comp1])
         
