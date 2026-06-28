@@ -1006,10 +1006,11 @@
               <th style="text-align: center;">Categoría</th>
               <th style="text-align: center;">Pruebas Completadas</th>
               <th style="text-align: right;">Rendimiento Total (Suma)</th>
+              <th class="judge-or-admin-visible-col" style="text-align: center; width: 60px;">🗑️</th>
             </tr>
           </thead>
           <tbody id="calistenia-tbody">
-            <tr><td colspan="6" style="text-align: center;">Cargando participantes...</td></tr>
+            <tr><td colspan="7" style="text-align: center;">Cargando participantes...</td></tr>
           </tbody>
         </table>
       </div>
@@ -1678,6 +1679,7 @@
                 onclick="declararWO(${p.id}, '${p.nombre_local}', '${p.nombre_visitante}')">
                 ⚠️ W.O.
               </button>
+              ${rol === 'organizador' ? `<button class="btn btn-danger" style="font-size: 0.75rem; padding: 5px 10px; width: auto;" onclick="eliminarPartido(${p.id})">✖ Eliminar</button>` : ''}
             </div>
           `;
         }
@@ -1732,6 +1734,7 @@
                 : `<span class="badge badge-aprobada">🏆 ${ganador}</span>`
               }
             </td>
+            ${rol === 'organizador' ? `<td style="text-align:center;"><button class="btn btn-danger" style="padding: 4px 8px; font-size: 0.8rem;" onclick="eliminarPartido(${p.id})">✖</button></td>` : '<td></td>'}
           </tr>
         `;
       }).join("");
@@ -1919,16 +1922,27 @@
       const depto = state.departamentos.find(d => d.id === cp.departamento_id);
       const nombre = jugador ? jugador.nombre : `ID ${cp.jugador_id}`;
       const deptoName = depto ? depto.nombre : `ID ${cp.departamento_id}`;
-      
+      const rol = state.activeUser.rol;
+      const canDelete = rol === 'organizador' || rol === 'juez';
+
       // Filtrar resultados del participante
       const marcas = state.calisteniaResultados.filter(r => r.participante_id === cp.id);
-      const marcasTexto = marcas.map(m => {
-        let label = m.prueba.replace("_", " ");
-        let unidad = m.prueba.includes("hold") ? "s" : " rep";
-        return `${label}: <strong>${m.valor}${unidad}</strong>`;
-      }).join(" | ") || `<span style="color: var(--text-muted);">Sin marcas registradas</span>`;
+      const marcasTexto = marcas.length > 0
+        ? marcas.map(m => {
+            let label = m.prueba.replace(/_/g, ' ');
+            let unidad = m.prueba.includes('hold') ? 's' : ' rep';
+            const deleteBtn = canDelete
+              ? `<span style="cursor:pointer; color:#fca5a5; margin-left:6px; font-size:0.8rem;" onclick="eliminarMarcaCalistenia(${m.id})" title="Eliminar marca">✖</span>`
+              : '';
+            return `<span style="white-space:nowrap;">${label}: <strong>${m.valor}${unidad}</strong>${deleteBtn}</span>`;
+          }).join('<span style="color:var(--text-muted); margin: 0 6px;">|</span>')
+        : `<span style="color: var(--text-muted);">Sin marcas registradas</span>`;
 
       const rendimientoTotal = marcas.reduce((sum, m) => sum + m.valor, 0);
+
+      const deleteParticipanteBtn = `<td class="judge-or-admin-visible-col" style="text-align:center;">
+          <button class="btn btn-danger" style="padding:4px 8px; font-size:0.8rem;" onclick="eliminarParticipanteCalistenia(${cp.id})" title="Eliminar participante y sus marcas">✖</button>
+        </td>`;
 
       return `
         <tr>
@@ -1936,8 +1950,9 @@
           <td><strong style="color: white;">${nombre}</strong></td>
           <td>${deptoName}</td>
           <td style="text-align: center;"><span class="badge" style="background: rgba(255,255,255,0.05); color: #fff;">${cp.categoria === 'M' ? '👔 M' : '👗 F'}</span></td>
-          <td>${marcasTexto}</td>
+          <td style="line-height: 1.8;">${marcasTexto}</td>
           <td style="text-align: right; font-weight: 700; color: #10b981;">${rendimientoTotal.toFixed(1)}</td>
+          ${deleteParticipanteBtn}
         </tr>
       `;
     }).join("");
@@ -2200,6 +2215,30 @@
     if(!confirm("¿Eliminar este equipo y sus asignaciones?")) return;
     try {
       await apiDelete(`/equipos/${id}`);
+      await loadAllData();
+    } catch(e) { alert(e.message); }
+  }
+
+  async function eliminarPartido(id) {
+    if(!confirm("¿Eliminar este partido? Esta acción no se puede deshacer.")) return;
+    try {
+      await apiDelete(`/partidos/${id}`);
+      await loadAllData();
+    } catch(e) { alert(e.message); }
+  }
+
+  async function eliminarMarcaCalistenia(id) {
+    if(!confirm("¿Eliminar esta marca de calistenia?")) return;
+    try {
+      await apiDelete(`/calistenia/resultados/${id}`);
+      await loadAllData();
+    } catch(e) { alert(e.message); }
+  }
+
+  async function eliminarParticipanteCalistenia(id) {
+    if(!confirm("¿Eliminar este participante y todas sus marcas?")) return;
+    try {
+      await apiDelete(`/calistenia/participantes/${id}`);
       await loadAllData();
     } catch(e) { alert(e.message); }
   }
