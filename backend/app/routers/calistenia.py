@@ -71,3 +71,25 @@ def registrar_resultado(data: ResultadoCreate, db: Session = Depends(get_db)):
     db.commit()
     db.refresh(resultado)
     return resultado
+
+
+@router.delete("/resultados/{resultado_id}", status_code=204)
+def eliminar_resultado(resultado_id: int, db: Session = Depends(get_db)):
+    """Elimina una marca/resultado de calistenia."""
+    resultado = db.get(ResultadoCalistenia, resultado_id)
+    if not resultado:
+        raise HTTPException(status_code=404, detail="Resultado no encontrado")
+    db.delete(resultado)
+    db.commit()
+    return None
+
+
+@router.delete("/participantes/{participante_id}", status_code=204)
+def eliminar_participante(participante_id: int, db: Session = Depends(get_db)):
+    """Elimina un participante de calistenia y todas sus marcas (cascade)."""
+    participante = db.get(ParticipanteCalistenia, participante_id)
+    if not participante:
+        raise HTTPException(status_code=404, detail="Participante no encontrado")
+    db.delete(participante)
+    db.commit()
+    return None

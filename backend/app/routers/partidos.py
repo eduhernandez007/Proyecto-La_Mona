@@ -175,3 +175,14 @@ def registrar_wo(partido_id: int, data: RegistrarWO, db: Session = Depends(get_d
     db.commit()
     db.refresh(partido)
     return _partido_a_schema(partido)
+
+
+@router.delete("/{partido_id}", status_code=204)
+def eliminar_partido(partido_id: int, db: Session = Depends(get_db)):
+    """Elimina un partido (y sus titulares asociados) de la base de datos."""
+    partido = db.get(Partido, partido_id)
+    if not partido:
+        raise HTTPException(status_code=404, detail="Partido no encontrado")
+    db.delete(partido)
+    db.commit()
+    return None
