@@ -26,8 +26,9 @@ def seed_data():
         fisica = Departamento(nombre="Física-Astronomía")
         industrias = Departamento(nombre="Industrias")
         matematica = Departamento(nombre="Matemática")
+        mecanica = Departamento(nombre="Mecánica")
         
-        db.add_all([civil, computacion, electrica, fisica, industrias, matematica])
+        db.add_all([civil, computacion, electrica, fisica, industrias, matematica, mecanica])
         db.commit()
         
         # 2. Crear usuarios (clave por defecto: "1234")
@@ -39,11 +40,13 @@ def seed_data():
         u_centro_civil = Usuario(nombre="Centro Civil", clave="1234", rol=RolUsuario.centro_estudiantes, departamento_id=civil.id)
         u_centro_comp = Usuario(nombre="Centro Computación", clave="1234", rol=RolUsuario.centro_estudiantes, departamento_id=computacion.id)
         u_centro_elec = Usuario(nombre="Centro Eléctrica", clave="1234", rol=RolUsuario.centro_estudiantes, departamento_id=electrica.id)
+        u_centro_meca = Usuario(nombre="Centro Mecánica", clave="1234", rol=RolUsuario.centro_estudiantes, departamento_id=mecanica.id)
         
         u_jug_civil1 = Usuario(nombre="Tomas Gonzalez (Jugador Civil)", clave="1234", rol=RolUsuario.jugador, departamento_id=civil.id)
         u_jug_comp1 = Usuario(nombre="Andres Bello (Jugador Computación)", clave="1234", rol=RolUsuario.jugador, departamento_id=computacion.id)
+        u_jug_meca1 = Usuario(nombre="Nikolaus Otto (Jugador Mecánica)", clave="1234", rol=RolUsuario.jugador, departamento_id=mecanica.id)
         
-        db.add_all([u_org, u_org_comp, u_juez_basquet, u_juez_calis, u_centro_civil, u_centro_comp, u_centro_elec, u_jug_civil1, u_jug_comp1])
+        db.add_all([u_org, u_org_comp, u_juez_basquet, u_juez_calis, u_centro_civil, u_centro_comp, u_centro_elec, u_centro_meca, u_jug_civil1, u_jug_comp1, u_jug_meca1])
         
         # 3. Crear jugadores
         # Civil
@@ -61,7 +64,7 @@ def seed_data():
         j_comp4 = Jugador(nombre="Camila Vallejo", genero=Genero.femenino, estrellas=1, departamento_id=computacion.id)
         j_comp5 = Jugador(nombre="Rodrigo Diaz", genero=Genero.masculino, estrellas=0, departamento_id=computacion.id)
         j_comp6 = Jugador(nombre="Francisca Perez", genero=Genero.femenino, estrellas=0, departamento_id=computacion.id)
-
+ 
         # Electrica
         j_elec1 = Jugador(nombre="Nicolas Tesla", genero=Genero.masculino, estrellas=3, departamento_id=electrica.id)
         j_elec2 = Jugador(nombre="Marie Curie", genero=Genero.femenino, estrellas=2, departamento_id=electrica.id)
@@ -69,11 +72,20 @@ def seed_data():
         j_elec4 = Jugador(nombre="Ada Lovelace", genero=Genero.femenino, estrellas=0, departamento_id=electrica.id)
         j_elec5 = Jugador(nombre="Isaac Newton", genero=Genero.masculino, estrellas=0, departamento_id=electrica.id)
         j_elec6 = Jugador(nombre="Rosalind Franklin", genero=Genero.femenino, estrellas=0, departamento_id=electrica.id)
-
+ 
+        # Mecánica
+        j_meca1 = Jugador(nombre="Nikolaus Otto", genero=Genero.masculino, estrellas=2, departamento_id=mecanica.id)
+        j_meca2 = Jugador(nombre="Rudolf Diesel", genero=Genero.masculino, estrellas=1, departamento_id=mecanica.id)
+        j_meca3 = Jugador(nombre="Kate Gleason", genero=Genero.femenino, estrellas=1, departamento_id=mecanica.id)
+        j_meca4 = Jugador(nombre="James Watt", genero=Genero.masculino, estrellas=1, departamento_id=mecanica.id)
+        j_meca5 = Jugador(nombre="Verena Holmes", genero=Genero.femenino, estrellas=0, departamento_id=mecanica.id)
+        j_meca6 = Jugador(nombre="Margaret Ingels", genero=Genero.femenino, estrellas=0, departamento_id=mecanica.id)
+ 
         db.add_all([
             j_civil1, j_civil2, j_civil3, j_civil4, j_civil5, j_civil6,
             j_comp1, j_comp2, j_comp3, j_comp4, j_comp5, j_comp6,
-            j_elec1, j_elec2, j_elec3, j_elec4, j_elec5, j_elec6
+            j_elec1, j_elec2, j_elec3, j_elec4, j_elec5, j_elec6,
+            j_meca1, j_meca2, j_meca3, j_meca4, j_meca5, j_meca6
         ])
         
         db.commit()

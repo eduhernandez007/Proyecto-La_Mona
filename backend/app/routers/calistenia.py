@@ -4,6 +4,7 @@ from app.database import get_db
 from app.models.calistenia import (
     ParticipanteCalistenia,
     ResultadoCalistenia,
+    CompetenciaCalistenia,
     PRUEBAS_POR_CATEGORIA,
 )
 from app.models.jugador import Jugador
@@ -11,11 +12,39 @@ from app.models.departamento import Departamento
 from app.schemas.calistenia import (
     ParticipanteCreate,
     ParticipanteRead,
+    CompetenciaCalisteniaCreate,
+    CompetenciaCalisteniaRead,
     ResultadoCreate,
     ResultadoRead,
 )
 
 router = APIRouter(prefix="/calistenia", tags=["Calistenia"])
+
+
+# ─── Competencias ─────────────────────────────────────────────────────────────
+
+@router.get("/competencias", response_model=list[CompetenciaCalisteniaRead])
+def listar_competencias(db: Session = Depends(get_db)):
+    return db.query(CompetenciaCalistenia).all()
+
+
+@router.post("/competencias", response_model=CompetenciaCalisteniaRead, status_code=201)
+def registrar_competencia(data: CompetenciaCalisteniaCreate, db: Session = Depends(get_db)):
+    competencia = CompetenciaCalistenia(**data.model_dump())
+    db.add(competencia)
+    db.commit()
+    db.refresh(competencia)
+    return competencia
+
+
+@router.delete("/competencias/{competencia_id}", status_code=204)
+def eliminar_competencia(competencia_id: int, db: Session = Depends(get_db)):
+    competencia = db.get(CompetenciaCalistenia, competencia_id)
+    if not competencia:
+        raise HTTPException(status_code=404, detail="Competencia no encontrada")
+    db.delete(competencia)
+    db.commit()
+    return None
 
 
 # ─── Participantes ────────────────────────────────────────────────────────────
@@ -54,6 +83,16 @@ def registrar_resultado(data: ResultadoCreate, db: Session = Depends(get_db)):
     participante = db.get(ParticipanteCalistenia, data.participante_id)
     if not participante:
         raise HTTPException(status_code=404, detail="Participante no encontrado")
+
+    competencia = db.get(CompetenciaCalistenia, data.competencia_id)
+    if not competencia:
+        raise HTTPException(status_code=404, detail="Competencia no encontrada")
+
+    if participante.categoria != competencia.categoria:
+        raise HTTPException(
+            status_code=400,
+            detail=f"El participante es de categoría '{participante.categoria.value}' pero la competencia es de categoría '{competencia.categoria.value}'"
+        )
 
     from app.services.validaciones import ValidadorCalistenia
     validador = ValidadorCalistenia()

@@ -46,3 +46,82 @@ Agente: Antigravity CLI (Gemini 3.5 Flash)
 "añade el resumen de los cambios realizados por ti al historial de prompts.txt de la forma que estimes conveniente para que quede claro el historial de avance"
 --> Acción:
     - Creación y escritura de este archivo con el historial de prompts, objetivos y cambios aplicados durante la sesión de desarrollo.
+
+--------------------------------------------------------------------------------
+Sesión: 30 de Junio, 2026
+Agente: Antigravity (Gemini 3.5 Flash)
+--------------------------------------------------------------------------------
+
+[PROMPT 5]
+"go to C:\Users\hp\OneDrive\Escritorio\ramos universidad\otoño 2026\progra avanzada\Proyecto_la_mona\Proyecto-La_Mona and create some players for a new department called Mecanica"
+y "haz que el total de estrellas de los jugadores de mecanica sume 5"
+--> Cambios Realizados:
+    1. Creación del departamento de Mecánica:
+       - Se insertó el departamento "Mecánica" (ID: 7) en las bases de datos sqlite "lamona.db" (tanto en la raíz del proyecto como en el directorio "backend").
+    2. Creación de 6 jugadores mecánicos:
+       - Se agregaron 6 competidores temáticos de ingeniería mecánica a las bases de datos con estrellas modificadas para sumar exactamente 5:
+         1. Nikolaus Otto (Masculino, 2 estrellas)
+         2. Rudolf Diesel (Masculino, 1 estrella)
+         3. Kate Gleason (Femenino, 1 estrella)
+         4. James Watt (Masculino, 1 estrella)
+         5. Verena Holmes (Femenino, 0 estrellas)
+         6. Margaret Ingels (Femenino, 0 estrellas)
+    3. Cuentas de usuario:
+       - Se crearon cuentas de usuario para "Centro Mecánica" (centro_estudiantes) y "Nikolaus Otto (Jugador Mecánica)" (jugador), ambas con la clave por defecto "1234".
+    4. Actualización de Semillas:
+       - Se actualizó el código de inicialización en backend/app/main.py (función seed_data) para registrar de forma perenne al departamento, sus usuarios y sus competidores en futuras creaciones de base de datos.
+
+[PROMPT 6]
+"a partir de ahora cada vez que haces un cambio anotalo en el changelog.md"
+--> Cambios Realizados:
+    - Se actualizó el archivo changelog.md del proyecto para registrar cronológicamente todas las modificaciones de la sesión.
+
+[PROMPT 7]
+"porque no me funciona el frontend?, aparece que esta cergando eternamente"
+--> Cambios Realizados:
+    1. Diagnóstico del puerto 8000:
+       - Se identificaron y cerraron procesos de python huérfanos/activos que bloqueaban el puerto 8000.
+    2. Corrección del error HTTP 500:
+       - Al insertar inicialmente los géneros de los jugadores de Mecánica se utilizaron caracteres abreviados ('M'/'F'). El backend esperaba los valores exactos definidos en el Enum de SQLAlchemy y esquemas de Pydantic ('masculino'/'femenino'). Esto lanzaba un error interno del servidor en el endpoint /jugadores/ que congelaba la pantalla de carga del frontend.
+       - Se actualizaron los géneros a 'masculino' y 'femenino' en las tablas sqlite correspondientes, restableciendo la conectividad y eliminando la carga infinita.
+    3. Levantamiento del servidor:
+       - Se reactivó uvicorn backend en el puerto 8000 como tarea de fondo.
+
+[PROMPT 8]
+"permite que los jugadores puedan solicitar inscripcion a las competencias de calistenia, hasta ahora solo pueden a basquet"
+--> Cambios Realizados:
+    1. Migración de Base de Datos:
+       - Se modificó la tabla "inscripciones" en las bases de datos para permitir que el campo "equipo_id" sea anulable (NULL) y se incorporó la columna "competencia" (TEXT, DEFAULT 'basquet', NOT NULL).
+    2. Backend (Modelos, Esquemas y Rutas):
+       - Se modificaron backend/app/models/inscripcion.py y backend/app/schemas/inscripcion.py para permitir que equipo_id sea nulo y recibir/devolver la propiedad "competencia".
+       - Se adaptó POST /inscripciones/ para verificar e impedir solicitudes duplicadas en calistenia o registros en la competencia cuando el participante ya está inscrito.
+       - Se adaptó PATCH /inscripciones/{id}/aprobar para que al aprobar solicitudes de tipo calistenia, cree automáticamente un ParticipanteCalistenia asociándole su respectiva categoría según su sexo (M o F) en la tabla correspondiente.
+    3. Frontend (UI e Integración):
+       - En frontend/index.html se añadió un selector de disciplina ("Básquetbol" o "Calistenia") para los jugadores. Al seleccionar calistenia, se oculta dinámicamente el listado de selección de equipos.
+       - Se reescribieron solicitarInscripcion() y renderInscripciones() en JavaScript para poder mandar y pintar las inscripciones y el historial de marcas en sus respectivas disciplinas de forma limpia.
+    4. Verificación:
+       - Se corrieron los tests automáticos y se verificó que todos pasaban sin excepciones.
+
+[PROMPT 9]
+"tambien cuando hagas cambios grandes e importantes anotalo en el historial de prompt. para que lo tengas en cuenta"
+--> Acción:
+    - Registro de esta sesión y de los prompts recibidos junto con sus respectivos desarrollos en el archivo historial de prompts.txt.
+
+[PROMPT 10]
+"Para la competencia de calistenia falta Categorías masculina y femenina. Y tambien organizar competencias en donde se debe especificar el lugar y la hora"
+--> Cambios Realizados:
+    1. Base de Datos:
+       - Se creó la tabla competencias_calistenia en ambas bases de datos lamona.db.
+       - Se recreó la tabla resultados_calistenia para incluir una relación mediante la columna competencia_id.
+    2. Backend:
+       - Se implementó la clase de modelo CompetenciaCalistenia en backend/app/models/calistenia.py, con campos nombre, categoria (M/F), lugar y fecha_hora.
+       - Se definieron los esquemas de Pydantic CompetenciaCalisteniaCreate y CompetenciaCalisteniaRead, y se adaptaron los esquemas de marcas.
+       - Se incorporaron las rutas GET, POST y DELETE para competencias en routers/calistenia.py.
+       - Se añadió validación en el registro de marcas para comprobar la existencia de la competencia y asegurar que la categoría del competidor coincida con la categoría de la competencia organizada.
+    3. Frontend:
+       - Se añadieron la tarjeta "Organizar Competencia" (para Organizador) y la tabla "Competencias de Calistenia Organizadas".
+       - Se actualizó el formulario de guardado de marcas para requerir la competencia, filtrándola dinámicamente según la categoría del participante seleccionado.
+       - Se actualizó la vista general de competidores para indicar en cuál competencia obtuvieron sus respectivas marcas.
+    4. Validación y Ejecución:
+       - Se ejecutó pytest (31 tests exitosos) y se reinició el servidor uvicorn backend.
+

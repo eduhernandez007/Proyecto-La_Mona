@@ -948,12 +948,44 @@
   <!-- SECCIÓN 3: CALISTENIA -->
   <section id="sec-calistenia" class="section">
     <!-- Formularios de Calistenia -->
-    <div class="grid-2">
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 24px;">
+      
+      <!-- Organizar Competencia de Calistenia (Organizador únicamente) -->
+      <div class="card admin-only" id="calist-competition-card">
+        <h2>🏆 Organizar Competencia</h2>
+        <p style="font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 12px;">
+          Define un evento de calistenia especificando su nombre, categoría, lugar y fecha/hora.
+        </p>
+        <div class="form-group">
+          <label for="calis-comp-nombre">Nombre de la Competencia</label>
+          <input type="text" id="calis-comp-nombre" placeholder="ej: Torneo de Muscle Ups Otoño" />
+        </div>
+        <div class="grid-2" style="gap: 12px; margin-bottom: 0;">
+          <div class="form-group">
+            <label for="calis-comp-categoria">Categoría</label>
+            <select id="calis-comp-categoria">
+              <option value="M">Masculina (M)</option>
+              <option value="F">Femenina (F)</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="calis-comp-lugar">Lugar</label>
+            <input type="text" id="calis-comp-lugar" placeholder="ej: Patio de los Naranjos" />
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="calis-comp-fecha">Fecha y Hora</label>
+          <input type="text" id="calis-comp-fecha" placeholder="ej: 30 de Junio, 15:00 hrs" />
+        </div>
+        <button class="btn btn-success" onclick="organizarCompetenciaCalistenia()"><span class="btn-icon">＋</span> Crear Competencia</button>
+        <div id="msg-calis-comp" class="msg-box"></div>
+      </div>
+
       <!-- Registro de Participante (Organizador únicamente) -->
       <div class="card admin-only" id="calist-register-card">
-        <h2>💪 Inscribir en Calistenia (Categoría B)</h2>
+        <h2>💪 Inscribir Competidor</h2>
         <p style="font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 12px;">
-          Los participantes compiten individualmente por departamento. Los mejores 4 resultados (2 M y 2 F) suman para su departamento.
+          Inscribe a un jugador en la disciplina de Calistenia. Los mejores 4 resultados (2 M y 2 F) sumarán para su departamento.
         </p>
         <div class="form-group">
           <label for="calis-jugador">Seleccionar Jugador</label>
@@ -975,10 +1007,17 @@
 
       <!-- Registrar Resultados (Organizador y Juez únicamente) -->
       <div class="card judge-or-admin-visible" id="calist-results-card">
-        <h2>📝 Registrar Marca de Calistenia</h2>
+        <h2>📝 Registrar Marca</h2>
+        <p style="font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 12px;">
+          Guarda la marca de un competidor en una prueba y competencia específicas.
+        </p>
         <div class="form-group">
           <label for="calis-res-participante">Competidor Inscripto</label>
-          <select id="calis-res-participante" onchange="updateCalisteniaPruebasSelect()"></select>
+          <select id="calis-res-participante" onchange="updateCalisteniaPruebasSelect(); filterCompetenciasByParticipantCategory();"></select>
+        </div>
+        <div class="form-group">
+          <label for="calis-res-competencia">Competencia Organizada</label>
+          <select id="calis-res-competencia"></select>
         </div>
         <div class="form-group">
           <label for="calis-res-prueba">Prueba Específica</label>
@@ -986,10 +1025,32 @@
         </div>
         <div class="form-group">
           <label for="calis-res-valor">Valor de la Marca</label>
-          <input type="number" id="calis-res-valor" step="0.1" placeholder="ej: 15 (repeticiones) o 45.5 (segundos hold)" />
+          <input type="number" id="calis-res-valor" step="0.1" placeholder="ej: 15 (repeticiones) o 45.5 (segundos)" />
         </div>
         <button class="btn btn-success" onclick="registrarResultadoCalistenia()"><span class="btn-icon">💾</span> Guardar Marca</button>
         <div id="msg-calis-resultado" class="msg-box"></div>
+      </div>
+    </div>
+
+    <!-- Lista de Competencias Organizadas -->
+    <div class="card" style="margin-top: 24px; margin-bottom: 24px;">
+      <h2>📅 Competencias de Calistenia Organizadas</h2>
+      <div class="table-container">
+        <table>
+          <thead>
+            <tr>
+              <th style="width: 60px;">ID</th>
+              <th>Nombre de la Competencia</th>
+              <th style="text-align: center;">Categoría</th>
+              <th>Lugar</th>
+              <th>Fecha y Hora</th>
+              <th class="judge-or-admin-visible-col" style="text-align: center; width: 60px;">🗑️</th>
+            </tr>
+          </thead>
+          <tbody id="calistenia-competencias-tbody">
+            <tr><td colspan="6" style="text-align: center;">Cargando competencias...</td></tr>
+          </tbody>
+        </table>
       </div>
     </div>
 
@@ -1021,17 +1082,24 @@
   <section id="sec-inscripciones" class="section">
     <!-- Formulario para Jugador (Simulador de Jugador) -->
     <div class="card player-only" id="inscripcion-solicitar-card" style="margin-bottom: 24px;">
-      <h2>📝 Solicitar Inscripción en Equipo</h2>
+      <h2>📝 Solicitar Inscripción en Competencia</h2>
       <p style="color: var(--text-secondary); margin-bottom: 14px; font-size: 0.9rem;">
-        Solicita unirte a un equipo de Básquetbol. Tu solicitud será enviada al Centro de Estudiantes de tu departamento para su aprobación.
+        Solicita participar en una competencia. Tu solicitud será enviada al Centro de Estudiantes de tu departamento para su aprobación.
       </p>
-      <div class="grid-2" style="grid-template-columns: 2fr 1fr; gap: 16px; margin-bottom: 0;">
+      <div class="grid-3" style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; margin-bottom: 0; align-items: flex-end;">
         <div class="form-group">
-          <label for="solicitud-equipo">Seleccionar Equipo de Básquetbol</label>
+          <label for="solicitud-competencia">Competencia</label>
+          <select id="solicitud-competencia" onchange="toggleSolicitudEquipoField()">
+            <option value="basquet">Básquetbol (Equipo)</option>
+            <option value="calistenia">Calistenia (Individual)</option>
+          </select>
+        </div>
+        <div class="form-group" id="solicitud-equipo-container">
+          <label for="solicitud-equipo">Seleccionar Equipo</label>
           <select id="solicitud-equipo"></select>
         </div>
-        <div class="form-group" style="justify-content: flex-end;">
-          <button class="btn" onclick="solicitarInscripcion()" style="height: 42px;"><span class="btn-icon">✉️</span> Enviar Solicitud</button>
+        <div class="form-group">
+          <button class="btn" onclick="solicitarInscripcion()" style="height: 42px; width: 100%;"><span class="btn-icon">✉️</span> Enviar Solicitud</button>
         </div>
       </div>
       <div id="msg-solicitar-inscripcion" class="msg-box"></div>
@@ -1190,6 +1258,7 @@
     partidos: [],
     calisteniaParticipantes: [],
     calisteniaResultados: [],
+    calisteniaCompetencias: [],
     inscripciones: [],
     puntajes: [],
     activeUser: { id: "guest", nombre: "Invitado", rol: "guest", departamento_id: null }
@@ -1242,13 +1311,14 @@
   async function loadAllData() {
     try {
       // Cargamos recursos básicos paralelos
-      const [depts, jugs, eqs, parts, calisParts, calisRes, inscs, rankings, users] = await Promise.all([
+      const [depts, jugs, eqs, parts, calisParts, calisRes, calisComps, inscs, rankings, users] = await Promise.all([
         apiGet("/departamentos/"),
         apiGet("/jugadores/"),
         apiGet("/equipos/"),
         apiGet("/partidos/"),
         apiGet("/calistenia/participantes"),
         apiGet("/calistenia/resultados"),
+        apiGet("/calistenia/competencias"),
         apiGet("/inscripciones/"),
         apiGet("/puntajes/"),
         apiGet("/usuarios/")
@@ -1260,6 +1330,7 @@
       state.partidos = parts;
       state.calisteniaParticipantes = calisParts;
       state.calisteniaResultados = calisRes;
+      state.calisteniaCompetencias = calisComps;
       state.inscripciones = inscs;
       state.puntajes = rankings;
       state.usuarios = users;
@@ -1284,6 +1355,7 @@
     const prevPartidoVisitante = document.getElementById("partido-visitante").value;
     const prevSolicitudEquipo = document.getElementById("solicitud-equipo").value;
     const prevCalisResParticipante = document.getElementById("calis-res-participante").value;
+    const prevCalisResCompetencia = document.getElementById("calis-res-competencia") ? document.getElementById("calis-res-competencia").value : null;
 
     // 1. Departamentos
     const deptoOptions = state.departamentos.map(d => `<option value="${d.id}">${d.nombre}</option>`).join("");
@@ -1345,6 +1417,11 @@
     // Auto rellenar el formulario de Calistenia
     autoFillCalisteniaCategory();
     updateCalisteniaPruebasSelect();
+    filterCompetenciasByParticipantCategory();
+    
+    if (prevCalisResCompetencia && document.getElementById("calis-res-competencia") && state.calisteniaCompetencias.some(c => c.id == prevCalisResCompetencia)) {
+      document.getElementById("calis-res-competencia").value = prevCalisResCompetencia;
+    }
   }
 
   // ─── Rellenado Automático de Categoría en Calistenia ───
@@ -1582,6 +1659,7 @@
     renderEquipos();
     renderBasquetStandings();
     renderCalistenia();
+    renderCompetenciasCalistenia();
     renderInscripciones();
     renderDepartamentos();
     renderJugadores();
@@ -1913,7 +1991,7 @@
   function renderCalistenia() {
     const tbody = document.getElementById("calistenia-tbody");
     if (state.calisteniaParticipantes.length === 0) {
-      tbody.innerHTML = `<tr><td colspan="6" style="text-align: center;">No hay competidores de calistenia registrados.</td></tr>`;
+      tbody.innerHTML = `<tr><td colspan="7" style="text-align: center;">No hay competidores de calistenia registrados.</td></tr>`;
       return;
     }
 
@@ -1929,7 +2007,9 @@
       const marcas = state.calisteniaResultados.filter(r => r.participante_id === cp.id);
       const marcasTexto = marcas.length > 0
         ? marcas.map(m => {
-            let label = m.prueba.replace(/_/g, ' ');
+            const comp = state.calisteniaCompetencias.find(c => c.id === m.competencia_id);
+            const compText = comp ? ` (en ${comp.nombre})` : '';
+            let label = m.prueba.replace(/_/g, ' ') + compText;
             let unidad = m.prueba.includes('hold') ? 's' : ' rep';
             const deleteBtn = canDelete
               ? `<span style="cursor:pointer; color:#fca5a5; margin-left:6px; font-size:0.8rem;" onclick="eliminarMarcaCalistenia(${m.id})" title="Eliminar marca">✖</span>`
@@ -1958,6 +2038,89 @@
     }).join("");
   }
 
+  function renderCompetenciasCalistenia() {
+    const tbody = document.getElementById("calistenia-competencias-tbody");
+    if (!tbody) return;
+    if (state.calisteniaCompetencias.length === 0) {
+      tbody.innerHTML = `<tr><td colspan="6" style="text-align: center;">No hay competencias de calistenia organizadas.</td></tr>`;
+      return;
+    }
+
+    const rol = state.activeUser.rol;
+    const canDelete = rol === 'organizador';
+
+    tbody.innerHTML = state.calisteniaCompetencias.map(c => {
+      const deleteBtn = canDelete
+        ? `<td style="text-align:center;">
+             <button class="btn btn-danger" style="padding:4px 8px; font-size:0.8rem;" onclick="eliminarCompetenciaCalistenia(${c.id})" title="Eliminar competencia">✖</button>
+           </td>`
+        : `<td></td>`;
+
+      return `
+        <tr>
+          <td>${c.id}</td>
+          <td><strong style="color: white;">${c.nombre}</strong></td>
+          <td style="text-align: center;"><span class="badge" style="background: rgba(255,255,255,0.05); color: #fff;">${c.categoria === 'M' ? '♂ M' : '♀ F'}</span></td>
+          <td>${c.lugar}</td>
+          <td>${c.fecha_hora}</td>
+          ${deleteBtn}
+        </tr>
+      `;
+    }).join("");
+  }
+
+  async function organizarCompetenciaCalistenia() {
+    const nombre = document.getElementById("calis-comp-nombre").value.trim();
+    const categoria = document.getElementById("calis-comp-categoria").value;
+    const lugar = document.getElementById("calis-comp-lugar").value.trim();
+    const fecha_hora = document.getElementById("calis-comp-fecha").value.trim();
+
+    if (!nombre) return showMsg("msg-calis-comp", "Ingresa el nombre del evento.", "error");
+    if (!lugar) return showMsg("msg-calis-comp", "Especifica el lugar del evento.", "error");
+    if (!fecha_hora) return showMsg("msg-calis-comp", "Especifica la fecha y hora.", "error");
+
+    try {
+      await apiPost("/calistenia/competencias", { nombre, categoria, lugar, fecha_hora });
+      showMsg("msg-calis-comp", `Competencia "${nombre}" creada con éxito.`, "success");
+      document.getElementById("calis-comp-nombre").value = "";
+      document.getElementById("calis-comp-lugar").value = "";
+      document.getElementById("calis-comp-fecha").value = "";
+      await loadAllData();
+    } catch (e) {
+      showMsg("msg-calis-comp", e.message, "error");
+    }
+  }
+
+  async function eliminarCompetenciaCalistenia(id) {
+    if (!confirm("¿Eliminar esta competencia? Esto eliminará también las marcas de calistenia asociadas.")) return;
+    try {
+      await apiDelete(`/calistenia/competencias/${id}`);
+      await loadAllData();
+    } catch (e) {
+      alert("Error al eliminar competencia: " + e.message);
+    }
+  }
+
+  function filterCompetenciasByParticipantCategory() {
+    const participanteId = parseInt(document.getElementById("calis-res-participante").value);
+    const selectComp = document.getElementById("calis-res-competencia");
+    if (!selectComp) return;
+    if (!participanteId) {
+      selectComp.innerHTML = "<option value=''>Ningún competidor seleccionado</option>";
+      return;
+    }
+    const participante = state.calisteniaParticipantes.find(p => p.id === participanteId);
+    if (!participante) return;
+
+    // Filtrar competencias que tengan la misma categoría que el participante
+    const matchingComps = state.calisteniaCompetencias.filter(c => c.categoria === participante.categoria);
+    if (matchingComps.length === 0) {
+      selectComp.innerHTML = "<option value=''>No hay competencias para esta categoría</option>";
+    } else {
+      selectComp.innerHTML = matchingComps.map(c => `<option value="${c.id}">${c.nombre} (${c.lugar} — ${c.fecha_hora})</option>`).join("");
+    }
+  }
+
   // 5. Inscripciones
   function renderInscripciones() {
     // RENDER 1: Inscripciones en el Panel del Centro de Estudiantes
@@ -1979,7 +2142,7 @@
           const jugador = state.jugadores.find(j => j.id === ins.jugador_id);
           const equipo = state.equipos.find(e => e.id === ins.equipo_id);
           const jugadorName = jugador ? jugador.nombre : `ID ${ins.jugador_id}`;
-          const equipoName = equipo ? equipo.nombre : `ID ${ins.equipo_id}`;
+          const equipoName = ins.competencia === "calistenia" ? "🤸 Calistenia (Individual)" : (equipo ? equipo.nombre : `ID ${ins.equipo_id}`);
           const estrellas = jugador ? jugador.estrellas : 0;
           const genero = jugador ? (jugador.genero === "M" ? "Masculino" : "Femenino") : "N/A";
 
@@ -2018,7 +2181,7 @@
 
       const jugadorName = jugador ? jugador.nombre : `ID ${ins.jugador_id}`;
       const deptoName = depto ? depto.nombre : "—";
-      const equipoName = equipo ? equipo.nombre : `ID ${ins.equipo_id}`;
+      const equipoName = ins.competencia === "calistenia" ? "🤸 Calistenia (Individual)" : (equipo ? equipo.nombre : `ID ${ins.equipo_id}`);
 
       return `
         <tr>
@@ -2367,18 +2530,19 @@
     }
   }
 
-  // 8. Registrar Marca de Calistenia
   async function registrarResultadoCalistenia() {
     const participante_id = parseInt(document.getElementById("calis-res-participante").value);
+    const competencia_id = parseInt(document.getElementById("calis-res-competencia").value);
     const prueba = document.getElementById("calis-res-prueba").value;
     const valor = parseFloat(document.getElementById("calis-res-valor").value);
 
     if (!participante_id) return showMsg("msg-calis-resultado", "Selecciona un competidor.", "error");
+    if (!competencia_id) return showMsg("msg-calis-resultado", "Selecciona una competencia organizada.", "error");
     if (!prueba) return showMsg("msg-calis-resultado", "Selecciona una prueba.", "error");
     if (isNaN(valor) || valor < 0) return showMsg("msg-calis-resultado", "Ingresa una marca numérica válida.", "error");
 
     try {
-      await apiPost("/calistenia/resultados", { participante_id, prueba, valor });
+      await apiPost("/calistenia/resultados", { participante_id, competencia_id, prueba, valor });
       document.getElementById("calis-res-valor").value = "";
       showMsg("msg-calis-resultado", "Marca de calistenia guardada correctamente.", "success");
       await loadAllData();
@@ -2388,8 +2552,20 @@
   }
 
   // 9. Enviar Solicitud de Inscripción (Flujo Jugador)
+  function toggleSolicitudEquipoField() {
+    const comp = document.getElementById("solicitud-competencia").value;
+    const container = document.getElementById("solicitud-equipo-container");
+    if (comp === "calistenia") {
+      container.style.display = "none";
+    } else {
+      container.style.display = "block";
+    }
+  }
+
   async function solicitarInscripcion() {
-    const equipo_id = parseInt(document.getElementById("solicitud-equipo").value);
+    const comp = document.getElementById("solicitud-competencia").value;
+    const equipo_val = document.getElementById("solicitud-equipo").value;
+    const equipo_id = comp === "calistenia" ? null : parseInt(equipo_val);
     const user = state.activeUser;
 
     if (user.rol !== "jugador") {
@@ -2410,7 +2586,8 @@
       await apiPost("/inscripciones/", {
         jugador_id: jugador.id,
         equipo_id: equipo_id,
-        usuario_id: user.id
+        usuario_id: user.id,
+        competencia: comp
       });
       showMsg("msg-solicitar-inscripcion", "Solicitud de inscripción enviada correctamente.", "success");
       await loadAllData();
@@ -2424,11 +2601,14 @@
     const user = state.activeUser;
     if (user.rol !== "centro_estudiantes") return;
 
+    const ins = state.inscripciones.find(i => i.id === inscripcionId);
+    const compText = ins && ins.competencia === "calistenia" ? "Jugador registrado en calistenia." : "Jugador incorporado al equipo.";
+
     try {
       await apiPatch(`/inscripciones/${inscripcionId}/aprobar`, {
         usuario_id: user.id
       });
-      showMsg("msg-accion-inscripcion", "Inscripción aprobada. Jugador incorporado al equipo.", "success");
+      showMsg("msg-accion-inscripcion", "Inscripción aprobada. " + compText, "success");
       await loadAllData();
     } catch (e) {
       showMsg("msg-accion-inscripcion", e.message, "error");

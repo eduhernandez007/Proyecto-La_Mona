@@ -30,7 +30,7 @@ def listar_inscripciones(db: Session = Depends(get_db)):
 
 @router.post("/", response_model=InscripcionRead, status_code=201)
 def solicitar_inscripcion(data: InscripcionCreate, db: Session = Depends(get_db)):
-    """Un jugador solicita inscribirse en un equipo. Estado inicial: pendiente."""
+    """Un jugador solicita inscribirse en un equipo (básquet) o en calistenia. Estado inicial: pendiente."""
     # Solo un usuario con rol 'jugador' puede solicitar inscripción
     _validar_usuario_con_rol(data.usuario_id, RolUsuario.jugador, db)
 
@@ -38,31 +38,64 @@ def solicitar_inscripcion(data: InscripcionCreate, db: Session = Depends(get_db)
     if not jugador:
         raise HTTPException(status_code=404, detail="Jugador no encontrado")
 
-    equipo = db.get(Equipo, data.equipo_id)
-    if not equipo:
-        raise HTTPException(status_code=404, detail="Equipo no encontrado")
+    if data.competencia == "calistenia":
+        # Valida que no esté ya registrado en calistenia
+        from app.models.calistenia import ParticipanteCalistenia
+        existente = db.query(ParticipanteCalistenia).filter(ParticipanteCalistenia.jugador_id == data.jugador_id).first()
+        if existente:
+            raise HTTPException(status_code=400, detail="El jugador ya está inscrito en calistenia")
 
-    # Evitamos solicitudes duplicadas pendientes para el mismo jugador y equipo
-    duplicada = (
-        db.query(Inscripcion)
-        .filter(
-            Inscripcion.jugador_id == data.jugador_id,
-            Inscripcion.equipo_id == data.equipo_id,
-            Inscripcion.estado == EstadoInscripcion.pendiente,
+        # Evitamos solicitudes duplicadas pendientes para calistenia
+        duplicada = (
+            db.query(Inscripcion)
+            .filter(
+                Inscripcion.jugador_id == data.jugador_id,
+                Inscripcion.competencia == "calistenia",
+                Inscripcion.estado == EstadoInscripcion.pendiente,
+            )
+            .first()
         )
-        .first()
-    )
-    if duplicada:
-        raise HTTPException(
-            status_code=400,
-            detail="Ya existe una solicitud pendiente para este jugador y equipo",
+        if duplicada:
+            raise HTTPException(
+                status_code=400,
+                detail="Ya existe una solicitud pendiente para este jugador en calistenia",
+            )
+            
+        inscripcion = Inscripcion(
+            jugador_id=data.jugador_id,
+            equipo_id=None,
+            competencia="calistenia",
+            estado=EstadoInscripcion.pendiente,
+        )
+    else:
+        # Básquetbol
+        equipo = db.get(Equipo, data.equipo_id)
+        if not equipo:
+            raise HTTPException(status_code=404, detail="Equipo no encontrado")
+
+        # Evitamos solicitudes duplicadas pendientes para el mismo jugador y equipo
+        duplicada = (
+            db.query(Inscripcion)
+            .filter(
+                Inscripcion.jugador_id == data.jugador_id,
+                Inscripcion.equipo_id == data.equipo_id,
+                Inscripcion.estado == EstadoInscripcion.pendiente,
+            )
+            .first()
+        )
+        if duplicada:
+            raise HTTPException(
+                status_code=400,
+                detail="Ya existe una solicitud pendiente para este jugador y equipo",
+            )
+
+        inscripcion = Inscripcion(
+            jugador_id=data.jugador_id,
+            equipo_id=data.equipo_id,
+            competencia="basquet",
+            estado=EstadoInscripcion.pendiente,
         )
 
-    inscripcion = Inscripcion(
-        jugador_id=data.jugador_id,
-        equipo_id=data.equipo_id,
-        estado=EstadoInscripcion.pendiente,
-    )
     db.add(inscripcion)
     db.commit()
     db.refresh(inscripcion)
@@ -98,19 +131,40 @@ def aprobar_inscripcion(
     if not inscripcion:
         raise HTTPException(status_code=404, detail="Inscripción no encontrada")
     
-    equipo = inscripcion.equipo
     jugador = inscripcion.jugador
     
-    # Si el jugador ya está en el equipo, solo aprobamos el estado de la inscripción
-    if jugador not in equipo.jugadores:
-        # Agregamos el jugador temporalmente para validar estrellas
-        equipo.jugadores.append(jugador)
-        from app.services.validaciones import ValidadorBasquetbol
-        validador = ValidadorBasquetbol()
-        error = validador.validar_estrellas(equipo)
-        if error:
-            equipo.jugadores.remove(jugador)
-            raise HTTPException(status_code=400, detail=error)
+    if inscripcion.competencia == "calistenia":
+        from app.models.calistenia import ParticipanteCalistenia, CategoriaCalistenia
+        from app.models.jugador import Genero
+        
+        # Validar si ya está inscrito
+        existente = db.query(ParticipanteCalistenia).filter(ParticipanteCalistenia.jugador_id == jugador.id).first()
+        if existente:
+            raise HTTPException(status_code=400, detail="El jugador ya está inscrito en calistenia")
+            
+        categoria = CategoriaCalistenia.masculina if jugador.genero == Genero.masculino else CategoriaCalistenia.femenina
+        participante = ParticipanteCalistenia(
+            jugador_id=jugador.id,
+            categoria=categoria,
+            departamento_id=jugador.departamento_id
+        )
+        db.add(participante)
+    else:
+        # Básquetbol
+        equipo = inscripcion.equipo
+        if not equipo:
+            raise HTTPException(status_code=404, detail="Equipo no encontrado")
+            
+        # Si el jugador ya está en el equipo, solo aprobamos el estado de la inscripción
+        if jugador not in equipo.jugadores:
+            # Agregamos el jugador temporalmente para validar estrellas
+            equipo.jugadores.append(jugador)
+            from app.services.validaciones import ValidadorBasquetbol
+            validador = ValidadorBasquetbol()
+            error = validador.validar_estrellas(equipo)
+            if error:
+                equipo.jugadores.remove(jugador)
+                raise HTTPException(status_code=400, detail=error)
             
     return _cambiar_estado(inscripcion_id, EstadoInscripcion.aprobada, db)
 

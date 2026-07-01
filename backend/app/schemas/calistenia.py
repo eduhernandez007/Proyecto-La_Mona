@@ -17,8 +17,26 @@ class ParticipanteRead(BaseModel):
     model_config = {"from_attributes": True}
 
 
+class CompetenciaCalisteniaCreate(BaseModel):
+    nombre: str
+    categoria: CategoriaCalistenia
+    lugar: str
+    fecha_hora: str
+
+
+class CompetenciaCalisteniaRead(BaseModel):
+    id: int
+    nombre: str
+    categoria: CategoriaCalistenia
+    lugar: str
+    fecha_hora: str
+
+    model_config = {"from_attributes": True}
+
+
 class ResultadoCreate(BaseModel):
     participante_id: int
+    competencia_id: int
     prueba: PruebaCalistenia
     valor: float
 
@@ -26,6 +44,7 @@ class ResultadoCreate(BaseModel):
 class ResultadoRead(BaseModel):
     id: int
     participante_id: int
+    competencia_id: int
     prueba: PruebaCalistenia
     valor: float
 
