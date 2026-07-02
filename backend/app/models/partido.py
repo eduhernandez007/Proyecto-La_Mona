@@ -41,6 +41,7 @@ class Partido(Base):
     estado: Mapped[EstadoPartido] = mapped_column(default=EstadoPartido.pendiente)
     fecha: Mapped[str | None] = mapped_column(String(50), nullable=True)
     fase: Mapped[str] = mapped_column(String(50), nullable=False, default="Fase de Grupos")
+    lugar: Mapped[str | None] = mapped_column(String(100), nullable=True)
     creado_en: Mapped[str] = mapped_column(String(50), default=func.now())
 
     equipo_local: Mapped["Equipo"] = relationship(

@@ -21,6 +21,7 @@ def _partido_a_schema(partido: Partido) -> PartidoRead:
         estado=partido.estado,
         fecha=partido.fecha,
         fase=partido.fase,
+        lugar=partido.lugar,
         nombre_local=partido.equipo_local.nombre if partido.equipo_local else "",
         nombre_visitante=partido.equipo_visitante.nombre if partido.equipo_visitante else "",
         titulares_local_ids=[j.id for j in partido.titulares_local],
@@ -106,6 +107,7 @@ def crear_partido(data: PartidoCreate, db: Session = Depends(get_db)):
         equipo_visitante_id=data.equipo_visitante_id,
         fecha=data.fecha,
         fase=data.fase,
+        lugar=data.lugar,
     )
     partido.titulares_local = titulares_local
     partido.titulares_visitante = titulares_visitante

@@ -4,6 +4,17 @@
 
 Este documento resume los cambios y mejoras implementados recientemente en el proyecto.
 
+## 🌟 Actualizaciones Recientes (2 de Julio de 2026)
+- **Gestión de Lugares (Canchas y Patios):**
+  - Se agregó el campo `lugar` de forma opcional a los modelos y esquemas de la base de datos de Partidos.
+  - La interfaz de Básquetbol ahora permite asignar el lugar del partido a través de una lista desplegable ("Cancha de 850" o "Cancha -3 de 851").
+  - La interfaz de Calistenia reemplazó el campo de texto libre por una lista desplegable con las opciones permitidas ("Patio de calistenia de 850" o "Gimnasio -3 de 851").
+  - Las tablas de *Partidos Programados* y *Resultados* fueron actualizadas para mostrar esta nueva columna de `Lugar`.
+- **Torneo Demostrativo (Básquetbol):**
+  - Se generó un script (`populate_tournament.py`) que puebla la base de datos con un torneo simulado completo que incluye fase de grupos y semifinales, dejando programada la gran final entre **Eléctrica** y **Mecánica** para el día de mañana a las 12:00 hrs.
+- **Torneo de Estrellas (Calistenia):**
+  - Se ejecutó un script automático (`populate_calistenia.py`) para matricular a todos los jugadores de élite (3 estrellas) en torneos de Calistenia (categorías Masculina y Femenina) y poblar sus respectivas marcas y resultados.
+
 ## 🏀 Básquetbol y Partidos
 - **Nueva funcionalidad de eliminación de partidos:** 
   - Se agregó el endpoint `DELETE /partidos/{id}` en el backend para permitir eliminar un partido y sus titulares asociados de la base de datos de manera segura.

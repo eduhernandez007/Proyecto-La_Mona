@@ -823,6 +823,13 @@
             <option value="Final">Final</option>
           </select>
         </div>
+        <div class="form-group">
+          <label for="partido-lugar">Lugar del Encuentro</label>
+          <select id="partido-lugar">
+            <option value="Cancha de 850">Cancha de 850</option>
+            <option value="Cancha -3 de 851">Cancha -3 de 851</option>
+          </select>
+        </div>
       </div>
       <!-- Selección de titulares (OBLIGATORIO) -->
       <div class="grid-2" style="grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px;">
@@ -860,11 +867,12 @@
               <th>Equipo Local</th>
               <th>Equipo Visitante</th>
               <th>Fecha</th>
+              <th>Lugar</th>
               <th class="judge-or-admin-visible" style="width: 260px; text-align: center;">Acción</th>
             </tr>
           </thead>
           <tbody id="partidos-pendientes-tbody">
-            <tr><td colspan="6" style="text-align: center;">Cargando partidos...</td></tr>
+            <tr><td colspan="7" style="text-align: center;">Cargando partidos...</td></tr>
           </tbody>
         </table>
       </div>
@@ -883,11 +891,12 @@
               <th>Equipo Local</th>
               <th>Equipo Visitante</th>
               <th style="text-align: center;">Marcador</th>
+              <th>Lugar</th>
               <th>Ganador</th>
             </tr>
           </thead>
           <tbody id="partidos-jugados-tbody">
-            <tr><td colspan="5" style="text-align: center;">Cargando resultados...</td></tr>
+            <tr><td colspan="7" style="text-align: center;">Cargando resultados...</td></tr>
           </tbody>
         </table>
       </div>
@@ -970,7 +979,10 @@
           </div>
           <div class="form-group">
             <label for="calis-comp-lugar">Lugar</label>
-            <input type="text" id="calis-comp-lugar" placeholder="ej: Patio de los Naranjos" />
+            <select id="calis-comp-lugar">
+              <option value="Patio de calistenia de 850">Patio de calistenia de 850</option>
+              <option value="Gimnasio -3 de 851">Gimnasio -3 de 851</option>
+            </select>
           </div>
         </div>
         <div class="form-group">
@@ -1742,7 +1754,7 @@
 
     // Render Pendientes
     if (pendientes.length === 0) {
-      tbodyPendientes.innerHTML = `<tr><td colspan="6" style="text-align: center;">No hay partidos pendientes.</td></tr>`;
+      tbodyPendientes.innerHTML = `<tr><td colspan="7" style="text-align: center;">No hay partidos pendientes.</td></tr>`;
     } else {
       tbodyPendientes.innerHTML = pendientes.map(p => {
         let accionHtml = "—";
@@ -1768,6 +1780,7 @@
             <td><strong>${p.nombre_local}</strong></td>
             <td><strong>${p.nombre_visitante}</strong></td>
             <td>${p.fecha || "No definida"}</td>
+            <td>${p.lugar || "No definido"}</td>
             <td class="judge-or-admin-visible" style="text-align: center; display: ${ (rol === 'juez' || rol === 'organizador') ? 'table-cell' : 'none' };">${accionHtml}</td>
           </tr>
         `;
@@ -1776,7 +1789,7 @@
 
     // Render Jugados
     if (jugados.length === 0) {
-      tbodyJugados.innerHTML = `<tr><td colspan="6" style="text-align: center;">No hay partidos finalizados aún.</td></tr>`;
+      tbodyJugados.innerHTML = `<tr><td colspan="7" style="text-align: center;">No hay partidos finalizados aún.</td></tr>`;
     } else {
       tbodyJugados.innerHTML = jugados.map(p => {
         let ganador = "Empate";
@@ -1806,6 +1819,7 @@
             <td><strong style="color: ${p.puntos_local > p.puntos_visitante ? '#10b981' : 'white'};">${p.nombre_local}</strong></td>
             <td><strong style="color: ${p.puntos_visitante > p.puntos_local ? '#10b981' : 'white'};">${p.nombre_visitante}</strong></td>
             <td style="text-align: center;">${marcadorHtml}</td>
+            <td>${p.lugar || "No definido"}</td>
             <td>
               ${p.estado === 'wo'
                 ? `<span class="badge" style="background: rgba(245,158,11,0.15); color: #f59e0b; border: 1px solid #f59e0b;">⚠️ W.O. — ${ganador}</span>`
@@ -2083,7 +2097,7 @@
       await apiPost("/calistenia/competencias", { nombre, categoria, lugar, fecha_hora });
       showMsg("msg-calis-comp", `Competencia "${nombre}" creada con éxito.`, "success");
       document.getElementById("calis-comp-nombre").value = "";
-      document.getElementById("calis-comp-lugar").value = "";
+      document.getElementById("calis-comp-lugar").selectedIndex = 0;
       document.getElementById("calis-comp-fecha").value = "";
       await loadAllData();
     } catch (e) {
@@ -2439,13 +2453,13 @@
     const titulares_visitante_ids = titVisitanteSelect
       ? Array.from(titVisitanteSelect.selectedOptions).map(o => parseInt(o.value))
       : [];
-
     try {
       await apiPost("/partidos/", {
         equipo_local_id,
         equipo_visitante_id,
         fecha,
         fase: document.getElementById("partido-fase").value,
+        lugar: document.getElementById("partido-lugar").value,
         titulares_local_ids,
         titulares_visitante_ids
       });
