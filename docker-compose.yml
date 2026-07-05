@@ -8,3 +8,12 @@ services:
       - ./backend:/app
     environment:
       - PYTHONUNBUFFERED=1
+
+  frontend:
+    image: nginx:alpine
+    ports:
+      - "8080:80"
+    volumes:
+      - ./frontend:/usr/share/nginx/html:ro
+    depends_on:
+      - backend

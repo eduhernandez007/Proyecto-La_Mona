@@ -64,6 +64,10 @@ def registrar_participante(data: ParticipanteCreate, db: Session = Depends(get_d
     if not dept:
         raise HTTPException(status_code=404, detail="Departamento no encontrado")
 
+    existente = db.query(ParticipanteCalistenia).filter_by(jugador_id=data.jugador_id).first()
+    if existente:
+        raise HTTPException(status_code=400, detail="Este jugador ya está inscrito en calistenia")
+
     participante = ParticipanteCalistenia(**data.model_dump())
     db.add(participante)
     db.commit()

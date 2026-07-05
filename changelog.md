@@ -30,14 +30,23 @@ Este documento resume los cambios y mejoras implementados recientemente en el pr
     2. `DELETE /calistenia/participantes/{id}`: Para borrar a un participante completo junto con todas sus marcas.
   - En el frontend, se agregó un botón **✖** al lado de cada marca individual de calistenia, y una nueva columna en la tabla con un botón para eliminar al participante completo.
   - Ambos botones están protegidos por CSS/JS para que **solo sean visibles** para usuarios con rol de `organizador` o `juez`.
+  - Se agregó una validación estricta para evitar la inscripción de un mismo jugador múltiples veces en la competencia de Calistenia.
+
+## 📋 Inscripciones y Gestión de Usuarios
+- **Validación de Departamento en Inscripciones:**
+  - El backend ahora verifica estrictamente que los usuarios con rol de `centro_estudiantes` pertenezcan al mismo departamento del equipo (o jugador de calistenia) cuyas inscripciones intentan aprobar o rechazar (evitando que puedan gestionar equipos ajenos).
+
+## 🐳 Docker y Despliegue
+- **Servicio de Frontend agregado:**
+  - Se añadió el servicio `frontend` al archivo `docker-compose.yml` utilizando una imagen ligera de Nginx (`nginx:alpine`).
+  - Esto permite que tanto el backend (en el puerto 8000) como la interfaz de usuario (en el puerto 8080) se levanten simultáneamente con un solo comando `docker-compose up`, cumpliendo con el requisito de contenerización completo.
 
 ## ⚙️ Base de Datos y Sistema
-- **Sincronización del esquema de la Base de Datos:**
-  - Se detectaron errores 500 debido a que SQLAlchemy no aplica cambios de columnas a tablas ya existentes en SQLite.
-  - Se desarrolló un script de migración temporal (`migrate_all.py`) que utilizó sentencias `ALTER TABLE` para agregar las columnas faltantes:
-    - Columna `fase` en la tabla `partidos` (default: `'Fase de Grupos'`).
-    - Columna `clave` en la tabla `usuarios` (default: `'1234'`).
-  - Esto resolvió los errores al cargar la tabla de puntajes y al iniciar sesión.
+- **Sincronización y Migraciones Automáticas (Alembic):**
+  - Se reemplazó el uso del script manual temporal (`migrate_all.py`) integrando de forma nativa **Alembic** para la gestión de migraciones de SQLAlchemy.
+  - La aplicación ahora ejecuta automáticamente `alembic upgrade head` durante su arranque en `backend/app/main.py` (reemplazando al antiguo `Base.metadata.create_all`).
+  - Esto garantiza que al levantar el proyecto desde cero (ej. vía Docker), las tablas nuevas y modificaciones en columnas (`fase`, `clave`, `lugar`, `competencia`, etc.) se generen y apliquen automáticamente sin requerir intervención manual.
+  - Se agregó `alembic` a las dependencias en `requirements.txt`.
 
 ## 📊 Estado de los Tests
 - Todos los tests automatizados (31 en total) se encuentran pasando tras estos cambios, confirmando que las reglas de negocio (estrellas, géneros, mínimos de jugadores) no fueron afectadas negativamente.

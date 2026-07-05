@@ -6,7 +6,14 @@ from app.routers import departamentos, jugadores, equipos, partidos, inscripcion
 # Importamos todos los modelos para que SQLAlchemy los registre antes de crear las tablas
 from app.models import departamento, jugador, equipo, partido, inscripcion, usuario, calistenia as _m_calistenia  # noqa: F401
 
-Base.metadata.create_all(bind=engine)
+import os
+import alembic.config
+import alembic.command
+
+# Ejecutar las migraciones automáticamente en lugar de solo crear tablas
+alembic_ini_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), "alembic.ini")
+alembic_cfg = alembic.config.Config(alembic_ini_path)
+alembic.command.upgrade(alembic_cfg, "head")
 
 def seed_data():
     from app.database import SessionLocal
