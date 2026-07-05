@@ -89,11 +89,38 @@ def seed_data():
         j_meca5 = Jugador(nombre="Verena Holmes", genero=Genero.femenino, estrellas=0, departamento_id=deptos_obj["Mecánica"].id)
         j_meca6 = Jugador(nombre="Margaret Ingels", genero=Genero.femenino, estrellas=0, departamento_id=deptos_obj["Mecánica"].id)
  
+        # Industrias
+        j_ind1 = Jugador(nombre="Henry Ford", genero=Genero.masculino, estrellas=2, departamento_id=deptos_obj["Industrias"].id)
+        j_ind2 = Jugador(nombre="Frederick Taylor", genero=Genero.masculino, estrellas=1, departamento_id=deptos_obj["Industrias"].id)
+        j_ind3 = Jugador(nombre="Lillian Gilbreth", genero=Genero.femenino, estrellas=3, departamento_id=deptos_obj["Industrias"].id)
+        j_ind4 = Jugador(nombre="Taiichi Ohno", genero=Genero.masculino, estrellas=0, departamento_id=deptos_obj["Industrias"].id)
+        j_ind5 = Jugador(nombre="Mary Parker", genero=Genero.femenino, estrellas=1, departamento_id=deptos_obj["Industrias"].id)
+        j_ind6 = Jugador(nombre="Elton Mayo", genero=Genero.masculino, estrellas=0, departamento_id=deptos_obj["Industrias"].id)
+
+        # Matemática
+        j_mat1 = Jugador(nombre="Alan Turing", genero=Genero.masculino, estrellas=3, departamento_id=deptos_obj["Matemática"].id)
+        j_mat2 = Jugador(nombre="Emmy Noether", genero=Genero.femenino, estrellas=2, departamento_id=deptos_obj["Matemática"].id)
+        j_mat3 = Jugador(nombre="Carl Gauss", genero=Genero.masculino, estrellas=1, departamento_id=deptos_obj["Matemática"].id)
+        j_mat4 = Jugador(nombre="Sofia Kovalevskaya", genero=Genero.femenino, estrellas=2, departamento_id=deptos_obj["Matemática"].id)
+        j_mat5 = Jugador(nombre="Leonhard Euler", genero=Genero.masculino, estrellas=0, departamento_id=deptos_obj["Matemática"].id)
+        j_mat6 = Jugador(nombre="Hypatia de Alejandría", genero=Genero.femenino, estrellas=0, departamento_id=deptos_obj["Matemática"].id)
+
+        # Física-Astronomía
+        j_fis1 = Jugador(nombre="Galileo Galilei", genero=Genero.masculino, estrellas=1, departamento_id=deptos_obj["Física-Astronomía"].id)
+        j_fis2 = Jugador(nombre="Vera Rubin", genero=Genero.femenino, estrellas=2, departamento_id=deptos_obj["Física-Astronomía"].id)
+        j_fis3 = Jugador(nombre="Max Planck", genero=Genero.masculino, estrellas=2, departamento_id=deptos_obj["Física-Astronomía"].id)
+        j_fis4 = Jugador(nombre="Chien-Shiung Wu", genero=Genero.femenino, estrellas=1, departamento_id=deptos_obj["Física-Astronomía"].id)
+        j_fis5 = Jugador(nombre="Niels Bohr", genero=Genero.masculino, estrellas=0, departamento_id=deptos_obj["Física-Astronomía"].id)
+        j_fis6 = Jugador(nombre="Lise Meitner", genero=Genero.femenino, estrellas=0, departamento_id=deptos_obj["Física-Astronomía"].id)
+
         db.add_all([
             j_civil1, j_civil2, j_civil3, j_civil4, j_civil5, j_civil6,
             j_comp1, j_comp2, j_comp3, j_comp4, j_comp5, j_comp6,
             j_elec1, j_elec2, j_elec3, j_elec4, j_elec5, j_elec6,
-            j_meca1, j_meca2, j_meca3, j_meca4, j_meca5, j_meca6
+            j_meca1, j_meca2, j_meca3, j_meca4, j_meca5, j_meca6,
+            j_ind1, j_ind2, j_ind3, j_ind4, j_ind5, j_ind6,
+            j_mat1, j_mat2, j_mat3, j_mat4, j_mat5, j_mat6,
+            j_fis1, j_fis2, j_fis3, j_fis4, j_fis5, j_fis6
         ])
         
         db.commit()
