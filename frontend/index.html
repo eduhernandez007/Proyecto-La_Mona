@@ -629,6 +629,54 @@
       font-size: 1.05rem;
     }
 
+    /* ─── Brackets (Llaves del Torneo) ─── */
+    .bracket-container {
+      display: flex;
+      flex-direction: row;
+      gap: 40px;
+      padding: 10px 0 20px 0;
+      min-width: 600px;
+    }
+    .bracket-round {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-around;
+      gap: 20px;
+      flex: 1;
+    }
+    .bracket-match {
+      background: rgba(15, 23, 42, 0.6);
+      border: 1px solid var(--border-card);
+      border-radius: 8px;
+      overflow: hidden;
+      width: 100%;
+      min-width: 180px;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+      position: relative;
+    }
+    .bracket-team {
+      display: flex;
+      justify-content: space-between;
+      padding: 10px 14px;
+      font-size: 0.85rem;
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+      color: var(--text-secondary);
+      transition: var(--transition-fast);
+    }
+    .bracket-team:last-child {
+      border-bottom: none;
+    }
+    .bracket-team.winner {
+      font-weight: 700;
+      color: var(--text-primary);
+      background: rgba(16, 185, 129, 0.15);
+      border-left: 3px solid var(--color-success);
+    }
+    .bracket-score {
+      font-weight: 700;
+      font-family: var(--font-headings);
+    }
+
     /* ─── Animaciones ─── */
     @keyframes fadeIn {
       from { opacity: 0; transform: translateY(8px); }
@@ -764,6 +812,14 @@
 
   <!-- SECCIÓN 2: BÁSQUETBOL -->
   <section id="sec-basquetbol" class="section">
+    <!-- Llaves del Torneo -->
+    <div class="card" style="margin-bottom: 24px; overflow-x: auto;">
+      <h2>🏆 Llaves del Torneo (Brackets)</h2>
+      <div class="bracket-container" id="bracket-container">
+        <p style="color: var(--text-secondary); font-size: 0.9rem;">Cargando brackets...</p>
+      </div>
+    </div>
+
     <!-- Formularios de creación (Organizador únicamente) -->
     <div class="grid-2 admin-or-student-center-visible" id="basquet-admin-forms">
       <div class="card">
@@ -1831,6 +1887,78 @@
         `;
       }).join("");
     }
+    
+    renderBrackets();
+  }
+
+  // Render Bracket Tree
+  function renderBrackets() {
+    const container = document.getElementById('bracket-container');
+    if (!container) return;
+
+    const phases = ["Cuartos de Final", "Semifinal", "Final"];
+    
+    // Agrupar los partidos por fase
+    const grouped = {
+      "Cuartos de Final": [],
+      "Semifinal": [],
+      "Final": []
+    };
+    
+    state.partidos.forEach(p => {
+      if (phases.includes(p.fase)) {
+        grouped[p.fase].push(p);
+      }
+    });
+
+    // Si no hay partidos en ninguna de estas fases
+    if (phases.every(p => grouped[p].length === 0)) {
+      container.innerHTML = '<p style="color: var(--text-secondary); font-size: 0.9rem;">Aún no hay partidos programados para las fases eliminatorias.</p>';
+      return;
+    }
+
+    let html = '';
+    phases.forEach(phase => {
+      // Dibujar la columna de la fase
+      html += `<div class="bracket-round">`;
+      html += `<h3 style="text-align: center; font-size: 0.9rem; color: var(--text-muted); margin-bottom: 5px;">${phase}</h3>`;
+      
+      if (grouped[phase].length === 0) {
+        html += `<div class="bracket-match" style="opacity: 0.5;"><div class="bracket-team" style="justify-content: center; color: var(--text-muted);">Por definir</div></div>`;
+      } else {
+        grouped[phase].forEach(match => {
+          const localWinner = (match.estado === 'jugado' && match.puntos_local > match.puntos_visitante) || (match.estado === 'wo' && match.puntos_local > match.puntos_visitante);
+          const visWinner = (match.estado === 'jugado' && match.puntos_visitante > match.puntos_local) || (match.estado === 'wo' && match.puntos_visitante > match.puntos_local);
+          
+          let scoreL = '-';
+          let scoreV = '-';
+          if (match.estado === 'jugado') {
+            scoreL = match.puntos_local;
+            scoreV = match.puntos_visitante;
+          } else if (match.estado === 'wo') {
+            scoreL = localWinner ? 'W' : 'L';
+            scoreV = visWinner ? 'W' : 'L';
+          }
+
+          html += `
+            <div class="bracket-match">
+              <div class="bracket-team ${localWinner ? 'winner' : ''}">
+                <span>${match.nombre_local}</span>
+                <span class="bracket-score">${scoreL}</span>
+              </div>
+              <div class="bracket-team ${visWinner ? 'winner' : ''}">
+                <span>${match.nombre_visitante}</span>
+                <span class="bracket-score">${scoreV}</span>
+              </div>
+            </div>
+          `;
+        });
+      }
+      
+      html += `</div>`;
+    });
+
+    container.innerHTML = html;
   }
 
   // 3. Equipos Básquetbol
