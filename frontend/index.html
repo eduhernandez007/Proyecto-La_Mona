@@ -997,7 +997,6 @@
               <th>Nombre del Equipo</th>
               <th>Departamento</th>
               <th>Jugadores Inscritos</th>
-              <th style="text-align: right;">Estrellas en Cancha</th>
               <th class="admin-or-student-center-visible-col" style="text-align: center; width: 60px;">🗑️</th>
             </tr>
           </thead>
@@ -1996,7 +1995,6 @@
           <td><strong style="color: white;">${e.nombre}</strong><br><span style="font-size:0.78rem; color: #fbbf24;">© ${capitanInfo}</span></td>
           <td>${deptoName}</td>
           <td style="white-space: normal;">${jugadoresHtml}</td>
-          <td style="text-align: right;" class="stars-indicator">${"★".repeat(totalEstrellas)}${"☆".repeat(Math.max(0, 5 - totalEstrellas))} (${totalEstrellas}/5)</td>
           <td class="admin-or-student-center-visible-col" style="text-align: center;">
             <button class="btn btn-danger" style="padding: 4px 8px; font-size: 0.8rem;" onclick="eliminarEquipo(${e.id})" title="Eliminar Equipo">✖</button>
           </td>
