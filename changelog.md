@@ -92,5 +92,13 @@ Este documento resume los cambios y mejoras implementados recientemente en el pr
     - Se actualizó el formulario "📝 Registrar Marca" para requerir la selección de la competencia organizada, filtrando dinámicamente las competencias para mostrar únicamente las de la misma categoría que el participante seleccionado.
     - Se actualizó el listado general de marcas de los competidores para mostrar el nombre del evento/competencia en el que se obtuvo.
 
-
-
+- **Mejoras en la UI del Frontend:**
+  - Se implementó dinámicamente un visualizador de **Llaves del Torneo (Brackets)** en `frontend/index.html`. Esta tabla escanea partidos en fases de `Clasificación`, `Semifinales` y `Final`, mostrando visualmente quién avanza y destacando al ganador (sea por puntaje en cancha o por W.O.).
+  - Se modificó la disposición de la interfaz de Básquetbol para colocar la Tabla de Posiciones de la Fase de Grupos justo encima de los Brackets, mejorando el flujo narrativo del torneo.
+  - Se eliminó la columna obsoleta "Estrellas en Cancha" de la tabla de visualización de equipos, dado que esta validación se hace dinámicamente sobre los titulares de los partidos.
+- **Correcciones y Refinamiento del Backend y Base de Datos:**
+  - Se parcheó la función `seed_data()` en `backend/app/main.py`. Originalmente abortaba la siembra si encontraba al menos 1 departamento; ahora revisa la base de datos departamento por departamento e inyecta los que falten, permitiendo la inserción exitosa de Industrias, Matemática y Física-Astronomía en instalaciones ya existentes.
+  - Se agregaron a `seed_data()` un total de 18 jugadores nuevos (6 por cada departamento faltante) para equilibrar los datos semilla (ej. *Alan Turing* en Matemáticas, *Henry Ford* en Industrias, *Galileo Galilei* en Física).
+  - Se eliminaron por saneamiento de la base de datos inscripciones antiguas o corrompidas (jugadores sin departamentos asignados).
+  - **Creación de Dream Teams:** Se automatizó en la base de datos local la creación de los "Dream Teams" para todos los departamentos faltantes (Física-Astronomía, Industrias, Matemática, Mecánica). Cada equipo incluye a todos los estudiantes de su respectivo departamento y asigna automáticamente como capitán al jugador con más estrellas.
+  - Se subió excepcionalmente (mediante push forzado ignorando el `.gitignore`) el archivo de base de datos `lamona.db` a GitHub, para garantizar que todos los desarrolladores tengan acceso inmediato a los datos, usuarios de prueba y los Dream Teams recién configurados, agilizando el proceso de presentación en vivo.
