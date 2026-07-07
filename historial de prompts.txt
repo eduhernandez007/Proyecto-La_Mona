@@ -312,3 +312,83 @@ Agente: Antigravity CLI
     - Creación y ejecución de `populate_calistenia.py` para identificar a los jugadores con exactamente 3 estrellas.
     - Registro de dichos jugadores como participantes, separación en categorías masculina y femenina, y matriculación automática en un par de competencias organizadas.
     - Generación aleatoria de puntajes realistas para los ejercicios aplicables a cada categoría y guardado de todas las marcas en la BD.
+
+[PROMPT 15]
+"Lo primero que quiero que hagas es que revises el proyecto y evalúes si cumple con lo pedido en el enunciado."
+--> Cambios Realizados:
+    - Revisión y auditoría del proyecto para evaluar el cumplimiento de reglas y base de datos.
+
+[PROMPT 16]
+"Primero crea el validador calistenia como dijiste."
+--> Cambios Realizados:
+    - Creación de las reglas de negocio y restricciones de género para el router y modelo de Calistenia.
+
+[PROMPT 17]
+"Quiero modificar las limitaciones al ingresar jugadores al equipo... límite para agregar jugadores sea 12 por equipo... en agendar partido se definirán los jugadores titulares limitados por las 5 estrellas en cancha... Cada equipo debe tener mínimo 5 jugadores, 2 de cada género y tener un capitán."
+--> Cambios Realizados:
+    - Modificación de los validadores en `routers/equipos.py` y `routers/partidos.py`.
+
+[PROMPT 18]
+"No se puede permitir que se programe un partido si el equipo no tiene un capitán, además el equipo titular tiene que ser de mínimo 5 jugadores."
+--> Cambios Realizados:
+    - Modificación de la lógica del POST de Partidos.
+
+[PROMPT 19]
+"Agrega una restricción para que un jugador solo pueda ser agregado a un equipo si el equipo y el jugador son del mismo departamento, además restringe la existencia de 1 equipo por departamento."
+--> Cambios Realizados:
+    - Ajuste en el validador de `equipos.py` durante la matriculación.
+
+[PROMPT 20]
+"Implementa el sistema de desempate en la fase de grupos como pide el enunciado."
+--> Cambios Realizados:
+    - Desarrollo del algoritmo de desempate en `services/puntajes.py`.
+
+[PROMPT 21]
+"Automatiza la migración [de la base de datos]."
+--> Cambios Realizados:
+    - Modificación de `main.py` para automatizar la actualización de base de datos (`Alembic`) al arrancar el servidor.
+
+[PROMPT 22]
+"Procede a mejorar el frontend, considera agregar una sección en donde se puedan ver los partidos que ya han sido jugados junto con sus resultados."
+--> Cambios Realizados:
+    - Inserción de la tabla de partidos históricos en `frontend/index.html`.
+
+[PROMPT 23]
+"Quiero que haya una forma de eliminar jugadores, departamentos, equipos... mejorar la forma de insertar la fecha para los partidos."
+--> Cambios Realizados:
+    - Creación de los endpoints `DELETE` en el backend e implementación de botones en JavaScript.
+
+[PROMPT 24]
+"Agrega una manera de poder ver los jugadores de cada equipo y la opción de quitarlos."
+--> Cambios Realizados:
+    - Modificación de la función `renderEquipos()` en `app.js` e `index.html`.
+
+[PROMPT 25]
+"Hay alguna manera de implementar una tabla donde se vean los brackets [llaves] de los partidos desde los cuartos de final hasta la final mostrando quien pasa y quien no? Impleméntalo."
+--> Cambios Realizados:
+    - Construcción visual dinámica (CSS Grid/Flexbox) de las Llaves del Torneo (Brackets) que leen la variable `fase` de los partidos.
+
+[PROMPT 26]
+"Quiero que la tabla de posiciones de la fase de grupos salga encima de la tabla de los brackets."
+--> Cambios Realizados:
+    - Refactorización visual de secciones en `index.html`.
+
+[PROMPT 27]
+"En los equipos registrados quita donde dice estrellas en cancha ya que eso ahora se define al seleccionar el equipo titular."
+--> Cambios Realizados:
+    - Refactorización visual de la tabla de visualización de equipos en `index.html`.
+
+[PROMPT 28]
+"Hay una inscripción pendiente que no tiene departamento por lo que no puede ser aprobada, elimínala."
+--> Cambios Realizados:
+    - Saneamiento directo mediante script en Python sobre `lamona.db` para resolver inconsistencias.
+
+[PROMPT 29]
+"Crea un equipo para cada departamento con el nombre 'Dream Team [Nombre]'... mete a todos los alumnos... asigna como capitán al que tenga más estrellas de ese equipo, ojo que no quiero que cambies algo del código, simplemente ahorrarme el tiempo de crear yo los equipos."
+--> Cambios Realizados:
+    - Uso de un script en Python para inyectar los Dream Teams directamente sobre la base de datos local `lamona.db`.
+
+[PROMPT 30]
+"Haz un .md que se llame changelog donde se pueda ver el resumen de cambios que se hicieron."
+--> Cambios Realizados:
+    - Documentación y ejecución automática de commits directos a GitHub desde la terminal del IDE.

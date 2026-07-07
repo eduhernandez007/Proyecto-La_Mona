@@ -125,13 +125,25 @@ def aprobar_inscripcion(
     inscripcion_id: int, data: AccionInscripcion, db: Session = Depends(get_db)
 ):
     """El centro de estudiantes aprueba la solicitud."""
-    _validar_usuario_con_rol(data.usuario_id, RolUsuario.centro_estudiantes, db)
+    usuario = _validar_usuario_con_rol(data.usuario_id, RolUsuario.centro_estudiantes, db)
     
     inscripcion = db.get(Inscripcion, inscripcion_id)
     if not inscripcion:
         raise HTTPException(status_code=404, detail="Inscripción no encontrada")
     
     jugador = inscripcion.jugador
+    
+    # Validar que el centro de estudiantes pertenece al departamento correcto
+    if inscripcion.competencia == "calistenia":
+        dept_id_objetivo = jugador.departamento_id
+    else:
+        dept_id_objetivo = inscripcion.equipo.departamento_id
+        
+    if usuario.departamento_id != dept_id_objetivo:
+        raise HTTPException(
+            status_code=403, 
+            detail="Solo puedes aprobar inscripciones para equipos/jugadores de tu mismo departamento"
+        )
     
     if inscripcion.competencia == "calistenia":
         from app.models.calistenia import ParticipanteCalistenia, CategoriaCalistenia
@@ -174,5 +186,21 @@ def rechazar_inscripcion(
     inscripcion_id: int, data: AccionInscripcion, db: Session = Depends(get_db)
 ):
     """El centro de estudiantes rechaza la solicitud."""
-    _validar_usuario_con_rol(data.usuario_id, RolUsuario.centro_estudiantes, db)
+    usuario = _validar_usuario_con_rol(data.usuario_id, RolUsuario.centro_estudiantes, db)
+    
+    inscripcion = db.get(Inscripcion, inscripcion_id)
+    if not inscripcion:
+        raise HTTPException(status_code=404, detail="Inscripción no encontrada")
+        
+    if inscripcion.competencia == "calistenia":
+        dept_id_objetivo = inscripcion.jugador.departamento_id
+    else:
+        dept_id_objetivo = inscripcion.equipo.departamento_id
+        
+    if usuario.departamento_id != dept_id_objetivo:
+        raise HTTPException(
+            status_code=403, 
+            detail="Solo puedes rechazar inscripciones para equipos/jugadores de tu mismo departamento"
+        )
+        
     return _cambiar_estado(inscripcion_id, EstadoInscripcion.rechazada, db)

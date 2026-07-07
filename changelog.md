@@ -30,14 +30,23 @@ Este documento resume los cambios y mejoras implementados recientemente en el pr
     2. `DELETE /calistenia/participantes/{id}`: Para borrar a un participante completo junto con todas sus marcas.
   - En el frontend, se agregó un botón **✖** al lado de cada marca individual de calistenia, y una nueva columna en la tabla con un botón para eliminar al participante completo.
   - Ambos botones están protegidos por CSS/JS para que **solo sean visibles** para usuarios con rol de `organizador` o `juez`.
+  - Se agregó una validación estricta para evitar la inscripción de un mismo jugador múltiples veces en la competencia de Calistenia.
+
+## 📋 Inscripciones y Gestión de Usuarios
+- **Validación de Departamento en Inscripciones:**
+  - El backend ahora verifica estrictamente que los usuarios con rol de `centro_estudiantes` pertenezcan al mismo departamento del equipo (o jugador de calistenia) cuyas inscripciones intentan aprobar o rechazar (evitando que puedan gestionar equipos ajenos).
+
+## 🐳 Docker y Despliegue
+- **Servicio de Frontend agregado:**
+  - Se añadió el servicio `frontend` al archivo `docker-compose.yml` utilizando una imagen ligera de Nginx (`nginx:alpine`).
+  - Esto permite que tanto el backend (en el puerto 8000) como la interfaz de usuario (en el puerto 8080) se levanten simultáneamente con un solo comando `docker-compose up`, cumpliendo con el requisito de contenerización completo.
 
 ## ⚙️ Base de Datos y Sistema
-- **Sincronización del esquema de la Base de Datos:**
-  - Se detectaron errores 500 debido a que SQLAlchemy no aplica cambios de columnas a tablas ya existentes en SQLite.
-  - Se desarrolló un script de migración temporal (`migrate_all.py`) que utilizó sentencias `ALTER TABLE` para agregar las columnas faltantes:
-    - Columna `fase` en la tabla `partidos` (default: `'Fase de Grupos'`).
-    - Columna `clave` en la tabla `usuarios` (default: `'1234'`).
-  - Esto resolvió los errores al cargar la tabla de puntajes y al iniciar sesión.
+- **Sincronización y Migraciones Automáticas (Alembic):**
+  - Se reemplazó el uso del script manual temporal (`migrate_all.py`) integrando de forma nativa **Alembic** para la gestión de migraciones de SQLAlchemy.
+  - La aplicación ahora ejecuta automáticamente `alembic upgrade head` durante su arranque en `backend/app/main.py` (reemplazando al antiguo `Base.metadata.create_all`).
+  - Esto garantiza que al levantar el proyecto desde cero (ej. vía Docker), las tablas nuevas y modificaciones en columnas (`fase`, `clave`, `lugar`, `competencia`, etc.) se generen y apliquen automáticamente sin requerir intervención manual.
+  - Se agregó `alembic` a las dependencias en `requirements.txt`.
 
 ## 📊 Estado de los Tests
 - Todos los tests automatizados (31 en total) se encuentran pasando tras estos cambios, confirmando que las reglas de negocio (estrellas, géneros, mínimos de jugadores) no fueron afectadas negativamente.
@@ -83,5 +92,13 @@ Este documento resume los cambios y mejoras implementados recientemente en el pr
     - Se actualizó el formulario "📝 Registrar Marca" para requerir la selección de la competencia organizada, filtrando dinámicamente las competencias para mostrar únicamente las de la misma categoría que el participante seleccionado.
     - Se actualizó el listado general de marcas de los competidores para mostrar el nombre del evento/competencia en el que se obtuvo.
 
-
-
+- **Mejoras en la UI del Frontend:**
+  - Se implementó dinámicamente un visualizador de **Llaves del Torneo (Brackets)** en `frontend/index.html`. Esta tabla escanea partidos en fases de `Clasificación`, `Semifinales` y `Final`, mostrando visualmente quién avanza y destacando al ganador (sea por puntaje en cancha o por W.O.).
+  - Se modificó la disposición de la interfaz de Básquetbol para colocar la Tabla de Posiciones de la Fase de Grupos justo encima de los Brackets, mejorando el flujo narrativo del torneo.
+  - Se eliminó la columna obsoleta "Estrellas en Cancha" de la tabla de visualización de equipos, dado que esta validación se hace dinámicamente sobre los titulares de los partidos.
+- **Correcciones y Refinamiento del Backend y Base de Datos:**
+  - Se parcheó la función `seed_data()` en `backend/app/main.py`. Originalmente abortaba la siembra si encontraba al menos 1 departamento; ahora revisa la base de datos departamento por departamento e inyecta los que falten, permitiendo la inserción exitosa de Industrias, Matemática y Física-Astronomía en instalaciones ya existentes.
+  - Se agregaron a `seed_data()` un total de 18 jugadores nuevos (6 por cada departamento faltante) para equilibrar los datos semilla (ej. *Alan Turing* en Matemáticas, *Henry Ford* en Industrias, *Galileo Galilei* en Física).
+  - Se eliminaron por saneamiento de la base de datos inscripciones antiguas o corrompidas (jugadores sin departamentos asignados).
+  - **Creación de Dream Teams:** Se automatizó en la base de datos local la creación de los "Dream Teams" para todos los departamentos faltantes (Física-Astronomía, Industrias, Matemática, Mecánica). Cada equipo incluye a todos los estudiantes de su respectivo departamento y asigna automáticamente como capitán al jugador con más estrellas.
+  - Se subió excepcionalmente (mediante push forzado ignorando el `.gitignore`) el archivo de base de datos `lamona.db` a GitHub, para garantizar que todos los desarrolladores tengan acceso inmediato a los datos, usuarios de prueba y los Dream Teams recién configurados, agilizando el proceso de presentación en vivo.
