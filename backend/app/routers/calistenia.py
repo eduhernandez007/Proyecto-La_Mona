@@ -4,6 +4,7 @@ from app.database import get_db
 from app.models.calistenia import (
     ParticipanteCalistenia,
     ResultadoCalistenia,
+    CompetenciaCalistenia,
     PRUEBAS_POR_CATEGORIA,
 )
 from app.models.jugador import Jugador
@@ -11,11 +12,39 @@ from app.models.departamento import Departamento
 from app.schemas.calistenia import (
     ParticipanteCreate,
     ParticipanteRead,
+    CompetenciaCalisteniaCreate,
+    CompetenciaCalisteniaRead,
     ResultadoCreate,
     ResultadoRead,
 )
 
 router = APIRouter(prefix="/calistenia", tags=["Calistenia"])
+
+
+# ─── Competencias ─────────────────────────────────────────────────────────────
+
+@router.get("/competencias", response_model=list[CompetenciaCalisteniaRead])
+def listar_competencias(db: Session = Depends(get_db)):
+    return db.query(CompetenciaCalistenia).all()
+
+
+@router.post("/competencias", response_model=CompetenciaCalisteniaRead, status_code=201)
+def registrar_competencia(data: CompetenciaCalisteniaCreate, db: Session = Depends(get_db)):
+    competencia = CompetenciaCalistenia(**data.model_dump())
+    db.add(competencia)
+    db.commit()
+    db.refresh(competencia)
+    return competencia
+
+
+@router.delete("/competencias/{competencia_id}", status_code=204)
+def eliminar_competencia(competencia_id: int, db: Session = Depends(get_db)):
+    competencia = db.get(CompetenciaCalistenia, competencia_id)
+    if not competencia:
+        raise HTTPException(status_code=404, detail="Competencia no encontrada")
+    db.delete(competencia)
+    db.commit()
+    return None
 
 
 # ─── Participantes ────────────────────────────────────────────────────────────
@@ -55,23 +84,51 @@ def registrar_resultado(data: ResultadoCreate, db: Session = Depends(get_db)):
     if not participante:
         raise HTTPException(status_code=404, detail="Participante no encontrado")
 
-    if data.valor < 0:
-        raise HTTPException(status_code=400, detail="El valor no puede ser negativo")
+    competencia = db.get(CompetenciaCalistenia, data.competencia_id)
+    if not competencia:
+        raise HTTPException(status_code=404, detail="Competencia no encontrada")
 
-    # Validamos que la prueba corresponda a la categoría del participante.
-    # Esto cubre la regla: hang_hold solo para F, muscle_ups solo para M.
-    pruebas_validas = PRUEBAS_POR_CATEGORIA[participante.categoria]
-    if data.prueba not in pruebas_validas:
+    if participante.categoria != competencia.categoria:
         raise HTTPException(
             status_code=400,
-            detail=(
-                f"La prueba '{data.prueba.value}' no está permitida para la "
-                f"categoría {participante.categoria.value}."
-            ),
+            detail=f"El participante es de categoría '{participante.categoria.value}' pero la competencia es de categoría '{competencia.categoria.value}'"
         )
+
+    from app.services.validaciones import ValidadorCalistenia
+    validador = ValidadorCalistenia()
+
+    error_valor = validador.validar_valor(data.valor)
+    if error_valor:
+        raise HTTPException(status_code=400, detail=error_valor)
+
+    error_prueba = validador.validar_prueba(participante.categoria, data.prueba)
+    if error_prueba:
+        raise HTTPException(status_code=400, detail=error_prueba)
 
     resultado = ResultadoCalistenia(**data.model_dump())
     db.add(resultado)
     db.commit()
     db.refresh(resultado)
     return resultado
+
+
+@router.delete("/resultados/{resultado_id}", status_code=204)
+def eliminar_resultado(resultado_id: int, db: Session = Depends(get_db)):
+    """Elimina una marca/resultado de calistenia."""
+    resultado = db.get(ResultadoCalistenia, resultado_id)
+    if not resultado:
+        raise HTTPException(status_code=404, detail="Resultado no encontrado")
+    db.delete(resultado)
+    db.commit()
+    return None
+
+
+@router.delete("/participantes/{participante_id}", status_code=204)
+def eliminar_participante(participante_id: int, db: Session = Depends(get_db)):
+    """Elimina un participante de calistenia y todas sus marcas (cascade)."""
+    participante = db.get(ParticipanteCalistenia, participante_id)
+    if not participante:
+        raise HTTPException(status_code=404, detail="Participante no encontrado")
+    db.delete(participante)
+    db.commit()
+    return None

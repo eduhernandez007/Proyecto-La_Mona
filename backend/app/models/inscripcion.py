@@ -21,14 +21,15 @@ class Inscripcion(Base):
 
     id: Mapped[int] = mapped_column(primary_key=True)
     jugador_id: Mapped[int] = mapped_column(ForeignKey("jugadores.id"), nullable=False)
-    equipo_id: Mapped[int] = mapped_column(ForeignKey("equipos.id"), nullable=False)
+    equipo_id: Mapped[int | None] = mapped_column(ForeignKey("equipos.id"), nullable=True)
+    competencia: Mapped[str] = mapped_column(String(50), default="basquet", nullable=False)
     estado: Mapped[EstadoInscripcion] = mapped_column(
         Enum(EstadoInscripcion), default=EstadoInscripcion.pendiente
     )
     creado_en: Mapped[str] = mapped_column(String(50), default=func.now())
 
     jugador: Mapped["Jugador"] = relationship()
-    equipo: Mapped["Equipo"] = relationship()
+    equipo: Mapped["Equipo | None"] = relationship()
 
     def __repr__(self) -> str:
-        return f"Inscripcion(id={self.id}, jugador={self.jugador_id}, equipo={self.equipo_id}, estado={self.estado})"
+        return f"Inscripcion(id={self.id}, jugador={self.jugador_id}, equipo={self.equipo_id}, competencia={self.competencia!r}, estado={self.estado})"

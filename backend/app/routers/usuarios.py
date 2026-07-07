@@ -3,7 +3,7 @@ from sqlalchemy.orm import Session
 from app.database import get_db
 from app.models.usuario import Usuario
 from app.models.departamento import Departamento
-from app.schemas.usuario import UsuarioCreate, UsuarioRead
+from app.schemas.usuario import UsuarioCreate, UsuarioRead, LoginRequest, LoginResponse
 
 router = APIRouter(prefix="/usuarios", tags=["Usuarios"])
 
@@ -24,4 +24,28 @@ def crear_usuario(data: UsuarioCreate, db: Session = Depends(get_db)):
     db.add(usuario)
     db.commit()
     db.refresh(usuario)
+    return usuario
+
+
+@router.post("/login", response_model=LoginResponse)
+def login(data: LoginRequest, db: Session = Depends(get_db)):
+    """
+    Autentica un usuario por nombre y clave.
+    Retorna los datos del usuario si las credenciales son correctas.
+    """
+    import re
+    # Buscar el usuario de forma insensible a mayúsculas/minúsculas usando casefold()
+    # y removiendo cualquier contenido entre paréntesis en el nombre almacenado
+    usuarios = db.query(Usuario).all()
+    usuario = None
+    for u in usuarios:
+        db_nombre_limpio = re.sub(r"\s*\(.*?\)\s*", "", u.nombre).strip().casefold()
+        if db_nombre_limpio == data.nombre.strip().casefold():
+            usuario = u
+            break
+    
+    if not usuario:
+        raise HTTPException(status_code=401, detail="Usuario no encontrado. Verifica tu nombre.")
+    if usuario.clave != data.clave:
+        raise HTTPException(status_code=401, detail="Clave incorrecta.")
     return usuario

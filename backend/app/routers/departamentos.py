@@ -22,3 +22,13 @@ def crear_departamento(data: DepartamentoCreate, db: Session = Depends(get_db)):
     db.commit()
     db.refresh(dept)
     return dept
+
+
+@router.delete("/{departamento_id}", status_code=204)
+def eliminar_departamento(departamento_id: int, db: Session = Depends(get_db)):
+    dept = db.get(Departamento, departamento_id)
+    if not dept:
+        raise HTTPException(status_code=404, detail="Departamento no encontrado")
+    db.delete(dept)
+    db.commit()
+    return None

@@ -1,0 +1,87 @@
+# Changelog — Proyecto La Mona
+
+**Generado el:** 28 de Junio de 2026, 03:59 (GMT-4)
+
+Este documento resume los cambios y mejoras implementados recientemente en el proyecto.
+
+## 🌟 Actualizaciones Recientes (2 de Julio de 2026)
+- **Gestión de Lugares (Canchas y Patios):**
+  - Se agregó el campo `lugar` de forma opcional a los modelos y esquemas de la base de datos de Partidos.
+  - La interfaz de Básquetbol ahora permite asignar el lugar del partido a través de una lista desplegable ("Cancha de 850" o "Cancha -3 de 851").
+  - La interfaz de Calistenia reemplazó el campo de texto libre por una lista desplegable con las opciones permitidas ("Patio de calistenia de 850" o "Gimnasio -3 de 851").
+  - Las tablas de *Partidos Programados* y *Resultados* fueron actualizadas para mostrar esta nueva columna de `Lugar`.
+- **Torneo Demostrativo (Básquetbol):**
+  - Se generó un script (`populate_tournament.py`) que puebla la base de datos con un torneo simulado completo que incluye fase de grupos y semifinales, dejando programada la gran final entre **Eléctrica** y **Mecánica** para el día de mañana a las 12:00 hrs.
+- **Torneo de Estrellas (Calistenia):**
+  - Se ejecutó un script automático (`populate_calistenia.py`) para matricular a todos los jugadores de élite (3 estrellas) en torneos de Calistenia (categorías Masculina y Femenina) y poblar sus respectivas marcas y resultados.
+
+## 🏀 Básquetbol y Partidos
+- **Nueva funcionalidad de eliminación de partidos:** 
+  - Se agregó el endpoint `DELETE /partidos/{id}` en el backend para permitir eliminar un partido y sus titulares asociados de la base de datos de manera segura.
+  - Se implementó un botón **✖ Eliminar** en la interfaz web (tanto en partidos pendientes como jugados), visible únicamente para el rol `organizador`.
+  - Se agregó confirmación preventiva (JS) antes de eliminar un partido.
+- **Limpieza de código muerto:** 
+  - Se eliminaron los archivos `backend/app/services/tabla_grupos.py` y `backend/tests/test_tabla_grupos.py` ya que su funcionalidad fue centralizada de mejor forma en `CalculadoraPuntajes` (soporte multi-fase).
+
+## 💪 Calistenia
+- **Nueva funcionalidad de eliminación de marcas y participantes:**
+  - Se agregaron dos endpoints en el backend (`calistenia.py`):
+    1. `DELETE /calistenia/resultados/{id}`: Para borrar una marca específica registrada por error.
+    2. `DELETE /calistenia/participantes/{id}`: Para borrar a un participante completo junto con todas sus marcas.
+  - En el frontend, se agregó un botón **✖** al lado de cada marca individual de calistenia, y una nueva columna en la tabla con un botón para eliminar al participante completo.
+  - Ambos botones están protegidos por CSS/JS para que **solo sean visibles** para usuarios con rol de `organizador` o `juez`.
+
+## ⚙️ Base de Datos y Sistema
+- **Sincronización del esquema de la Base de Datos:**
+  - Se detectaron errores 500 debido a que SQLAlchemy no aplica cambios de columnas a tablas ya existentes en SQLite.
+  - Se desarrolló un script de migración temporal (`migrate_all.py`) que utilizó sentencias `ALTER TABLE` para agregar las columnas faltantes:
+    - Columna `fase` en la tabla `partidos` (default: `'Fase de Grupos'`).
+    - Columna `clave` en la tabla `usuarios` (default: `'1234'`).
+  - Esto resolvió los errores al cargar la tabla de puntajes y al iniciar sesión.
+
+## 📊 Estado de los Tests
+- Todos los tests automatizados (31 en total) se encuentran pasando tras estos cambios, confirmando que las reglas de negocio (estrellas, géneros, mínimos de jugadores) no fueron afectadas negativamente.
+
+## 🛠️ Nuevos Departamentos y Jugadores (30 de Junio de 2026)
+- **Creación del departamento de Mecánica:**
+  - Se agregó el departamento **Mecánica** (ID: 7) a las bases de datos `lamona.db` (en el directorio raíz y en el directorio `backend`).
+  - Se crearon 6 jugadores asignados al nuevo departamento con un total combinado de exactamente **5 estrellas**:
+    1. Nikolaus Otto (Masculino, 2 estrellas)
+    2. Rudolf Diesel (Masculino, 1 estrella)
+    3. Kate Gleason (Femenino, 1 estrella)
+    4. James Watt (Masculino, 1 estrella)
+    5. Verena Holmes (Femenino, 0 estrellas)
+    6. Margaret Ingels (Femenino, 0 estrellas)
+  - Se crearon cuentas de usuario para el departamento:
+    - `Centro Mecánica` (rol: `centro_estudiantes`, clave: `1234`)
+    - `Nikolaus Otto (Jugador Mecánica)` (rol: `jugador`, clave: `1234`)
+- **Actualización de las semillas (Seed Data):**
+  - Se modificó la función `seed_data()` en `backend/app/main.py` para asegurar que el departamento de **Mecánica**, sus usuarios y sus jugadores se creen automáticamente al inicializar la base de datos desde cero.
+- **Validación del sistema:**
+  - Se ejecutaron los tests automatizados (`pytest`) para asegurar la integridad de las reglas de negocio, logrando que los 31 tests pasen correctamente.
+- **Corrección de carga infinita en el frontend (Error 500 en `/jugadores/`):**
+  - Se corrigió un error HTTP 500 en el endpoint `/jugadores/` que provocaba que la pantalla de carga del frontend se quedara congelada. El error era causado por el formato del campo `genero` en los nuevos jugadores agregados por SQL directo (se insertaron valores `'M'` / `'F'` en lugar de los nombres del Enum `'masculino'` / `'femenino'`). Se actualizaron los registros correspondientes en las bases de datos `lamona.db` de raíz y `backend`.
+  - Se detuvieron procesos huérfanos de uvicorn en el puerto `8000` y se levantó correctamente el servidor backend local para recibir peticiones del frontend.
+- **Soporte de solicitudes de inscripción para Calistenia:**
+  - **Base de Datos:** Se migró la tabla `inscripciones` en las bases de datos para hacer que la columna `equipo_id` sea opcional (`NULL`) y se agregó la columna `competencia` (TEXT, NOT NULL, DEFAULT `'basquet'`) para identificar la disciplina.
+  - **Backend:** 
+    - Se modificaron los modelos y esquemas en `models/inscripcion.py` y `schemas/inscripcion.py` para soportar las solicitudes de calistenia sin equipo asociado.
+    - Se actualizó el endpoint `POST /inscripciones/` para validar solicitudes de calistenia, verificando si el jugador ya participa en calistenia o si tiene una solicitud pendiente.
+    - Se actualizó el endpoint `PATCH /inscripciones/{id}/aprobar` para que, al aprobarse una solicitud de competencia tipo `'calistenia'`, registre automáticamente al jugador como `ParticipanteCalistenia` determinando su categoría según el género.
+  - **Frontend:**
+    - Se modificó la interfaz del rol de jugador en `frontend/index.html` para permitirle elegir entre solicitar inscripción en Básquetbol o Calistenia, ocultando el selector de equipo cuando corresponda.
+    - Se actualizaron las funciones `solicitarInscripcion()` y `renderInscripciones()` para enviar y mostrar respectivamente las solicitudes en la disciplina correcta ("Básquetbol" o "Calistenia").
+- **Organización de Competencias de Calistenia (Masculinas y Femeninas con Lugar y Hora):**
+  - **Base de Datos:** Se crearon las tablas `competencias_calistenia` en las bases de datos para programar competencias individuales especificando `nombre`, `categoria` (M/F), `lugar` y `fecha_hora`. Se recreó la tabla `resultados_calistenia` asociando cada marca a una competencia específica mediante `competencia_id`.
+  - **Backend:**
+    - Se agregaron las clases del modelo `CompetenciaCalistenia` en `models/calistenia.py` e implementaron los esquemas `CompetenciaCalisteniaCreate` y `CompetenciaCalisteniaRead` en `schemas/calistenia.py`.
+    - Se crearon los endpoints en `routers/calistenia.py` para listar (`GET`), crear (`POST`) y eliminar (`DELETE`) competencias.
+    - Se modificó la ruta `POST /calistenia/resultados` para validar que la marca de calistenia se registre a una competencia existente y se cumpla que la categoría de la competencia coincida con el género del participante.
+  - **Frontend:**
+    - Se incorporó la tarjeta de administración "🏆 Organizar Competencia" en `frontend/index.html` para que los organizadores creen eventos deportivos.
+    - Se añadió una tabla "📅 Competencias de Calistenia Organizadas" para listar los eventos y permitir su eliminación.
+    - Se actualizó el formulario "📝 Registrar Marca" para requerir la selección de la competencia organizada, filtrando dinámicamente las competencias para mostrar únicamente las de la misma categoría que el participante seleccionado.
+    - Se actualizó el listado general de marcas de los competidores para mostrar el nombre del evento/competencia en el que se obtuvo.
+
+
+

@@ -21,6 +21,7 @@ class Usuario(Base):
 
     id: Mapped[int] = mapped_column(primary_key=True)
     nombre: Mapped[str] = mapped_column(String(100), nullable=False)
+    clave: Mapped[str] = mapped_column(String(100), nullable=False, default="1234")
     rol: Mapped[RolUsuario] = mapped_column(Enum(RolUsuario), nullable=False)
     departamento_id: Mapped[int | None] = mapped_column(
         ForeignKey("departamentos.id"), nullable=True

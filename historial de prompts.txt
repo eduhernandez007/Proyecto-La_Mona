@@ -1,0 +1,314 @@
+================================================================================
+HISTORIAL DE PROMPTS Y CAMBIOS — PROYECTO LA MONA CDI (2026)
+================================================================================
+
+--------------------------------------------------------------------------------
+Sesión: 16 de Junio, 2026
+Agente: Antigravity CLI (Gemini 3.5 Flash)
+--------------------------------------------------------------------------------
+
+[PROMPT 1]
+"hola"
+--> Acción:
+    Presentación del agente y solicitud de la ruta del proyecto.
+
+[PROMPT 2]
+"me puedes a ayudar a completar un proyecto de desarrollo de una webpage?, que ya tengo avanzado por lo que tendras que leer los documentos ya existentes"
+--> Acción:
+    - Análisis de los archivos de requerimientos ("Proyecto_La_Mona.md", "README.md", "AGENTS.md", "Gu_a_de_uso_de_agentes_de_programaci_n.md").
+    - Inspección del código del backend (FastAPI + SQLAlchemy) y los dos frontends.
+    - Planteamiento de preguntas aclaratorias al usuario sobre los componentes faltantes y la unificación del frontend.
+
+[PROMPT 3]
+"usa la interfaz frontend/index.html, las otras si interfieren con el desarrollo de proyecto y estan en la misma carpeta, eliminalas. Para obtener el contexto completo mira el archivo pdf ubicado en C:\Users\hp\OneDrive\Escritorio\ramos universidad\otoño 2026\progra avanzada\Proyecto_la_mona"
+--> Cambios Realizados:
+    1. Eliminación de archivos redundantes en la raíz:
+       - index.html, script.js y styles.css eliminados del directorio raíz.
+    2. Modificación en backend/app/main.py:
+       - Se añadió una función "seed_data()" que se ejecuta al arrancar el servidor.
+       - Siembra en la base de datos 6 departamentos, 9 usuarios con diferentes roles de sistema y 18 jugadores (3 hombres y 3 mujeres por departamento) para que la página sea inmediatamente operable y testeable.
+    3. Modificación en backend/app/routers/inscripciones.py:
+       - Se integró la lógica de aprobación en "aprobar_inscripcion".
+       - Al aprobar una inscripción por parte de un Centro de Estudiantes, se valida el límite de 5 estrellas en cancha y, de ser válido, se asocia automáticamente al jugador con la lista del equipo correspondiente en la base de datos.
+    4. Rediseño completo de frontend/index.html:
+       - Implementación de un diseño moderno y premium (Dark Theme, Glassmorphism, Outfit e Inter de Google Fonts).
+       - Widget superior para cambiar el rol del usuario simulado (Organizador, Juez de Básquetbol, Juez de Calistenia, Centro de Estudiantes, Jugador) con botones de acceso rápido.
+       - Habilitación dinámica de botones y formularios de acuerdo a los permisos del usuario seleccionado.
+       - Sección 🏆 Tabla General que consume el endpoint /puntajes/ para mostrar las posiciones agregadas.
+       - Sección 🏀 Básquetbol con la lista de partidos programados, registro de marcador interactivo para jueces y visor de estrellas/jugadores en los equipos.
+       - Sección 💪 Calistenia para registrar competidores individuales, almacenar marcas y filtrar pruebas válidas según la categoría (femenina/masculina).
+       - Sección 📝 Inscripciones con formulario para enviar solicitudes de ingreso (Jugadores) y el panel de decisiones filtrado por departamento (Centros de Estudiantes).
+    5. Pruebas y validación:
+       - Instalación de dependencias (fastapi, uvicorn, etc.) en el entorno de Python de Anaconda.
+       - Ejecución exitosa de la suite de pruebas unitarias (pytest backend/tests), asegurando que todas las reglas de negocio base siguen cumpliéndose al 100%.
+
+[PROMPT 4]
+"añade el resumen de los cambios realizados por ti al historial de prompts.txt de la forma que estimes conveniente para que quede claro el historial de avance"
+--> Acción:
+    - Creación y escritura de este archivo con el historial de prompts, objetivos y cambios aplicados durante la sesión de desarrollo.
+
+--------------------------------------------------------------------------------
+Sesión: 30 de Junio, 2026
+Agente: Antigravity (Gemini 3.5 Flash)
+--------------------------------------------------------------------------------
+
+[PROMPT 5]
+"go to C:\Users\hp\OneDrive\Escritorio\ramos universidad\otoño 2026\progra avanzada\Proyecto_la_mona\Proyecto-La_Mona and create some players for a new department called Mecanica"
+y "haz que el total de estrellas de los jugadores de mecanica sume 5"
+--> Cambios Realizados:
+    1. Creación del departamento de Mecánica:
+       - Se insertó el departamento "Mecánica" (ID: 7) en las bases de datos sqlite "lamona.db" (tanto en la raíz del proyecto como en el directorio "backend").
+    2. Creación de 6 jugadores mecánicos:
+       - Se agregaron 6 competidores temáticos de ingeniería mecánica a las bases de datos con estrellas modificadas para sumar exactamente 5:
+         1. Nikolaus Otto (Masculino, 2 estrellas)
+         2. Rudolf Diesel (Masculino, 1 estrella)
+         3. Kate Gleason (Femenino, 1 estrella)
+         4. James Watt (Masculino, 1 estrella)
+         5. Verena Holmes (Femenino, 0 estrellas)
+         6. Margaret Ingels (Femenino, 0 estrellas)
+    3. Cuentas de usuario:
+       - Se crearon cuentas de usuario para "Centro Mecánica" (centro_estudiantes) y "Nikolaus Otto (Jugador Mecánica)" (jugador), ambas con la clave por defecto "1234".
+    4. Actualización de Semillas:
+       - Se actualizó el código de inicialización en backend/app/main.py (función seed_data) para registrar de forma perenne al departamento, sus usuarios y sus competidores en futuras creaciones de base de datos.
+
+[PROMPT 6]
+"a partir de ahora cada vez que haces un cambio anotalo en el changelog.md"
+--> Cambios Realizados:
+    - Se actualizó el archivo changelog.md del proyecto para registrar cronológicamente todas las modificaciones de la sesión.
+
+[PROMPT 7]
+"porque no me funciona el frontend?, aparece que esta cergando eternamente"
+--> Cambios Realizados:
+    1. Diagnóstico del puerto 8000:
+       - Se identificaron y cerraron procesos de python huérfanos/activos que bloqueaban el puerto 8000.
+    2. Corrección del error HTTP 500:
+       - Al insertar inicialmente los géneros de los jugadores de Mecánica se utilizaron caracteres abreviados ('M'/'F'). El backend esperaba los valores exactos definidos en el Enum de SQLAlchemy y esquemas de Pydantic ('masculino'/'femenino'). Esto lanzaba un error interno del servidor en el endpoint /jugadores/ que congelaba la pantalla de carga del frontend.
+       - Se actualizaron los géneros a 'masculino' y 'femenino' en las tablas sqlite correspondientes, restableciendo la conectividad y eliminando la carga infinita.
+    3. Levantamiento del servidor:
+       - Se reactivó uvicorn backend en el puerto 8000 como tarea de fondo.
+
+[PROMPT 8]
+"permite que los jugadores puedan solicitar inscripcion a las competencias de calistenia, hasta ahora solo pueden a basquet"
+--> Cambios Realizados:
+    1. Migración de Base de Datos:
+       - Se modificó la tabla "inscripciones" en las bases de datos para permitir que el campo "equipo_id" sea anulable (NULL) y se incorporó la columna "competencia" (TEXT, DEFAULT 'basquet', NOT NULL).
+    2. Backend (Modelos, Esquemas y Rutas):
+       - Se modificaron backend/app/models/inscripcion.py y backend/app/schemas/inscripcion.py para permitir que equipo_id sea nulo y recibir/devolver la propiedad "competencia".
+       - Se adaptó POST /inscripciones/ para verificar e impedir solicitudes duplicadas en calistenia o registros en la competencia cuando el participante ya está inscrito.
+       - Se adaptó PATCH /inscripciones/{id}/aprobar para que al aprobar solicitudes de tipo calistenia, cree automáticamente un ParticipanteCalistenia asociándole su respectiva categoría según su sexo (M o F) en la tabla correspondiente.
+    3. Frontend (UI e Integración):
+       - En frontend/index.html se añadió un selector de disciplina ("Básquetbol" o "Calistenia") para los jugadores. Al seleccionar calistenia, se oculta dinámicamente el listado de selección de equipos.
+       - Se reescribieron solicitarInscripcion() y renderInscripciones() en JavaScript para poder mandar y pintar las inscripciones y el historial de marcas en sus respectivas disciplinas de forma limpia.
+    4. Verificación:
+       - Se corrieron los tests automáticos y se verificó que todos pasaban sin excepciones.
+
+[PROMPT 9]
+"tambien cuando hagas cambios grandes e importantes anotalo en el historial de prompt. para que lo tengas en cuenta"
+--> Acción:
+    - Registro de esta sesión y de los prompts recibidos junto con sus respectivos desarrollos en el archivo historial de prompts.txt.
+
+[PROMPT 10]
+"Para la competencia de calistenia falta Categorías masculina y femenina. Y tambien organizar competencias en donde se debe especificar el lugar y la hora"
+--> Cambios Realizados:
+    1. Base de Datos:
+       - Se creó la tabla competencias_calistenia en ambas bases de datos lamona.db.
+       - Se recreó la tabla resultados_calistenia para incluir una relación mediante la columna competencia_id.
+    2. Backend:
+       - Se implementó la clase de modelo CompetenciaCalistenia en backend/app/models/calistenia.py, con campos nombre, categoria (M/F), lugar y fecha_hora.
+       - Se definieron los esquemas de Pydantic CompetenciaCalisteniaCreate y CompetenciaCalisteniaRead, y se adaptaron los esquemas de marcas.
+       - Se incorporaron las rutas GET, POST y DELETE para competencias en routers/calistenia.py.
+       - Se añadió validación en el registro de marcas para comprobar la existencia de la competencia y asegurar que la categoría del competidor coincida con la categoría de la competencia organizada.
+    3. Frontend:
+       - Se añadieron la tarjeta "Organizar Competencia" (para Organizador) y la tabla "Competencias de Calistenia Organizadas".
+       - Se actualizó el formulario de guardado de marcas para requerir la competencia, filtrándola dinámicamente según la categoría del participante seleccionado.
+       - Se actualizó la vista general de competidores para indicar en cuál competencia obtuvieron sus respectivas marcas.
+    4. Validación y Ejecución:
+       - Se ejecutó pytest (31 tests exitosos) y se reinició el servidor uvicorn backend.
+
+--------------------------------------------------------------------------------
+Sesión: 2 de Julio, 2026
+Agente: Antigravity CLI
+--------------------------------------------------------------------------------
+
+[PROMPT 11]
+"como estas? mira C:\Users\hp\OneDrive\Escritorio\ramos universidad\otoño 2026\progra avanzada\Proyecto_la_mona y verifica si todos los requerimientos que aparecen en el enuncidado Proyecto_La_Mona.pdf se cumplen en el proyecto alojado en la carpeta"
+--> Acción:
+    - Verificación cruzada entre el código fuente y el PDF "Proyecto_La_Mona.pdf".
+    - Elaboración del documento "auditoria_requerimientos.md" detallando qué requerimientos se cumplían y cuáles estaban pendientes de implementar o finalizar.
+
+[PROMPT 12]
+"crea un torneo de basquetbol, es decir, partidos en fase de grupos, semi finales y la final entre electrica y mecanica. Inventa puntajes para los partidos hasta las semifinales con tal de que la final sea entre electrica y mecanica (el puntaje de esto esta por definir y se juega mañana), tambien crea los jugadores suficientes para los otros departamentos para que se puedan validar las condiciones necesarias y todos los otros detalles deben coincidir para que la final se juegue mañana entre los equipos mencionados. Esto con el fin de ejemplificar un uso de la pagina web"
+--> Cambios Realizados:
+    - Creación y ejecución de un script de población (populate_tournament.py).
+    - Llenado de base de datos con equipos completos y validados, simulando fase de grupos y llaves de semifinal.
+    - Configuración de la Gran Final (Eléctrica vs Mecánica) como pendiente para el día siguiente.
+
+[PROMPT 13]
+"Quiero que a los partidos programados tanto de basquet como de calistenia se le puedan asignar/seleccionar por medio de una lista desplegable, lugares de encuentro (los partidos de basquet se pueden jungar en la cancha de 850 o en la cancha -3 de 851) y los de calistenia pueden ser en el patio de calistenia de 850 o en el gimnasio -3 de 851"
+--> Cambios Realizados:
+    1. Base de Datos y Backend:
+       - Incorporación de columna `lugar` (opcional) en el modelo de `Partido` y la DB usando migraciones SQL en sqlite.
+================================================================================
+HISTORIAL DE PROMPTS Y CAMBIOS — PROYECTO LA MONA CDI (2026)
+================================================================================
+
+--------------------------------------------------------------------------------
+Sesión: 16 de Junio, 2026
+Agente: Antigravity CLI (Gemini 3.5 Flash)
+--------------------------------------------------------------------------------
+
+[PROMPT 1]
+"hola"
+--> Acción:
+    Presentación del agente y solicitud de la ruta del proyecto.
+
+[PROMPT 2]
+"me puedes a ayudar a completar un proyecto de desarrollo de una webpage?, que ya tengo avanzado por lo que tendras que leer los documentos ya existentes"
+--> Acción:
+    - Análisis de los archivos de requerimientos ("Proyecto_La_Mona.md", "README.md", "AGENTS.md", "Gu_a_de_uso_de_agentes_de_programaci_n.md").
+    - Inspección del código del backend (FastAPI + SQLAlchemy) y los dos frontends.
+    - Planteamiento de preguntas aclaratorias al usuario sobre los componentes faltantes y la unificación del frontend.
+
+[PROMPT 3]
+"usa la interfaz frontend/index.html, las otras si interfieren con el desarrollo de proyecto y estan en la misma carpeta, eliminalas. Para obtener el contexto completo mira el archivo pdf ubicado en C:\Users\hp\OneDrive\Escritorio\ramos universidad\otoño 2026\progra avanzada\Proyecto_la_mona"
+--> Cambios Realizados:
+    1. Eliminación de archivos redundantes en la raíz:
+       - index.html, script.js y styles.css eliminados del directorio raíz.
+    2. Modificación en backend/app/main.py:
+       - Se añadió una función "seed_data()" que se ejecuta al arrancar el servidor.
+       - Siembra en la base de datos 6 departamentos, 9 usuarios con diferentes roles de sistema y 18 jugadores (3 hombres y 3 mujeres por departamento) para que la página sea inmediatamente operable y testeable.
+    3. Modificación en backend/app/routers/inscripciones.py:
+       - Se integró la lógica de aprobación en "aprobar_inscripcion".
+       - Al aprobar una inscripción por parte de un Centro de Estudiantes, se valida el límite de 5 estrellas en cancha y, de ser válido, se asocia automáticamente al jugador con la lista del equipo correspondiente en la base de datos.
+    4. Rediseño completo de frontend/index.html:
+       - Implementación de un diseño moderno y premium (Dark Theme, Glassmorphism, Outfit e Inter de Google Fonts).
+       - Widget superior para cambiar el rol del usuario simulado (Organizador, Juez de Básquetbol, Juez de Calistenia, Centro de Estudiantes, Jugador) con botones de acceso rápido.
+       - Habilitación dinámica de botones y formularios de acuerdo a los permisos del usuario seleccionado.
+       - Sección 🏆 Tabla General que consume el endpoint /puntajes/ para mostrar las posiciones agregadas.
+       - Sección 🏀 Básquetbol con la lista de partidos programados, registro de marcador interactivo para jueces y visor de estrellas/jugadores en los equipos.
+       - Sección 💪 Calistenia para registrar competidores individuales, almacenar marcas y filtrar pruebas válidas según la categoría (femenina/masculina).
+       - Sección 📝 Inscripciones con formulario para enviar solicitudes de ingreso (Jugadores) y el panel de decisiones filtrado por departamento (Centros de Estudiantes).
+    5. Pruebas y validación:
+       - Instalación de dependencias (fastapi, uvicorn, etc.) en el entorno de Python de Anaconda.
+       - Ejecución exitosa de la suite de pruebas unitarias (pytest backend/tests), asegurando que todas las reglas de negocio base siguen cumpliéndose al 100%.
+
+[PROMPT 4]
+"añade el resumen de los cambios realizados por ti al historial de prompts.txt de la forma que estimes conveniente para que quede claro el historial de avance"
+--> Acción:
+    - Creación y escritura de este archivo con el historial de prompts, objetivos y cambios aplicados durante la sesión de desarrollo.
+
+--------------------------------------------------------------------------------
+Sesión: 30 de Junio, 2026
+Agente: Antigravity (Gemini 3.5 Flash)
+--------------------------------------------------------------------------------
+
+[PROMPT 5]
+"go to C:\Users\hp\OneDrive\Escritorio\ramos universidad\otoño 2026\progra avanzada\Proyecto_la_mona\Proyecto-La_Mona and create some players for a new department called Mecanica"
+y "haz que el total de estrellas de los jugadores de mecanica sume 5"
+--> Cambios Realizados:
+    1. Creación del departamento de Mecánica:
+       - Se insertó el departamento "Mecánica" (ID: 7) en las bases de datos sqlite "lamona.db" (tanto en la raíz del proyecto como en el directorio "backend").
+    2. Creación de 6 jugadores mecánicos:
+       - Se agregaron 6 competidores temáticos de ingeniería mecánica a las bases de datos con estrellas modificadas para sumar exactamente 5:
+         1. Nikolaus Otto (Masculino, 2 estrellas)
+         2. Rudolf Diesel (Masculino, 1 estrella)
+         3. Kate Gleason (Femenino, 1 estrella)
+         4. James Watt (Masculino, 1 estrella)
+         5. Verena Holmes (Femenino, 0 estrellas)
+         6. Margaret Ingels (Femenino, 0 estrellas)
+    3. Cuentas de usuario:
+       - Se crearon cuentas de usuario para "Centro Mecánica" (centro_estudiantes) y "Nikolaus Otto (Jugador Mecánica)" (jugador), ambas con la clave por defecto "1234".
+    4. Actualización de Semillas:
+       - Se actualizó el código de inicialización en backend/app/main.py (función seed_data) para registrar de forma perenne al departamento, sus usuarios y sus competidores en futuras creaciones de base de datos.
+
+[PROMPT 6]
+"a partir de ahora cada vez que haces un cambio anotalo en el changelog.md"
+--> Cambios Realizados:
+    - Se actualizó el archivo changelog.md del proyecto para registrar cronológicamente todas las modificaciones de la sesión.
+
+[PROMPT 7]
+"porque no me funciona el frontend?, aparece que esta cergando eternamente"
+--> Cambios Realizados:
+    1. Diagnóstico del puerto 8000:
+       - Se identificaron y cerraron procesos de python huérfanos/activos que bloqueaban el puerto 8000.
+    2. Corrección del error HTTP 500:
+       - Al insertar inicialmente los géneros de los jugadores de Mecánica se utilizaron caracteres abreviados ('M'/'F'). El backend esperaba los valores exactos definidos en el Enum de SQLAlchemy y esquemas de Pydantic ('masculino'/'femenino'). Esto lanzaba un error interno del servidor en el endpoint /jugadores/ que congelaba la pantalla de carga del frontend.
+       - Se actualizaron los géneros a 'masculino' y 'femenino' en las tablas sqlite correspondientes, restableciendo la conectividad y eliminando la carga infinita.
+    3. Levantamiento del servidor:
+       - Se reactivó uvicorn backend en el puerto 8000 como tarea de fondo.
+
+[PROMPT 8]
+"permite que los jugadores puedan solicitar inscripcion a las competencias de calistenia, hasta ahora solo pueden a basquet"
+--> Cambios Realizados:
+    1. Migración de Base de Datos:
+       - Se modificó la tabla "inscripciones" en las bases de datos para permitir que el campo "equipo_id" sea anulable (NULL) y se incorporó la columna "competencia" (TEXT, DEFAULT 'basquet', NOT NULL).
+    2. Backend (Modelos, Esquemas y Rutas):
+       - Se modificaron backend/app/models/inscripcion.py y backend/app/schemas/inscripcion.py para permitir que equipo_id sea nulo y recibir/devolver la propiedad "competencia".
+       - Se adaptó POST /inscripciones/ para verificar e impedir solicitudes duplicadas en calistenia o registros en la competencia cuando el participante ya está inscrito.
+       - Se adaptó PATCH /inscripciones/{id}/aprobar para que al aprobar solicitudes de tipo calistenia, cree automáticamente un ParticipanteCalistenia asociándole su respectiva categoría según su sexo (M o F) en la tabla correspondiente.
+    3. Frontend (UI e Integración):
+       - En frontend/index.html se añadió un selector de disciplina ("Básquetbol" o "Calistenia") para los jugadores. Al seleccionar calistenia, se oculta dinámicamente el listado de selección de equipos.
+       - Se reescribieron solicitarInscripcion() y renderInscripciones() en JavaScript para poder mandar y pintar las inscripciones y el historial de marcas en sus respectivas disciplinas de forma limpia.
+    4. Verificación:
+       - Se corrieron los tests automáticos y se verificó que todos pasaban sin excepciones.
+
+[PROMPT 9]
+"tambien cuando hagas cambios grandes e importantes anotalo en el historial de prompt. para que lo tengas en cuenta"
+--> Acción:
+    - Registro de esta sesión y de los prompts recibidos junto con sus respectivos desarrollos en el archivo historial de prompts.txt.
+
+[PROMPT 10]
+"Para la competencia de calistenia falta Categorías masculina y femenina. Y tambien organizar competencias en donde se debe especificar el lugar y la hora"
+--> Cambios Realizados:
+    1. Base de Datos:
+       - Se creó la tabla competencias_calistenia en ambas bases de datos lamona.db.
+       - Se recreó la tabla resultados_calistenia para incluir una relación mediante la columna competencia_id.
+    2. Backend:
+       - Se implementó la clase de modelo CompetenciaCalistenia en backend/app/models/calistenia.py, con campos nombre, categoria (M/F), lugar y fecha_hora.
+       - Se definieron los esquemas de Pydantic CompetenciaCalisteniaCreate y CompetenciaCalisteniaRead, y se adaptaron los esquemas de marcas.
+       - Se incorporaron las rutas GET, POST y DELETE para competencias en routers/calistenia.py.
+       - Se añadió validación en el registro de marcas para comprobar la existencia de la competencia y asegurar que la categoría del competidor coincida con la categoría de la competencia organizada.
+    3. Frontend:
+       - Se añadieron la tarjeta "Organizar Competencia" (para Organizador) y la tabla "Competencias de Calistenia Organizadas".
+       - Se actualizó el formulario de guardado de marcas para requerir la competencia, filtrándola dinámicamente según la categoría del participante seleccionado.
+       - Se actualizó la vista general de competidores para indicar en cuál competencia obtuvieron sus respectivas marcas.
+    4. Validación y Ejecución:
+       - Se ejecutó pytest (31 tests exitosos) y se reinició el servidor uvicorn backend.
+
+--------------------------------------------------------------------------------
+Sesión: 2 de Julio, 2026
+Agente: Antigravity CLI
+--------------------------------------------------------------------------------
+
+[PROMPT 11]
+"como estas? mira C:\Users\hp\OneDrive\Escritorio\ramos universidad\otoño 2026\progra avanzada\Proyecto_la_mona y verifica si todos los requerimientos que aparecen en el enuncidado Proyecto_La_Mona.pdf se cumplen en el proyecto alojado en la carpeta"
+--> Acción:
+    - Verificación cruzada entre el código fuente y el PDF "Proyecto_La_Mona.pdf".
+    - Elaboración del documento "auditoria_requerimientos.md" detallando qué requerimientos se cumplían y cuáles estaban pendientes de implementar o finalizar.
+
+[PROMPT 12]
+"crea un torneo de basquetbol, es decir, partidos en fase de grupos, semi finales y la final entre electrica y mecanica. Inventa puntajes para los partidos hasta las semifinales con tal de que la final sea entre electrica y mecanica (el puntaje de esto esta por definir y se juega mañana), tambien crea los jugadores suficientes para los otros departamentos para que se puedan validar las condiciones necesarias y todos los otros detalles deben coincidir para que la final se juegue mañana entre los equipos mencionados. Esto con el fin de ejemplificar un uso de la pagina web"
+--> Cambios Realizados:
+    - Creación y ejecución de un script de población (populate_tournament.py).
+    - Llenado de base de datos con equipos completos y validados, simulando fase de grupos y llaves de semifinal.
+    - Configuración de la Gran Final (Eléctrica vs Mecánica) como pendiente para el día siguiente.
+
+[PROMPT 13]
+"Quiero que a los partidos programados tanto de basquet como de calistenia se le puedan asignar/seleccionar por medio de una lista desplegable, lugares de encuentro (los partidos de basquet se pueden jungar en la cancha de 850 o en la cancha -3 de 851) y los de calistenia pueden ser en el patio de calistenia de 850 o en el gimnasio -3 de 851"
+--> Cambios Realizados:
+    1. Base de Datos y Backend:
+       - Incorporación de columna `lugar` (opcional) en el modelo de `Partido` y la DB usando migraciones SQL en sqlite.
+       - Adaptación de schemas y router en `backend/app/routers/partidos.py`.
+    2. Frontend (HTML/JS):
+       - Implementación de campos `<select>` dinámicos en los modales/tarjetas de organizar competición de Calistenia y programar partidos de Básquetbol.
+       - Extensión de columnas de renderizado en las tablas "Programados" y "Resultados" (Jugados) para visualizar la variable `lugar`.
+    3. Validación:
+       - Ejecución de 31 tests exitosos y repoblado de las bases con las canchas respectivas de muestra (Cancha de 850, etc).
+
+[PROMPT 14]
+"ahora quier que organizes un torneo de calistenia entre todos los jugadores de 3 estrellas"
+--> Cambios Realizados:
+    - Análisis del modelo de Base de Datos para comprender la estructura de competencias de Calistenia.
+    - Creación y ejecución de `populate_calistenia.py` para identificar a los jugadores con exactamente 3 estrellas.
+    - Registro de dichos jugadores como participantes, separación en categorías masculina y femenina, y matriculación automática en un par de competencias organizadas.
+    - Generación aleatoria de puntajes realistas para los ejercicios aplicables a cada categoría y guardado de todas las marcas en la BD.

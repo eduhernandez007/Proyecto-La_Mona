@@ -22,8 +22,10 @@ class Equipo(Base):
     id: Mapped[int] = mapped_column(primary_key=True)
     nombre: Mapped[str] = mapped_column(String(100), nullable=False)
     departamento_id: Mapped[int] = mapped_column(ForeignKey("departamentos.id"), nullable=False)
+    capitan_id: Mapped[int | None] = mapped_column(ForeignKey("jugadores.id"), nullable=True, default=None)
 
     departamento: Mapped["Departamento"] = relationship(back_populates="equipos")
+    capitan: Mapped["Jugador | None"] = relationship(foreign_keys=[capitan_id])
     jugadores: Mapped[list["Jugador"]] = relationship(secondary="equipo_jugador", back_populates="equipos")
     partidos_como_local: Mapped[list["Partido"]] = relationship(
         foreign_keys="Partido.equipo_local_id", back_populates="equipo_local"

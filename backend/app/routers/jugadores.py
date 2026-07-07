@@ -31,3 +31,13 @@ def obtener_jugador(jugador_id: int, db: Session = Depends(get_db)):
     if not jugador:
         raise HTTPException(status_code=404, detail="Jugador no encontrado")
     return jugador
+
+
+@router.delete("/{jugador_id}", status_code=204)
+def eliminar_jugador(jugador_id: int, db: Session = Depends(get_db)):
+    jugador = db.get(Jugador, jugador_id)
+    if not jugador:
+        raise HTTPException(status_code=404, detail="Jugador no encontrado")
+    db.delete(jugador)
+    db.commit()
+    return None

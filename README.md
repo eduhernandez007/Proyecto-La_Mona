@@ -67,6 +67,27 @@ docker-compose up --build
 
 El backend quedará disponible en `http://localhost:8000`. Para detenerlo, presiona `Ctrl+C` o ejecuta `docker-compose down`.
 
+## Usuarios de prueba y credenciales
+
+El sistema cuenta con inicio de sesión e identificación de roles. Para ingresar en el login, los usuarios deben ingresar su **nombre simplificado** (sin paréntesis ni departamento) y la contraseña por defecto **`1234`**:
+
+| Nombre para iniciar sesión | Contraseña | Nombre Completo en Sistema | Rol / Permisos |
+| :--- | :---: | :--- | :--- |
+| `jorge zambrano` | `1234` | `Jorge Zambrano (Organizador CDI)` | Organizador |
+| `christian díaz` | `1234` | `Christian Díaz (Org. Competencia)` | Organizador |
+| `pablo vergara` | `1234` | `Pablo Vergara (Juez Básquetbol)` | Juez |
+| `ana maria` | `1234` | `Ana Maria (Juez Calistenia)` | Juez |
+| `centro civil` | `1234` | `Centro Civil` | Centro Estudiantes (Civil) |
+| `centro computación` | `1234` | `Centro Computación` | Centro Estudiantes (Computación) |
+| `centro eléctrica` | `1234` | `Centro Eléctrica` | Centro Estudiantes (Eléctrica) |
+| `tomas gonzalez` | `1234` | `Tomas Gonzalez (Jugador Civil)` | Jugador (Civil) |
+| `andres bello` | `1234` | `Andres Bello (Jugador Computación)` | Jugador (Computación) |
+
+- **Organizador**: Permisos totales globales (crear/eliminar departamentos, equipos, jugadores, partidos y calistenia).
+- **Centro de Estudiantes**: Pueden añadir y eliminar equipos y jugadores, además de aprobar/rechazar solicitudes de inscripción de su departamento.
+- **Juez**: Pueden registrar marcas de calistenia y resultados de básquetbol.
+- **Jugador**: Pueden solicitar inscribirse en equipos de básquetbol.
+
 ## Estructura de carpetas
 
 ```
